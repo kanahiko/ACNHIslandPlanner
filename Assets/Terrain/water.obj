@@ -1,0 +1,23 @@
+# ProBuilder 4.2.3
+# https://unity3d.com/unity/features/worldbuilding/probuilder
+# 06.07.2020 13:17:09
+
+mtllib ./water.mtl
+o water
+
+g Plane
+v 0 -0.111 0
+v 0 -0.111 1
+v -1 -0.111 0
+v -1 -0.111 1
+
+vt 0 0
+vt 0 1
+vt 1 0
+vt 1 1
+
+vn 0 1 0
+
+usemtl ProBuilderDefault
+f 3/3/1 4/4/1 2/2/1 1/1/1
+
