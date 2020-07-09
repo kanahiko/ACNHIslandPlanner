@@ -1,23 +1,14 @@
-# ProBuilder 4.2.3
-# https://unity3d.com/unity/features/worldbuilding/probuilder
-# 06.07.2020 13:17:09
-
-mtllib ./water.mtl
+# Blender v2.81 (sub 16) OBJ File: ''
+# www.blender.org
 o water
-
-g Plane
-v 0 -0.111 0
-v 0 -0.111 1
-v -1 -0.111 0
-v -1 -0.111 1
-
-vt 0 0
-vt 0 1
-vt 1 0
-vt 1 1
-
-vn 0 1 0
-
-usemtl ProBuilderDefault
-f 3/3/1 4/4/1 2/2/1 1/1/1
-
+v -1.000000 -0.200000 -0.000000
+v -1.000000 -0.200000 1.000000
+v 0.000000 -0.200000 1.000000
+v 0.000000 -0.200000 -0.000000
+vt 1.000000 0.000000
+vt 1.000000 1.000000
+vt 0.000000 1.000000
+vt 0.000000 0.000000
+vn 0.0000 1.0000 0.0000
+s 1
+f 1/1/1 2/2/1 3/3/1 4/4/1

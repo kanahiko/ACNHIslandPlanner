@@ -22,7 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: PathMaterial
   m_Shader: {fileID: -6465566751694194690, guid: f0972136d20989543ab9ffe9f76a26ab, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: BOOLEAN_12A9AAA0_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -36,7 +36,12 @@ Material:
         m_Texture: {fileID: 2800000, guid: 6dee38385fb06c4499b74300019433cd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_BFEC9121:
+        m_Texture: {fileID: 2800000, guid: 97e7dd5259607ac41b65202d70541019, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
+    - BOOLEAN_12A9AAA0: 1
     - Vector1_2AE177C5: 0.5
     - Vector1_486515CA: 1
     - Vector1_4EA2BAC: 16

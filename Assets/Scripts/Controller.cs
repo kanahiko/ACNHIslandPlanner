@@ -33,6 +33,7 @@ public class Controller : MonoBehaviour
 
     int currentBlockX = -1;
     int currentBlockY = -1;
+    Vector3 mousePosition;
 
     // Start is called before the first frame update
     void Start()
@@ -43,7 +44,6 @@ public class Controller : MonoBehaviour
         currentPosition = playerZoomCamera.localPosition;
         cameraDegrees = playerZoomCamera.localRotation.eulerAngles.x;
     }
-    Vector3 mousePosition;
     // Update is called once per frame
     void Update()
     {
@@ -96,14 +96,13 @@ public class Controller : MonoBehaviour
             float distanceToGround = Mathf.Sqrt((playerCamera.position.y * playerCamera.position.y) * 2) - playerCamera.position.y;
             playerZoomCamera.localPosition = new Vector3(0, distanceToGround, playerCamera.position.y);
             playerZoomCamera.localRotation = Quaternion.Euler(90, 0, 0);
-            currentPosition = playerZoomCamera.localPosition;
         }
         else
         {
             playerZoomCamera.localPosition = Vector3.zero;
             playerZoomCamera.localRotation = Quaternion.Euler(cameraDegrees, 0, 0);
-            currentPosition = playerZoomCamera.localPosition;
         }
+        currentPosition = playerZoomCamera.localPosition;
 
         cameraChanged = true;
         tilt = !tilt;
@@ -111,8 +110,6 @@ public class Controller : MonoBehaviour
         var normal = playerZoomCamera.forward;
         scrollOffset = normal * currentScroll;
         playerZoomCamera.localPosition = currentPosition +scrollOffset;
-
-        //scrollOffset = playerZoomCamera.localPosition;
     }
 
     void HandleScrolling(float scroll)
@@ -126,13 +123,6 @@ public class Controller : MonoBehaviour
             scrollOffset = normal * currentScroll;
             playerZoomCamera.localPosition = currentPosition +scrollOffset;
             cameraChanged = true;
-            //playerTiltCamera.position = playerTiltCamera.forward * currentScroll;
-
-            /* Vector3 currentPosition = playerCamera.localPosition; 
-             currentPosition.x = Mathf.Clamp(currentPosition.x, playerFieldSizeMin.x + MapHolder.offset.x, playerFieldSizeMax.x + MapHolder.offset.x); 
-             currentPosition.z = Mathf.Clamp(currentPosition.z, playerFieldSizeMin.y + MapHolder.offset.z + scrollOffset.z / 2f, 
-                 playerFieldSizeMax.y + MapHolder.offset.z + scrollOffset.z / 2f);
-             playerCamera.localPosition = currentPosition;*/
         }
     }
 
@@ -162,11 +152,12 @@ public class Controller : MonoBehaviour
             switch (currentTool)
             {
                 case ToolType.Waterscaping:
-                    TerrainBuilder.ChangeTile(TileType.Water, currentBlockX,Mathf.Abs(currentBlockY) - 1);
+                    TerrainBuilder.ChangeTile(TileType.Water, currentBlockX,Mathf.Abs(currentBlockY));
                     break;
                 case ToolType.CliffConstruction:
                     break;
                 case ToolType.PathPermit:
+                    TerrainBuilder.ChangeTile(TileType.Path, currentBlockX, Mathf.Abs(currentBlockY));
                     break;
                 case ToolType.BridgeMarkUp:
                     break;

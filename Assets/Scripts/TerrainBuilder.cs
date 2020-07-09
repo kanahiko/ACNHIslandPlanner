@@ -1,10 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class TerrainBuilder : MonoBehaviour
 {
+    public int width = 92;
+    public int height = 73;
+
+    public List<Transform> elevationLevels;
+
     public Vector3 offsetTerrain;
     public Texture2D terrain;
     
@@ -14,27 +20,35 @@ public class TerrainBuilder : MonoBehaviour
     static Dictionary<Color32, TileType> lookUpTileType;
     static Dictionary<TilePrefabType, GameObject> lookUpTilePrefab;
 
-    static Vector3 halfOffset = new Vector3(0.5f, 0.5f, 0.5f);
+    public List<GameObject> specialCurvedPath;
+    static List<GameObject> specialCurvedPathPrefabs;
+
+    static Vector3 halfOffset = new Vector3(0.5f, 0, 0.5f);
 
     static Vector3[] offset = new Vector3[]
     {
-        new Vector3(-0.25f,0,+0.25f),
-        new Vector3(0.25f,0,0.25f),
-        new Vector3(0.25f,0,-0.25f),
-        new Vector3(-0.25f,0,-0.25f)
+        new Vector3(0.25f,0,0.75f),
+        new Vector3(0.75f,0,0.75f),
+        new Vector3(0.75f,0,0.25f),
+        new Vector3(0.25f,0,0.25f)
 
     };
     // Start is called before the first frame update
     void Start()
     {
-        MapHolder.parent = transform;
+        MapHolder.elevationLevels = elevationLevels;
+        //MapHolder.parent = transform;
         ConvertToDictionary();
+        //MapHolder.width = terrain.width;
+        //MapHolder.height = terrain.height;
+        MapHolder.width = width;
+        MapHolder.height = height;
+
         MapHolder.grid = new TileType[MapHolder.width * MapHolder.height];
         MapHolder.tiles = new MapTile[MapHolder.width, MapHolder.height];
-
         //MapHolder.offset = this.offsetTerrain;
 
-       /* for (int j = 0; j < terrain.height; j++)
+        /*for (int j = 0; j < terrain.height; j++)
         {
             for (int i = 0; i < terrain.width; i++)
             {            
@@ -45,25 +59,44 @@ public class TerrainBuilder : MonoBehaviour
         }*/
         CreateEmptyLand(MapHolder.width, MapHolder.height);
         //CreateLand(MapHolder.grid, MapHolder.width, MapHolder.height);
-
+        MapHolder.offset = offsetTerrain;
         transform.position = offsetTerrain;
+    }
+    void ConvertToDictionary()
+    {
+        lookUpTileType = new Dictionary<Color32, TileType>();
+        for (int i = 0; i < lookUpColor.Count; i++)
+        {
+            lookUpTileType.Add(lookUpColor[i].color, lookUpColor[i].type);
+        }
+
+        lookUpTilePrefab = new Dictionary<TilePrefabType, GameObject>();
+        for (int i = 0; i < lookUpTile.Count; i++)
+        {
+            lookUpTilePrefab.Add(lookUpTile[i].type, lookUpTile[i].prefab);
+        }
+
+        specialCurvedPathPrefabs = new List<GameObject>();
+        for (int i = 0; i < specialCurvedPath.Count; i++)
+        {
+            specialCurvedPathPrefabs.Add(specialCurvedPath[i]);
+        }
     }
     void CreateEmptyLand(int width, int height)
     {
-        for (int i = 0; i < height; i++)
+        for (int row = 0; row < height; row++)
         {
-            for (int j = 0; j < width; j++)
+            for (int column = 0; column < width; column++)
             {
-                CreateLandTile(i, j);
+                CreateLandTile(column ,row);
             }
         }
     }
 
-    public static void ChangeTile(TileType type, int x, int y)
+    public static void ChangeTile(TileType type, int column, int row)
     {
-        int index = y * MapHolder.width + x;
+        int index = row * MapHolder.width + column;
         TileType previousTileType = MapHolder.grid[index];
-        RecalculateDiagonals(x, y, type);
 
         switch (type)
         {
@@ -76,7 +109,10 @@ public class TerrainBuilder : MonoBehaviour
                     if (CheckCanCurve(type, TileType.WaterDiagonal, index))
                     {
                         MapHolder.grid[index] = TileType.WaterDiagonal;
-                        MakeWaterTile(y, x, index);
+                    }
+                    else
+                    {
+                        MapHolder.grid[index] = TileType.Land;
                     }
                 }
                 else
@@ -84,16 +120,38 @@ public class TerrainBuilder : MonoBehaviour
                     if (previousTileType== TileType.WaterDiagonal)
                     {
                         MapHolder.grid[index] = TileType.Land;
-                        CreateLandTile(y, x);
                     }
                     else
                     {
                         MapHolder.grid[index] = TileType.Water;
-                        MakeWaterTile(y, x, index);
                     }
                 }
+                CreateTile(column, row, MapHolder.grid[index], index);
                 break;
             case TileType.Path:
+                if (previousTileType == TileType.Path)
+                {
+                    if (CheckCanCurve(type, TileType.PathCurve, index, MapHolder.tiles[column,row]))
+                    {
+                        MapHolder.grid[index] = TileType.PathCurve;
+                    }
+                    else
+                    {
+                        MapHolder.grid[index] = TileType.Land;
+                    }
+                }
+                else
+                {
+                    if (previousTileType == TileType.PathCurve)
+                    {
+                        MapHolder.grid[index] = TileType.Land;
+                    }
+                    else
+                    {
+                        MapHolder.grid[index] = TileType.Path;
+                    }
+                }
+                CreateTile(column, row, MapHolder.grid[index], index);
                 break;
             case TileType.Cliff:
                 if (previousTileType == TileType.Cliff)
@@ -111,13 +169,50 @@ public class TerrainBuilder : MonoBehaviour
         }
     }
 
-    static bool CheckCanCurve(TileType type, TileType secondaryType,int index)
+    static void CreateTile(int column, int row, TileType type, int index)
+    {
+        RecalculateDiagonals(column, row, type);
+
+        switch (type)
+        {
+            case TileType.Null:
+                break;
+            case TileType.Land:
+                CreateLandTile(column, row);
+                break;
+            case TileType.Water:
+            case TileType.WaterDiagonal:
+                MakeWaterTile(column, row, index, MapHolder.tiles[column,row].elevation);
+                break;
+            case TileType.Path:
+            case TileType.PathCurve:
+                CreatePath(column, row, index, MapHolder.tiles[column, row].elevation);
+                break;
+            case TileType.Cliff:
+            case TileType.CliffDiagonal:
+                break;
+        }
+    }
+
+    static bool CheckCanCurve(TileType type, TileType secondaryType,int index, MapTile tile = null)
     {
         TileType[] types = new TileType[7];
-        types[1] = MapHolder.grid[index - 1];
-        types[2] = MapHolder.grid[index + 1];
-        types[3] = MapHolder.grid[index - MapHolder.width];
-        types[4] = MapHolder.grid[index + MapHolder.width];
+        if (index - MapHolder.width >= 0)
+        {
+            types[1] = MapHolder.grid[index - MapHolder.width];
+        }
+        if (index + 1 < MapHolder.grid.Length)
+        {
+            types[2] = MapHolder.grid[index + 1];
+        }
+        if (index + MapHolder.width < MapHolder.grid.Length)
+        {
+            types[3] = MapHolder.grid[index + MapHolder.width];
+        }
+        if (index - 1 >= 0)
+        {
+            types[4] = MapHolder.grid[index - 1];
+        }
         types[5] = types[1];
         types[6] = types[2];
         types[0] = types[4];
@@ -126,6 +221,11 @@ public class TerrainBuilder : MonoBehaviour
             if ((types[i] == type || types[i] == secondaryType) && (types[i - 1] == type || types[i - 1] == secondaryType) 
                 && types[i + 1] != type && types[i + 1] != secondaryType && types[i + 2] != type && types[i + 2] != secondaryType)
             {
+                if (tile != null) 
+                {
+                    Debug.Log($"{i} {Util.SubstractRotation(i, 1)} {Util.SubstractRotation(i, 2)} {Util.SubstractRotation(i, 3)}");
+                    tile.diagonalPathRotation =  Util.SubstractRotation(i,3);
+                }
                 return true;
             }
         }
@@ -133,40 +233,59 @@ public class TerrainBuilder : MonoBehaviour
         return false;
     }
 
-    static void RecalculateDiagonals(int x,int y, TileType type)
+    static void RecalculateDiagonals(int column,int row, TileType type)
     {
-        if (type.CanInfluence(MapHolder.grid[y * MapHolder.width + x - 1], 4,MapHolder.tiles[y,x-1]. GetDirectionOfPath()))
+        for (int i = -1; i <= 1; i++)
         {
-            SwitchTileType(x,y,y * MapHolder.width + x - 1);
-        }
-        if (type.CanInfluence(MapHolder.grid[y * MapHolder.width + x + 1], 2,MapHolder.tiles[y, x+1].GetDirectionOfPath()))
-        {
-            SwitchTileType(x, y, y * MapHolder.width + x + 1);
-
-        }
-        if (type.CanInfluence(MapHolder.grid[(y-1) * MapHolder.width + x],1, MapHolder.tiles[y-1, x].GetDirectionOfPath()))
-        {
-            SwitchTileType(x, y, (y - 1) * MapHolder.width + x );
-
-        }
-        if (type.CanInfluence(MapHolder.grid[(y+1) * MapHolder.width + x - 1], 3,MapHolder.tiles[y+1, x].GetDirectionOfPath()))
-        {
-            SwitchTileType(x, y, (y + 1) * MapHolder.width + x);
-
+            for (int j = -1; j <= 1; j++)
+            {
+                if (i == 0 && j == 0)
+                {
+                    continue;
+                }
+                if ( column + i >= 0 && column + i < MapHolder.width &&
+                    row + j >= 0 && row + j < MapHolder.height)
+                {
+                    if (!(i!=0 && j!=0) && 
+                        type.CanInfluence(MapHolder.grid[(row+j) * MapHolder.width + column + i], 4, MapHolder.tiles[column + i, row + j].GetDirectionOfPath()))
+                    {
+                        SwitchTileType(column +i, row +j, (row + j) * MapHolder.width + column + i);
+                    }
+                    RedoTile(column + i, row + j, type);
+                }
+            }
         }
     }
 
-    static void SwitchTileType(int x, int y ,int index)
+    private static void RedoTile(int column, int row, TileType type)
+    {
+        int index = row * MapHolder.width + column;
+        switch (MapHolder.grid[index])
+        {
+            case TileType.WaterDiagonal:
+            case TileType.Water:
+                MakeWaterTile(column, row, index, MapHolder.tiles[column,row].elevation);
+                break;
+            case TileType.Path:
+            case TileType.PathCurve:
+                CreatePath(column, row, index, MapHolder.tiles[column, row].elevation);
+                break;
+            case TileType.Cliff:
+            case TileType.CliffDiagonal:
+                //MapHolder.grid[index] = TileType.Cliff;
+                break;
+        }
+    }
+
+    static void SwitchTileType(int column, int row, int index)
     {
         switch (MapHolder.grid[index])
         {
             case TileType.WaterDiagonal:
                 MapHolder.grid[index] = TileType.Water;
-                MakeWaterTile(x, y, index);
                 break;
             case TileType.PathCurve:
                 MapHolder.grid[index] = TileType.Path;
-                CreatePath(x, y, index);
                 break;
             case TileType.CliffDiagonal:
                 MapHolder.grid[index] = TileType.Cliff;
@@ -175,110 +294,105 @@ public class TerrainBuilder : MonoBehaviour
 
     }
 
-    void ConvertToDictionary()
+    /*void CreateLand(TileType[] grid, int width, int height)
     {
-        lookUpTileType = new Dictionary<Color32, TileType>();
-        for (int i = 0; i < lookUpColor.Count; i++)
+        for (int row = 0; row < height; row++)
         {
-            lookUpTileType.Add(lookUpColor[i].color, lookUpColor[i].type);
-        }
-
-        lookUpTilePrefab = new Dictionary<TilePrefabType, GameObject>();
-        for (int i = 0; i < lookUpTile.Count; i++)
-        {
-            lookUpTilePrefab.Add(lookUpTile[i].type, lookUpTile[i].prefab);
-        }
-    }
-
-    void CreateLand(TileType[] grid, int width, int height)
-    {
-        for (int i = 0; i < height; i++)
-        {
-            for (int j = 0; j < width; j++)
+            for (int column = 0; column < width; column++)
             {
-                int currentIndex = i * width + j;
+                int currentIndex = row * width + column;
                 switch (grid[currentIndex])
                 {
                     case TileType.Null:
                         break;
                     case TileType.Land:
-                            CreateLandTile(i, j);
+                            CreateLandTile(column, row);
                         break;
                     case TileType.Water:
                     case TileType.WaterDiagonal:
-                        MakeWaterTile(i, j, currentIndex);
+                        MakeWaterTile(column, row,  currentIndex);
                         break;
                     case TileType.Path:
                     case TileType.PathCurve:
-                        CreatePath(i, j,currentIndex);
+                        CreatePath(column, row, currentIndex);
                         break;
                 }
             }
         }
-    }
+    }*/
 
-    static void CreateLandTile(int x, int y)
+    static void CreateLandTile( int column ,int row)
     {
         //creates tile and adds its reference to MapHolder
-        if (MapHolder.tiles[y, x] != null)
+        if (MapHolder.tiles[column, row] != null)
         {
-            if (MapHolder.tiles[y,x].backgroundType != TilePrefabType.Land)
+            if (MapHolder.tiles[column, row].backgroundType == TilePrefabType.Land)
             {
-                MapHolder.tiles[y, x].HardErase();
-                MapHolder.tiles[y, x].backgroundTile = Instantiate(lookUpTilePrefab[TilePrefabType.Land], MapHolder.parent);
-                MapHolder.tiles[y, x].backgroundTile.transform.localPosition = new Vector3(y, 0, -x);
+                MapHolder.tiles[column, row].EraseQuarters();
             }
             else
             {
-                MapHolder.tiles[y, x].EraseQuarters();
+                MapHolder.tiles[column, row].HardErase();
+                MapHolder.tiles[column, row].backgroundTile = Instantiate(lookUpTilePrefab[TilePrefabType.Land], MapHolder.elevationLevels[0]);
+                MapHolder.tiles[column, row].backgroundTile.transform.localPosition = new Vector3(column, 0, -row);
+                MapHolder.tiles[column, row].backgroundType = TilePrefabType.Land;
             }
         }
         else
         {
-            MapHolder.tiles[y, x] = new MapTile(Instantiate(lookUpTilePrefab[TilePrefabType.Land],  MapHolder.parent));
-            MapHolder.tiles[y, x].backgroundTile.transform.localPosition = new Vector3(y, 0, -x);
+            MapHolder.tiles[column, row] = new MapTile(Instantiate(lookUpTilePrefab[TilePrefabType.Land],  MapHolder.elevationLevels[0]));
+            MapHolder.tiles[column, row].backgroundTile.transform.localPosition = new Vector3(column, 0, -row);
+            MapHolder.tiles[column, row].backgroundType = TilePrefabType.Land;
         }
+
+        MapHolder.tiles[column, row].elevation = 0;
+        MapHolder.grid[row * MapHolder.width + column] = TileType.Land;
     }
 
-    static void CreatePath(int i, int j, int currentIndex)
+    static void CreatePath(int column, int row, int currentIndex, int elevationLevel)
     {
+        Debug.Log($"-------");
+        Debug.Log($"{column} {row} {MapHolder.tiles[column, row] != null}");
         //creates background tile and adds its reference to MapHolder
-        if (MapHolder.tiles[j,i] != null)
+        if (MapHolder.tiles[column,row] != null)
         {
-            if (MapHolder.tiles[j, i].backgroundType == TilePrefabType.Land)
+            Debug.Log($"{column} {row} {MapHolder.tiles[column, row].backgroundType}");
+            if (MapHolder.tiles[column, row].backgroundType == TilePrefabType.Land)
             {
-                MapHolder.tiles[j, i].SoftErase();
+                MapHolder.tiles[column, row].SoftErase();
             }
             else
             {
-                MapHolder.tiles[j, i].HardErase(); 
-                MapHolder.tiles[j, i].backgroundTile = Instantiate(lookUpTilePrefab[TilePrefabType.Land],MapHolder.parent);
-                MapHolder.tiles[j, i].backgroundTile.transform.localPosition = new Vector3(j, 0, -i);
+                MapHolder.tiles[column, row].HardErase(); 
+                MapHolder.tiles[column, row].backgroundTile = Instantiate(lookUpTilePrefab[TilePrefabType.Land],MapHolder.elevationLevels[elevationLevel]);
+                MapHolder.tiles[column, row].backgroundTile.transform.localPosition = new Vector3(column, 0, -row);
+                MapHolder.tiles[column, row].backgroundType = TilePrefabType.Land;
             }
         }
         else
         {
-            MapHolder.tiles[j, i] = new MapTile(Instantiate(lookUpTilePrefab[TilePrefabType.Land],MapHolder.parent));
-            MapHolder.tiles[j, i].backgroundTile.transform.localPosition = new Vector3(j, 0, -i);
+            MapHolder.tiles[column, row] = new MapTile(Instantiate(lookUpTilePrefab[TilePrefabType.Land], MapHolder.elevationLevels[elevationLevel]));
+            MapHolder.tiles[column, row].backgroundTile.transform.localPosition = new Vector3(column, 0, -row);
+            MapHolder.tiles[column, row].backgroundType = TilePrefabType.Land;
         }
 
-        TileType[,] corners = Util.CreateMatrix(MapHolder.grid, MapHolder.width, MapHolder.height, currentIndex, i, j);
+        TileType[,] corners = Util.CreateMatrix(MapHolder.grid, MapHolder.width, MapHolder.height, currentIndex, row, column);
         corners = Util.RemoveNulls(corners);
 
         if (MapHolder.grid[currentIndex] == TileType.PathCurve)
         {
-            CreateCurvedPath(corners, i, j);
+            CreateCurvedPath(corners, column, row);
         }
         else
         {
             for (int k = 0; k < 4; k++)
             {
-                FindCornerPath(corners, k, i, j);
+                FindCornerPath(corners, k, column, row);
                 corners = Util.RotateMatrix(corners);
             }
         }
     }
-    static void FindCornerPath(TileType[,] corners, int rotation, int x, int y)
+    static void FindCornerPath(TileType[,] corners, int rotation, int column, int row)
     {
         TilePrefabType type = TilePrefabType.PathFull;
         if (corners[0, 1] == TileType.Land)
@@ -307,121 +421,146 @@ public class TerrainBuilder : MonoBehaviour
             }
         }
 
-        if (MapHolder.tiles[y, x].type[rotation] != type)
+        Quaternion rotate = Quaternion.Euler(0, 90 * rotation, 0);
+
+        GameObject prefab = lookUpTilePrefab[type];
+        if (type == TilePrefabType.PathSideRotated)
         {
-            MapHolder.tiles[y, x].type[rotation] = type;
-            Quaternion rotate = Quaternion.Euler(0, 90 * rotation, 0);
-            Vector3 pos = new Vector3(y, 0, -x) + halfOffset;
+            rotate *= Quaternion.Euler(0, -90, 0);
+        }
 
-            GameObject prefab = lookUpTilePrefab[type];
-            if (type == TilePrefabType.PathSideRotated)
-            {
-                rotate *= Quaternion.Euler(0, -90, 0);
-            }
-
+        if (MapHolder.tiles[column, row].type[rotation] != type)
+        {
+            MapHolder.tiles[column, row].RemoveQuarter(rotation);
+               MapHolder.tiles[column, row].type[rotation] = type;
             //creates corner and adds its reference to MapHolder
             if (prefab != null)
             {
-                GameObject tile = Instantiate(prefab, MapHolder.tiles[y, x].backgroundTile.transform);
-                MapHolder.tiles[y, x].backgroundTile.transform.localPosition = pos + offset[rotation];
-                MapHolder.tiles[y, x].backgroundTile.transform.localRotation = rotate;
-                MapHolder.tiles[y, x].quarters[rotation] = tile;
+                GameObject tile = Instantiate(prefab, MapHolder.tiles[column, row].backgroundTile.transform);
+                tile.transform.localPosition = offset[rotation];
+                tile.transform.localRotation = rotate;
+
+                MapHolder.tiles[column, row].quarters[rotation] = tile;
             }
+        }
+        else
+        {
+            MapHolder.tiles[column, row].quarters[rotation].transform.localPosition = offset[rotation];
+            MapHolder.tiles[column, row].quarters[rotation].transform.localRotation = rotate;
         }
     }
 
-    static void CreateCurvedPath(TileType[,] corners, int x, int y)
+    static void CreateCurvedPath(TileType[,] corners, int column, int row)
     {
-        int rotation = 0;
-        for (int i = 0; i < 4; i++)
-        {
-            rotation = i;
-            if (corners[0, 1] != TileType.Path && corners[0, 1] != TileType.PathCurve && corners[1, 0] != TileType.Path && corners[1, 0] != TileType.PathCurve)
-            {
-                break;
-            }
-            corners = Util.RotateMatrix(corners);
-        }
+        int rotation = MapHolder.tiles[column, row].diagonalPathRotation;
 
         int oppositeRotation = Util.SubstractRotation(rotation, 2);
-        GameObject oppositePrefab = null;
-        bool createTile = false;
-        Vector3 pos = new Vector3(y, 0, -x) + halfOffset;
 
-        var oppositePrefabType = (corners[2, 2] != TileType.Path && corners[2, 2] != TileType.PathCurve) ? TilePrefabType.PathSmallCorner : TilePrefabType.PathFull;
-        if (MapHolder.tiles[y, x].type[oppositeRotation] != oppositePrefabType)
+        int curvedTile = 0; //1  = only down| 2 = only right | 3 = both sides
+
+        if (corners[1, 2] != TileType.Path && corners[1, 2] != TileType.PathCurve)
         {
-            oppositePrefab = lookUpTilePrefab[oppositePrefabType];
-            MapHolder.tiles[y, x].type[oppositeRotation] = oppositePrefabType;
-            createTile = true;
+            curvedTile += 1;
+        }
+        if (corners[2, 1] != TileType.Path && corners[2, 1] != TileType.PathCurve)
+        {
+            curvedTile += 2;
         }
 
-        if (createTile)
+        //opposite tile cant be created if both sides are not path or curved path
+        if (curvedTile > 0)
         {
-            //creates opposite corner and adds its reference to MapHolder
-            GameObject oppositeTile = Instantiate(oppositePrefab,MapHolder.tiles[y, x].backgroundTile.transform);
+            GameObject oppositePrefab = null;
+            bool createTile = false;
+            var oppositePrefabType = (corners[2, 2] != TileType.Path && corners[2, 2] != TileType.PathCurve) ? TilePrefabType.PathSmallCorner : TilePrefabType.PathFull;
 
-            MapHolder.tiles[y, x].backgroundTile.transform.localPosition = pos + offset[oppositeRotation];
-            MapHolder.tiles[y, x].backgroundTile.transform.localRotation = Quaternion.Euler(0, oppositeRotation * 90, 0);
-            MapHolder.tiles[y, x].quarters[oppositeRotation] = oppositeTile;
-        }
-
-        if (MapHolder.tiles[y, x].type[rotation] != TilePrefabType.PathCurved)
-        {
-            //creates curved corner and adds its reference to MapHolder
-            GameObject tile = Instantiate(lookUpTilePrefab[TilePrefabType.PathCurved], MapHolder.tiles[y, x].backgroundTile.transform);
-            MapHolder.tiles[y, x].backgroundTile.transform.localPosition = pos;
-            MapHolder.tiles[y, x].backgroundTile.transform.localRotation = Quaternion.Euler(0, oppositeRotation * 90, 0); 
-            MapHolder.tiles[y, x].quarters[rotation] = tile;
-            MapHolder.tiles[y, x].type[rotation] = TilePrefabType.PathCurved;
-        }
-
-        MapHolder.tiles[y, x].EraseQuarters(rotation, oppositeRotation);
-    }
-       
-    static void MakeWaterTile(int i, int j, int currentIndex)
-    {
-        //creates background tile and adds its reference to MapHolder
-        GameObject tile = Instantiate(lookUpTilePrefab[TilePrefabType.Water], new Vector3(j, 0, -i), Quaternion.identity, MapHolder.parent);
-        if (MapHolder.tiles[j, i] != null)
-        {
-            if (MapHolder.tiles[j, i].backgroundType == TilePrefabType.Water)
+            if (MapHolder.tiles[column, row].type[oppositeRotation] != oppositePrefabType)
             {
-                MapHolder.tiles[j, i].SoftErase();
+                oppositePrefab = lookUpTilePrefab[oppositePrefabType];
+                MapHolder.tiles[column, row].type[oppositeRotation] = oppositePrefabType;
+                //creates opposite corner and adds its reference to MapHolder
+                GameObject oppositeTile = Instantiate(oppositePrefab, MapHolder.tiles[column, row].backgroundTile.transform);
+
+                oppositeTile.transform.localPosition = offset[oppositeRotation];
+                oppositeTile.transform.localRotation = Quaternion.Euler(0, oppositeRotation * 90, 0);
+                MapHolder.tiles[column, row].quarters[oppositeRotation] = oppositeTile;
             }
             else
             {
-                MapHolder.tiles[j, i].HardErase();
-                MapHolder.tiles[j, i].backgroundTile = Instantiate(lookUpTilePrefab[TilePrefabType.Water],MapHolder.parent);
-
-                MapHolder.tiles[j, i].backgroundTile.transform.localPosition = new Vector3(j, 0, -i);
+                MapHolder.tiles[column, row].quarters[oppositeRotation].transform.localPosition = offset[oppositeRotation];
+                MapHolder.tiles[column, row].quarters[oppositeRotation].transform.localRotation = Quaternion.Euler(0, oppositeRotation * 90, 0);
 
             }
         }
         else
         {
-            MapHolder.tiles[j, i] = new MapTile(Instantiate(lookUpTilePrefab[TilePrefabType.Water], MapHolder.parent));
-            MapHolder.tiles[j, i].backgroundTile.transform.localPosition = new Vector3(j, 0, -i);
+            MapHolder.tiles[column, row].RemoveQuarter(oppositeRotation);
         }
 
-        TileType[,] corners = Util.CreateMatrix(MapHolder.grid, MapHolder.width, MapHolder.height, currentIndex, i, j);
+        if (MapHolder.tiles[column, row].type[rotation] != TilePrefabType.PathCurved)
+        {
+            MapHolder.tiles[column, row].RemoveQuarter(rotation);
+            //creates curved corner and adds its reference to MapHolder
+            GameObject tile = Instantiate(specialCurvedPathPrefabs[curvedTile], MapHolder.tiles[column, row].backgroundTile.transform);
+            tile.transform.localPosition = halfOffset;
+            tile.transform.localRotation = Quaternion.Euler(0, rotation * 90, 0); 
+
+            MapHolder.tiles[column, row].quarters[rotation] = tile;
+            MapHolder.tiles[column, row].type[rotation] = TilePrefabType.PathCurved;
+            //MapHolder.tiles[column, row].diagonalPathRotation = rotation;
+        }
+        else
+        {
+            MapHolder.tiles[column, row].quarters[rotation].transform.localPosition = halfOffset;
+            MapHolder.tiles[column, row].quarters[rotation].transform.localRotation = Quaternion.Euler(0, rotation * 90, 0);
+        }
+
+        MapHolder.tiles[column, row].EraseQuarters(rotation, oppositeRotation);
+    }
+       
+    static void MakeWaterTile(int column, int row,  int currentIndex, int elevationLevel)
+    {
+        //creates background tile and adds its reference to MapHolder
+        if (MapHolder.tiles[column, row] != null)
+        {
+            if (MapHolder.tiles[column, row].backgroundType == TilePrefabType.Water)
+            {
+                MapHolder.tiles[column, row].SoftErase();
+            }
+            else
+            {
+                MapHolder.tiles[column, row].HardErase();
+                MapHolder.tiles[column, row].backgroundTile = Instantiate(lookUpTilePrefab[TilePrefabType.Water], MapHolder.elevationLevels[elevationLevel]);
+                MapHolder.tiles[column, row].backgroundTile.transform.localPosition = new Vector3(column, 0, -row);
+                MapHolder.tiles[column, row].backgroundType = TilePrefabType.Water;
+
+            }
+        }
+        else
+        {
+            MapHolder.tiles[column, row] = new MapTile(Instantiate(lookUpTilePrefab[TilePrefabType.Water], MapHolder.elevationLevels[elevationLevel]));
+            MapHolder.tiles[column, row].backgroundTile.transform.localPosition = new Vector3(column, 0, -row);
+            MapHolder.tiles[column, row].backgroundType = TilePrefabType.Water;
+        }
+
+        TileType[,] corners = Util.CreateMatrix(MapHolder.grid, MapHolder.width, MapHolder.height, currentIndex, row, column);
         corners = Util.RemoveNulls(corners);
 
         if (MapHolder.grid[currentIndex] == TileType.WaterDiagonal)
         {
-            CreateDiagonalWater(corners, i, j);
+            CreateDiagonalWater(corners, column, row);
         }
         else
         {
             for (int k = 0; k < 4; k++)
             {
-                FindWaterCorner(corners, k, i, j);
+                FindWaterCorner(corners, k, column, row);
                 corners = Util.RotateMatrix(corners);
             }
         }
     }
 
-    static void FindWaterCorner(TileType[,] corners,int rotation, int x, int y)
+    static void FindWaterCorner(TileType[,] corners,int rotation, int column, int row)
     {
         TilePrefabType type = TilePrefabType.Null;
         if (corners[0, 1] != TileType.Water && corners[0,1] != TileType.WaterDiagonal)
@@ -449,29 +588,35 @@ public class TerrainBuilder : MonoBehaviour
                 }
             }
         }
-        if (MapHolder.tiles[y, x].type[rotation] != type)
+
+        Quaternion rotate = Quaternion.Euler(0, 90 * rotation, 0);
+        if (type == TilePrefabType.WaterSideRotated)
         {
-            Quaternion rotate = Quaternion.Euler(0, 90 * rotation, 0);
+            rotate *= Quaternion.Euler(0, -90, 0);
+        }
+        if (MapHolder.tiles[column, row].type[rotation] != type)
+        {
+            MapHolder.tiles[column, row].RemoveQuarter(rotation);
 
             GameObject prefab = lookUpTilePrefab[type];
-            if (type == TilePrefabType.WaterSideRotated)
-            {
-                rotate *= Quaternion.Euler(0, -90, 0);
-            }
-            MapHolder.tiles[y, x].type[rotation] = type;
+            MapHolder.tiles[column, row].type[rotation] = type;
 
             if (prefab != null)
             {
-                Vector3 pos = new Vector3(y, 0, -x) + halfOffset;
-                GameObject tile = Instantiate(prefab,MapHolder.tiles[y, x].backgroundTile.transform);
-                MapHolder.tiles[y, x].backgroundTile.transform.localPosition = pos + offset[rotation];
-                MapHolder.tiles[y, x].backgroundTile.transform.localRotation = rotate;
-                MapHolder.tiles[y, x].quarters[rotation] = tile;
+                GameObject tile = Instantiate(prefab,MapHolder.tiles[column, row].backgroundTile.transform);
+                tile.transform.localPosition = offset[rotation];
+                tile.transform.localRotation = rotate;
+                MapHolder.tiles[column, row].quarters[rotation] = tile;
             }
+        }
+        else
+        {
+            MapHolder.tiles[column, row].quarters[rotation].transform.localPosition = offset[rotation];
+            MapHolder.tiles[column, row].quarters[rotation].transform.localRotation = rotate;
         }
     }
 
-    static void CreateDiagonalWater(TileType[,] corners, int x, int y)
+    static void CreateDiagonalWater(TileType[,] corners, int column, int row)
     {
         int rotation = 0;
         for (int i = 0; i < 4; i++)
@@ -487,34 +632,41 @@ public class TerrainBuilder : MonoBehaviour
 
         Quaternion rotate = Quaternion.Euler(0, rotation * 90, 0);
 
-        Vector3 pos = new Vector3(y, 0, -x) + halfOffset;
-
         if (corners[0, 0] == TileType.Land)
         {
-            if (MapHolder.tiles[y, x].type[rotation] != TilePrefabType.WaterDiagonalQuarter)
+            if (MapHolder.tiles[column, row].type[rotation] != TilePrefabType.WaterDiagonalQuarter)
             {
-                GameObject corner = Instantiate(lookUpTilePrefab[TilePrefabType.WaterDiagonalQuarter], MapHolder.tiles[y, x].backgroundTile.transform);
+                MapHolder.tiles[column, row].RemoveQuarter(rotation);
+                GameObject corner = Instantiate(lookUpTilePrefab[TilePrefabType.WaterDiagonalQuarter], MapHolder.tiles[column, row].backgroundTile.transform);
 
-                MapHolder.tiles[y, x].backgroundTile.transform.localPosition = pos + offset[rotation];
-                MapHolder.tiles[y, x].backgroundTile.transform.localRotation = rotate;
+                corner.transform.localPosition = offset[rotation];
+                corner.transform.localRotation = rotate;
 
-                MapHolder.tiles[y, x].quarters[rotation] = corner;
-                MapHolder.tiles[y, x].type[rotation] = TilePrefabType.WaterDiagonalQuarter;
+                MapHolder.tiles[column, row].quarters[rotation] = corner;
+                MapHolder.tiles[column, row].type[rotation] = TilePrefabType.WaterDiagonalQuarter;
+            }
+            else
+            {
+                MapHolder.tiles[column, row].quarters[rotation].transform.localPosition = offset[rotation];
+                MapHolder.tiles[column, row].quarters[rotation].transform.localRotation = rotate;
             }
         }
 
         int oppositeRotation = Util.SubstractRotation(rotation, 2);
-        if (MapHolder.tiles[y, x].type[oppositeRotation] != TilePrefabType.WaterDiagonal)
+        if (MapHolder.tiles[column, row].type[oppositeRotation] != TilePrefabType.WaterDiagonal)
         {
-            GameObject diagonal = Instantiate(lookUpTilePrefab[TilePrefabType.WaterDiagonal], pos , rotate, MapHolder.tiles[y, x].backgroundTile.transform);
-            MapHolder.tiles[y, x].backgroundTile.transform.localPosition = pos;
-            MapHolder.tiles[y, x].backgroundTile.transform.localRotation = rotate;
-            MapHolder.tiles[y, x].quarters[oppositeRotation] = diagonal;
-
-            MapHolder.tiles[y, x].type[oppositeRotation] = TilePrefabType.WaterDiagonal;
+            MapHolder.tiles[column, row].RemoveQuarter(oppositeRotation);
+            GameObject diagonal = Instantiate(lookUpTilePrefab[TilePrefabType.WaterDiagonal], MapHolder.tiles[column, row].backgroundTile.transform);
+            diagonal.transform.localPosition = halfOffset;
+            diagonal.transform.localRotation = rotate;
+            MapHolder.tiles[column, row].quarters[oppositeRotation] = diagonal;
+            MapHolder.tiles[column, row].type[oppositeRotation] = TilePrefabType.WaterDiagonal;
         }
-
-        MapHolder.tiles[y, x].EraseQuarters(rotation, oppositeRotation);
+        else
+        {
+            MapHolder.tiles[column, row].quarters[oppositeRotation].transform.localPosition = offset[rotation];
+            MapHolder.tiles[column, row].quarters[oppositeRotation].transform.localRotation = rotate;
+        }
     }
 
 }
