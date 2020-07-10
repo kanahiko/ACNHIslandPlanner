@@ -65,7 +65,7 @@ public class Controller : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
-            OnLeftMouseButtonUp();
+            OnLeftMouseButtonDown();
         }
     }
 
@@ -145,7 +145,7 @@ public class Controller : MonoBehaviour
         }
     }
 
-    void OnLeftMouseButtonUp()
+    void OnLeftMouseButtonDown()
     {
         if (currentTool != ToolType.Null && currentBlockX != -1)
         {
@@ -182,6 +182,7 @@ public class Controller : MonoBehaviour
     {
         ToolChange(ToolType.Waterscaping);
     }
+    
     public void CliffConstructionButtonClick()
     {
         ToolChange(ToolType.CliffConstruction);

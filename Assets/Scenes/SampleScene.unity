@@ -1037,7 +1037,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2096962638}
         m_TargetAssemblyTypeName: Controller, Assembly-CSharp
-        m_MethodName: WaterscapingButtonClick
+        m_MethodName: PathPermitButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1555,72 +1555,7 @@ MonoBehaviour:
   - {fileID: 720689740}
   - {fileID: 2107659129}
   offsetTerrain: {x: -6, y: 0, z: 2}
-  terrain: {fileID: 2800000, guid: 9d313fb5fc6d20e499b06aebc02af70d, type: 3}
-  lookUpTile:
-  - type: 1
-    prefab: {fileID: 6204120525491208915, guid: 07c16055e2f3e754eb2fa10a4557c5c5, type: 3}
-  - type: 2
-    prefab: {fileID: 9082948597709160632, guid: 43e35f2259a5fff46ae6de5ebc3d2ea0, type: 3}
-  - type: 3
-    prefab: {fileID: 9082948597709160632, guid: 43e35f2259a5fff46ae6de5ebc3d2ea0, type: 3}
-  - type: 4
-    prefab: {fileID: 5229870286389649693, guid: 22c88507948948946a71acfd65f1428e, type: 3}
-  - type: 5
-    prefab: {fileID: 7846523689875452970, guid: f11e0aaae9a202e4486e0c47caf0b233, type: 3}
-  - type: 6
-    prefab: {fileID: 8398202750359080238, guid: 760ffd77a3e265749b4cc35fae2a9589, type: 3}
-  - type: 7
-    prefab: {fileID: 8862147567172651096, guid: 7837b3dea9fc7bf4ea43df731c163b25, type: 3}
-  - type: 8
-    prefab: {fileID: 4190279070646632014, guid: e4e73b1d900e5e24cb07e37a65994f96, type: 3}
-  - type: 9
-    prefab: {fileID: 116020440850775503, guid: f566f354cac2b694a9c2e9dba1add7a9, type: 3}
-  - type: 10
-    prefab: {fileID: 116020440850775503, guid: f566f354cac2b694a9c2e9dba1add7a9, type: 3}
-  - type: 11
-    prefab: {fileID: 4376031482184689977, guid: 5d5810605fd26c6408cd8db2289e3b9c, type: 3}
-  - type: 12
-    prefab: {fileID: 1460919036911407456, guid: be1ff725ddf01714b8fb4d3c3de2c945, type: 3}
-  - type: 13
-    prefab: {fileID: 3758542555312703372, guid: 5906856e61a75ee4894e65a7db88e50d, type: 3}
-  - type: 14
-    prefab: {fileID: 2127154423232691640, guid: d1eeee75a7d9c32408332b75263e78c8, type: 3}
-  - type: 15
-    prefab: {fileID: 780577728891321065, guid: 25f612a0649dc7d4e88309c33559aba6, type: 3}
-  - type: 0
-    prefab: {fileID: 0}
-  lookUpColor:
-  - color:
-      serializedVersion: 2
-      rgba: 4278190080
-    type: 5
-  - color:
-      serializedVersion: 2
-      rgba: 4294967295
-    type: 4
-  - color:
-      serializedVersion: 2
-      rgba: 4278255360
-    type: 1
-  - color:
-      serializedVersion: 2
-      rgba: 4294901760
-    type: 2
-  - color:
-      serializedVersion: 2
-      rgba: 4278190335
-    type: 3
-  specialCurvedPath:
-  - {fileID: 3758542555312703372, guid: 5906856e61a75ee4894e65a7db88e50d, type: 3}
-  - {fileID: 2334009107283584717, guid: c7913aa273341524cbb8b5db62e1a9d4, type: 3}
-  - {fileID: 5426305416857356802, guid: 4de96fe89abe14c48a1c5597feb7d069, type: 3}
-  - {fileID: 9211650586329739021, guid: 681ae49308c686641beb0cc3569ae598, type: 3}
-  cliffSidePrefabs:
-  - {fileID: 5266178411559074381, guid: cc8b05ac1c3427e498b4929d13ebe596, type: 3}
-  - {fileID: 3076796226361354689, guid: 0ab1967bcac8c7949be8fd4659f84678, type: 3}
-  - {fileID: 2136617163817926277, guid: bd51216dbed330649bd2917b362a94bb, type: 3}
-  - {fileID: 526284713244820029, guid: 5500b6f500ee0c8498700b6dce18a116, type: 3}
-  - {fileID: 1176426766287225925, guid: d218651c83695f24b9771fe2d42082b9, type: 3}
+  mapPrefabObject: {fileID: 11400000, guid: f8bd1e56c1644164ab424cec82488798, type: 2}
 --- !u!4 &1704064053
 Transform:
   m_ObjectHideFlags: 0

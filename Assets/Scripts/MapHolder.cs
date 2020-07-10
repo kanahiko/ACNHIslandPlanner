@@ -17,9 +17,9 @@ public static class MapHolder
 
     public static MapTile[,] tiles;
 
-    //public static Transform parent;
 
     public static List<Transform> elevationLevels;
+    
 }
 
 public class MapTile
@@ -82,7 +82,7 @@ public class MapTile
     public void HardErase()
     {
         //isDirty = false;
-        Debug.Log("hard erase");
+        Debug.Log($"{backgroundTile.transform.localPosition.x} {-backgroundTile.transform.localPosition.z} hard erase");
         diagonalPathRotation = -1;
         GameObject.Destroy(backgroundTile);
         backgroundTile = null;
@@ -96,7 +96,7 @@ public class MapTile
             }
         }
     }
-    public void EraseQuarters()
+    public void RemoveQuarters()
     {
         //isDirty = false;
         for (int i = 0; i < 4; i++)
@@ -108,12 +108,12 @@ public class MapTile
                 type[i] = TilePrefabType.Null;
             }
         }
-        Debug.Log("erased quarters");
+        //Debug.Log($"{backgroundTile.transform.localPosition.x} {-backgroundTile.transform.localPosition.z} erased quarters");
         diagonalPathRotation = -1;
     }
-    public void EraseQuarters(int exception1, int exception2 = -1, int exception3 = -1)
+    public void RemoveQuarters(int exception1, int exception2 = -1, int exception3 = -1)
     {
-        Debug.Log($"erased quarter w exceptions {exception1} {exception2} {exception3}");
+        Debug.Log($"{backgroundTile.transform.localPosition.x} {-backgroundTile.transform.localPosition.z} erased quarter w exceptions {exception1} {exception2} {exception3}");
         //isDirty = false;
         for (int i = 0; i < 4; i++)
         {
@@ -138,7 +138,7 @@ public class MapTile
         }
     }
 
-    public void RemoveCliff()
+    public void RemoveCliffs()
     {
         for (int i = 0; i < 4; i++)
         {
@@ -150,8 +150,8 @@ public class MapTile
             }
         }
 
-        //elevation -= 1;
     }
+    
     public void RemoveCliff(int cliff)
     {
         if (cliffSides[cliff] != null)

@@ -67,6 +67,26 @@ public enum Direction
 
 public static  class Util
 {
+    public static Vector3[] offset = new Vector3[]
+        {
+            new Vector3(0.25f,0,0.75f),
+            new Vector3(0.75f,0,0.75f),
+            new Vector3(0.75f,0,0.25f),
+            new Vector3(0.25f,0,0.25f)
+
+        };
+    
+    public static Vector3 halfOffset = new Vector3(0.5f, 0, 0.5f);
+
+    public static List<Vector2Int> indexOffsetCross = new List<Vector2Int>
+    {
+        new Vector2Int(-1 , 0), new Vector2Int (0,1), new Vector2Int(1,0),new Vector2Int(0,-1)
+    };
+    public static List<Vector2Int> indexOffsetDiagonal = new List<Vector2Int>
+    {
+        new Vector2Int(-1 , -1), new Vector2Int (1,-1), new Vector2Int(-1,1),new Vector2Int(1,1)
+    };
+    
     public static T[,] RotateMatrix<T>(T[,] corners)
     {
         T[,] newMatrix = corners;
@@ -107,112 +127,28 @@ public static  class Util
         TileType[,] corners = new TileType[3, 3];
         corners[1, 1] = grid[currentIndex];
 
-        if (row != 0)
+        for (int i = -1; i <= 1; i++)
         {
-            if (column != 0)
+            for (int j = -1; j <= 1; j++)
             {
-                corners[0, 0] = grid[currentIndex - MapHolder.width - 1];
-                if (corners[0, 0] == TileType.Path && corners[0, 0] == TileType.PathCurve && MapHolder.tiles[column - 1, row - 1].elevation != elevation)
+                if (i == 0 && j == 0) 
                 {
-                    corners[0, 0] = TileType.Land;
+                    continue;
+                }
+                if(!(column + j >= 0 && column + j < MapHolder.width && row + i >= 0 && row + i < MapHolder.height))
+                {
+                    corners[i + 1, j + 1] = TileType.Land;
+                    continue;
+                }
+
+                corners[i + 1, j + 1] = MapHolder.grid[(row + i) * MapHolder.width + column + j];
+                
+                if ((corners[1, 1] == TileType.Path || corners[1, 1] == TileType.PathCurve) &&
+                    ((corners[i + 1, j + 1] != TileType.Path && corners[i + 1, j + 1] != TileType.PathCurve) || MapHolder.tiles[column + j, row + i].elevation != elevation))
+                {
+                    corners[i + 1, j + 1] = TileType.Land;
                 }
             }
-            else
-            {
-                corners[0, 0] = TileType.Land;
-            }
-
-            corners[0, 1] = grid[currentIndex - MapHolder.width]; 
-            if (corners[0, 1] == TileType.Path && corners[0, 1] == TileType.PathCurve && MapHolder.tiles[column, row - 1].elevation != elevation)
-            {
-                corners[0, 1] = TileType.Land;
-            }
-
-            if (column != MapHolder.width - 1)
-            {
-                corners[0, 2] = grid[currentIndex - MapHolder.width + 1]; 
-                if (corners[0, 2] == TileType.Path && corners[0, 2] == TileType.PathCurve && MapHolder.tiles[column + 1, row - 1].elevation != elevation)
-                {
-                    corners[0, 2] = TileType.Land;
-                }
-            }
-            else
-            {
-                corners[0,2] = TileType.Land;
-            }
-        }
-        else
-        {
-            corners[0,0] = TileType.Land;
-            corners[0,1] = TileType.Land;
-            corners[0,2] = TileType.Land;
-        }
-
-        if (column != 0)
-        {
-            corners[1, 0] = grid[currentIndex - 1]; 
-            if (corners[1, 0] == TileType.Path && corners[1, 0] == TileType.PathCurve && MapHolder.tiles[column - 1, row].elevation != elevation)
-            {
-                corners[1, 0] = TileType.Land;
-            }
-        }
-        else
-        {
-            corners[1, 0] = TileType.Land;
-        }
-
-        if (row != MapHolder.height - 1)
-        {
-            if (column != 0)
-            {
-                corners[2, 0] = grid[currentIndex + MapHolder.width - 1]; 
-                if (corners[2, 0] == TileType.Path && corners[2, 0] == TileType.PathCurve && MapHolder.tiles[column - 1, row + 1].elevation != elevation)
-                {
-                    corners[2, 0] = TileType.Land;
-                }
-            }
-            else
-            {
-                corners[2,0] = TileType.Land;
-            }
-
-            corners[2, 1] = grid[currentIndex + MapHolder.width];
-            if (corners[2, 1] == TileType.Path && corners[2, 1] == TileType.PathCurve && MapHolder.tiles[column, row + 1].elevation != elevation)
-            {
-                corners[2, 1] = TileType.Land;
-            }
-
-            if (column != MapHolder.width - 1)
-            {
-                corners[2, 2] = grid[currentIndex + MapHolder.width + 1];
-                if (corners[2, 2] == TileType.Path && corners[2, 2] == TileType.PathCurve && MapHolder.tiles[column + 1, row + 1].elevation != elevation)
-                {
-                    corners[2, 2] = TileType.Land;
-                }
-            }
-            else
-            {
-                corners[2,2] = TileType.Land;
-            }
-        }
-        else
-        {
-            corners[2, 0] = TileType.Land;
-            corners[2,1] = TileType.Land;
-            corners[2,2] = TileType.Land;
-        }
-
-        if (column != MapHolder.width - 1)
-        {
-            corners[1, 2] = grid[currentIndex + 1];
-            if (corners[1, 2] == TileType.Path && corners[1, 2] == TileType.PathCurve && MapHolder.tiles[column + 1, row].elevation != elevation)
-            {
-                corners[1, 2] = TileType.Land;
-            }
-        }
-        else
-        {
-            corners[1,2] = TileType.Land;
         }
 
         return corners;
@@ -268,93 +204,83 @@ public static  class Util
         }
         return true;
     }
+    
+    public static bool CheckHalfSurroundedBySameElevation(int column, int row)
+    {
+        int elevation = MapHolder.tiles[column, row].elevation;
+        Vector2Int emptyIndex = new Vector2Int(-2,-2);
+        for (int i = 0; i < 4; i++)
+        {
+            if ((column + indexOffsetCross[i].x >= 0 && column + indexOffsetCross[i].y < MapHolder.width &&
+                  row + indexOffsetCross[i].y >= 0 && row + indexOffsetCross[i].y < MapHolder.height))
+            {
+                if (MapHolder.tiles[column + indexOffsetCross[i].x, row + indexOffsetCross[i].y].elevation != elevation)
+                {
+                    if (emptyIndex.x != -2)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        emptyIndex.x = indexOffsetCross[i].x;
+                        emptyIndex.y = indexOffsetCross[i].y;
+                    }
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            if ((column + indexOffsetDiagonal[i].x >= 0 && column + indexOffsetDiagonal[i].y < MapHolder.width &&
+                  row + indexOffsetDiagonal[i].y >= 0 && row + indexOffsetDiagonal[i].y < MapHolder.height))
+            {
+                if (MapHolder.tiles[column + indexOffsetDiagonal[i].x, row + indexOffsetDiagonal[i].y].elevation != elevation)
+                {
+                    if (emptyIndex.x == -2 || indexOffsetDiagonal[i].x != emptyIndex.x && indexOffsetDiagonal[i].y != emptyIndex.y)
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
+        return true;
+    }
 
     public static int[,] GetElevationCorners(int column, int row)
     {
         int[,] corners = new int[3, 3];
         corners[1, 1] =MapHolder.tiles[column,row].elevation;
         int elevationMinusOnes = corners[1, 1] == 0 ? 0 : corners[1, 1] - 1;
-
-        if (row != 0)
+        //Debug.Log($"{column} {row} {elevationMinusOnes}");
+        
+        for (int i = -1; i <= 1; i++)
         {
-            if (column != 0)
+            for (int j = -1; j <= 1; j++)
             {
-                corners[0, 0] = MapHolder.tiles[column - 1, row - 1].elevation;// grid[currentIndex - MapHolder.width - 1];
-            }
-            else
-            {
-                corners[0, 0] = elevationMinusOnes;
-            }
+                if (i == 0 && j == 0)
+                {
+                    continue;
+                }
+                if (!(column + j >= 0 && column + j < MapHolder.width && row + i >= 0 && row + i < MapHolder.height))
+                {
+                    corners[i + 1, j + 1] = elevationMinusOnes;
+                    continue;
+                }
 
-
-            corners[0, 1] = MapHolder.tiles[column, row - 1].elevation;//grid[currentIndex - MapHolder.width];
-
-            if (column != MapHolder.width - 1)
-            {
-                corners[0, 2] = MapHolder.tiles[column + 1, row -1].elevation;//grid[currentIndex - MapHolder.width + 1];
-            }
-            else
-            {
-                corners[0, 2] = elevationMinusOnes;
-            }
-
-        }
-        else
-        {
-            corners[0, 0] = elevationMinusOnes;
-            corners[0, 1] = elevationMinusOnes;
-            corners[0, 2] = elevationMinusOnes;
-        }
-
-        if (column != 0)
-        {
-            corners[1, 0] = MapHolder.tiles[column - 1, row].elevation;//grid[currentIndex - 1];
-        }
-        else
-        {
-            corners[1, 0] = elevationMinusOnes;
-        }
-
-        if (row != MapHolder.height - 1)
-        {
-            if (column != 0)
-            {
-                corners[2, 0] = MapHolder.tiles[column - 1, row + 1].elevation;//grid[currentIndex + MapHolder.width - 1];
-            }
-            else
-            {
-                corners[2, 0] = elevationMinusOnes;
-            }
-
-            corners[2, 1] = MapHolder.tiles[column, row + 1].elevation;//grid[currentIndex + MapHolder.width];
-
-            if (column != MapHolder.width - 1)
-            {
-                corners[2, 2] = MapHolder.tiles[column + 1, row + 1].elevation;//grid[currentIndex + MapHolder.width + 1];
-            }
-            else
-            {
-                corners[2, 2] = elevationMinusOnes;
+                corners[i + 1, j + 1] = MapHolder.tiles[column + j, row + i].elevation;
             }
         }
-        else
-        {
-            corners[2, 0] = elevationMinusOnes;
-            corners[2, 1] = elevationMinusOnes;
-            corners[2, 2] = elevationMinusOnes;
-        }
-
-        if (column != MapHolder.width - 1)
-        {
-            corners[1, 2] = MapHolder.tiles[column + 1, row].elevation;//grid[currentIndex + 1];
-        }
-        else
-        {
-            corners[1, 2] = elevationMinusOnes;
-        }
-
+        
         return corners;
-
     }
 
 }
