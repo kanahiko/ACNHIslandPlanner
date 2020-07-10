@@ -6,6 +6,8 @@ using UnityEngine;
 
 public static class MapHolder
 {
+    public static int maxElevation = 3;
+
     public static int width;
     public static int height;
 
@@ -26,6 +28,11 @@ public class MapTile
 
     public GameObject[] quarters;
     public GameObject[] cliffSides;
+    /// <summary>
+    /// false means regular side
+    /// true = water side
+    /// </summary>
+    public int[] cliffSidesType;
 
     public TilePrefabType backgroundType;
 
@@ -43,6 +50,7 @@ public class MapTile
         quarters = new GameObject[4];
         type = new TilePrefabType[4];
         cliffSides = new GameObject[4];
+        cliffSidesType = new int[4] { -1, -1, -1, -1 };
         diagonalPathRotation = -1;
         //isDirty = false;
     }
@@ -51,6 +59,7 @@ public class MapTile
         quarters = new GameObject[4];
         type = new TilePrefabType[4];
         cliffSides = new GameObject[4];
+        cliffSidesType = new int[4]{ -1, -1, -1, -1 };
         diagonalPathRotation = -1;
         //isDirty = false;
     }
@@ -68,12 +77,12 @@ public class MapTile
     {
         //isDirty = true;
         //diagonalPathRotation = -1;
-        Debug.Log("fuck1");
+        //Debug.Log("fuck1");
     }
     public void HardErase()
     {
         //isDirty = false;
-        Debug.Log("fuck2");
+        Debug.Log("hard erase");
         diagonalPathRotation = -1;
         GameObject.Destroy(backgroundTile);
         backgroundTile = null;
@@ -99,12 +108,12 @@ public class MapTile
                 type[i] = TilePrefabType.Null;
             }
         }
-        Debug.Log("fuck3");
+        Debug.Log("erased quarters");
         diagonalPathRotation = -1;
     }
     public void EraseQuarters(int exception1, int exception2 = -1, int exception3 = -1)
     {
-        Debug.Log("fuck4");
+        Debug.Log($"erased quarter w exceptions {exception1} {exception2} {exception3}");
         //isDirty = false;
         for (int i = 0; i < 4; i++)
         {
@@ -137,9 +146,19 @@ public class MapTile
             {
                 GameObject.Destroy(cliffSides[i]);
                 cliffSides[i] = null;
+                cliffSidesType[i] = -1;
             }
         }
 
-        elevation -= 1;
+        //elevation -= 1;
+    }
+    public void RemoveCliff(int cliff)
+    {
+        if (cliffSides[cliff] != null)
+        {
+            GameObject.Destroy(cliffSides[cliff]);
+            cliffSides[cliff] = null;
+            cliffSidesType[cliff] = -1;
+        }
     }
 }

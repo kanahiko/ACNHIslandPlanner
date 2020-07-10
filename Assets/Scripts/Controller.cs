@@ -133,7 +133,7 @@ public class Controller : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(mainCamera.ScreenPointToRay(mousePosition), out hit, 50))
             {
-                selectionCube.transform.localPosition = hit.collider.transform.localPosition;
+                selectionCube.transform.localPosition = hit.collider.transform.position;
                 currentBlockX = (int)hit.collider.transform.localPosition.x;
                 currentBlockY = (int)hit.collider.transform.localPosition.z;
             }
@@ -155,6 +155,7 @@ public class Controller : MonoBehaviour
                     TerrainBuilder.ChangeTile(TileType.Water, currentBlockX,Mathf.Abs(currentBlockY));
                     break;
                 case ToolType.CliffConstruction:
+                    TerrainBuilder.ChangeTile(TileType.Cliff, currentBlockX, Mathf.Abs(currentBlockY));
                     break;
                 case ToolType.PathPermit:
                     TerrainBuilder.ChangeTile(TileType.Path, currentBlockX, Mathf.Abs(currentBlockY));
