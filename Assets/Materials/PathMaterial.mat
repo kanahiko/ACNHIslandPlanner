@@ -42,6 +42,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - BOOLEAN_12A9AAA0: 1
+    - ShowGrid: 0
+    - Vector1_2A2C3DA0: 0
     - Vector1_2AE177C5: 0.5
     - Vector1_486515CA: 1
     - Vector1_4EA2BAC: 16

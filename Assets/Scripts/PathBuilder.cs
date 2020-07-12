@@ -6,28 +6,29 @@ using UnityEngine.Serialization;
 
 public class PathBuilder
 {
-    public static MapPrefabs mapPrefab;
-    public static void CreatePath(int column, int row, int currentIndex, int elevationLevel)
+    public static void CreatePath(int column, int row, int elevationLevel)
     {
+        int currentIndex = Util.GetIndex(column, row);
         if (MapHolder.tiles[column,row] != null)
         {
             if (MapHolder.tiles[column, row].backgroundType != TilePrefabType.Land)
             {
                 MapHolder.tiles[column, row].HardErase();
                 MapHolder.tiles[column, row].backgroundTile = GameObject.Instantiate(
-                    mapPrefab.lookUpTilePrefab[TilePrefabType.Land], MapHolder.elevationLevels[elevationLevel]);
-                MapHolder.tiles[column, row].backgroundTile.transform.localPosition = new Vector3(column, 0, -row);
+                    MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Land]);
                 MapHolder.tiles[column, row].backgroundType = TilePrefabType.Land;
+                MapHolder.tiles[column,row].SetPosition(new Vector3(column, 0, -row));
             }
         }
         else
         {
-            MapHolder.tiles[column, row] = new MapTile(GameObject.Instantiate(mapPrefab.lookUpTilePrefab[TilePrefabType.Land], MapHolder.elevationLevels[elevationLevel]));
-            MapHolder.tiles[column, row].backgroundTile.transform.localPosition = new Vector3(column, 0, -row);
+            MapHolder.tiles[column, row] = new MapTile(GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Land], MapHolder.tiles[column,row].colliderObject.transform));
             MapHolder.tiles[column, row].backgroundType = TilePrefabType.Land;
+            MapHolder.tiles[column,row].SetPosition(new Vector3(column, 0, -row));
         }
+        MapHolder.tiles[column, row].diagonaWaterRotation = -1;
 
-        TileType[,] corners = Util.CreateMatrix(MapHolder.grid, currentIndex, column, row);
+        TileType[,] corners = Util.CreateMatrix(MapHolder.grid, column, row);
 
         if (MapHolder.grid[currentIndex] == TileType.PathCurve)
         {
@@ -78,7 +79,7 @@ public class PathBuilder
 
         Quaternion rotate = Quaternion.Euler(0, 90 * rotation, 0);
 
-        GameObject prefab = mapPrefab.lookUpTilePrefab[type];
+        GameObject prefab = MapHolder.mapPrefab.prefabDictionary[type];
         if (type == TilePrefabType.PathSideRotated)
         {
             rotate *= Quaternion.Euler(0, -90, 0);
@@ -103,6 +104,8 @@ public class PathBuilder
             MapHolder.tiles[column, row].quarters[rotation].transform.localPosition = Util.offset[rotation];
             MapHolder.tiles[column, row].quarters[rotation].transform.localRotation = rotate;
         }
+
+        //MapHolder.grid[row * MapHolder.width + column] = TileType.Path;
     }
 
     public static void CreateCurvedPath(TileType[,] corners, int column, int row)
@@ -140,7 +143,7 @@ public class PathBuilder
             GameObject oppositePrefab = null;
             var oppositePrefabType = (corners[2, 2] != TileType.Path && corners[2, 2] != TileType.PathCurve) ? TilePrefabType.PathSmallCorner : TilePrefabType.PathFull;
 
-            oppositePrefab = mapPrefab.lookUpTilePrefab[oppositePrefabType];
+            oppositePrefab = MapHolder.mapPrefab.prefabDictionary[oppositePrefabType];
             MapHolder.tiles[column, row].type[oppositeRotation] = oppositePrefabType;
             //creates opposite corner and adds its reference to MapHolder
             GameObject oppositeTile = GameObject.Instantiate(oppositePrefab,MapHolder.tiles[column, row].backgroundTile.transform);
@@ -152,13 +155,16 @@ public class PathBuilder
         }
 
         //creates curved corner and adds its reference to MapHolder
-        GameObject tile = GameObject.Instantiate(mapPrefab.specialCurvedPath[curvedTile], MapHolder.tiles[column, row].backgroundTile.transform);
+        GameObject tile = GameObject.Instantiate(MapHolder.mapPrefab.specialCurvedPath[curvedTile], MapHolder.tiles[column, row].backgroundTile.transform);
         tile.transform.localPosition = Util.halfOffset;
         tile.transform.localRotation = Quaternion.Euler(0, rotation * 90, 0); 
         
         MapHolder.tiles[column, row].quarters[rotation] = tile;
         MapHolder.tiles[column, row].type[rotation] = TilePrefabType.PathCurved;
+        Debug.Log($"path rotation {rotation}");
         MapHolder.tiles[column, row].diagonalPathRotation = rotation;
+        //MapHolder.grid[row * MapHolder.width + column] = TileType.PathCurve;
+        //Debug.Log($"{MapHolder.tiles[column, row].GetDirectionOfPath()}");
         //MapHolder.tiles[column, row].diagonalPathRotation = rotation;
 
 

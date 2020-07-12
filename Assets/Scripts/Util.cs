@@ -46,6 +46,21 @@ public enum ToolType
     Null
 }
 
+public enum ToolMode
+{
+    None,Add,Remove
+}
+
+public enum DecorationType
+{
+    Fence = 0, Plaza = 1, NookShop = 2, Tailors = 3, Museum = 4, PlayerHouse = 5, House =6, Incline =7, Bridge = 80
+}
+
+public enum FenceType
+{
+    Linked = 0, Unlinked = 1, Diagonal = 2
+}
+
 [Serializable]
 public class ColorTile
 {
@@ -58,11 +73,6 @@ public class TileObject
 {
     public TilePrefabType type;
     public GameObject prefab;
-}
-
-public enum Direction 
-{ 
-    Up, Left, Down,Right
 }
 
 public static  class Util
@@ -121,11 +131,11 @@ public static  class Util
     }
 
 
-    public static TileType[,] CreateMatrix(TileType[] grid, int currentIndex, int column, int row)
+    public static TileType[,] CreateMatrix(TileType[] grid, int column, int row)
     {
         int elevation = MapHolder.tiles[column, row].elevation;
         TileType[,] corners = new TileType[3, 3];
-        corners[1, 1] = grid[currentIndex];
+        corners[1, 1] = grid[GetIndex(column, row)];
 
         for (int i = -1; i <= 1; i++)
         {
@@ -170,11 +180,25 @@ public static  class Util
         return corners;
     }
 
-    public static bool CanInfluence(this TileType influencer, TileType influencee, int direction, Vector2Int directionOfPath)
+    public static int GetRotation(int x, int y)
     {
-        if (influencee == TileType.CliffDiagonal || influencee == TileType.PathCurve)
+        if (x == 0)
         {
-            return influencer == TileType.Cliff || influencer == TileType.CliffDiagonal; 
+            return y == -1 ? 2 : 0;
+        }
+        else
+        {
+            return x == -1 ? 1 : 3;
+        }
+    }
+
+    public static bool CanInfluence(this TileType influencer, TileType influencee, int direction, Vector2Int directionOfPath, Vector2Int directionOfWater)
+    {
+        Debug.Log($"{influencee} {influencer} {direction} dp={directionOfPath} dw={directionOfWater}");
+        if ((influencee == TileType.CliffDiagonal) &&
+            (influencer == TileType.Cliff || influencer == TileType.CliffDiagonal) )
+        {
+            return true; 
         }
 
         if (influencee == TileType.PathCurve && (direction == directionOfPath.x || direction == directionOfPath.y))
@@ -182,7 +206,7 @@ public static  class Util
             return influencer == TileType.Path || influencer == TileType.PathCurve;
         }
 
-        return (influencee == TileType.WaterDiagonal);
+        return (influencee == TileType.WaterDiagonal);// && (direction == directionOfWater.x || direction == directionOfWater.y));
     }
 
     public static bool CheckSurroundedBySameElevation(int column, int row)
@@ -214,7 +238,7 @@ public static  class Util
             if ((column + indexOffsetCross[i].x >= 0 && column + indexOffsetCross[i].y < MapHolder.width &&
                   row + indexOffsetCross[i].y >= 0 && row + indexOffsetCross[i].y < MapHolder.height))
             {
-                if (MapHolder.tiles[column + indexOffsetCross[i].x, row + indexOffsetCross[i].y].elevation != elevation)
+                if (MapHolder.tiles[column + indexOffsetCross[i].x, row + indexOffsetCross[i].y].elevation < elevation)
                 {
                     if (emptyIndex.x != -2)
                     {
@@ -229,7 +253,15 @@ public static  class Util
             }
             else
             {
-                return false;
+                if (emptyIndex.x != -2)
+                {
+                    return false;
+                }
+                else
+                {
+                    emptyIndex.x = indexOffsetCross[i].x;
+                    emptyIndex.y = indexOffsetCross[i].y;
+                }
             }
         }
 
@@ -238,7 +270,7 @@ public static  class Util
             if ((column + indexOffsetDiagonal[i].x >= 0 && column + indexOffsetDiagonal[i].y < MapHolder.width &&
                   row + indexOffsetDiagonal[i].y >= 0 && row + indexOffsetDiagonal[i].y < MapHolder.height))
             {
-                if (MapHolder.tiles[column + indexOffsetDiagonal[i].x, row + indexOffsetDiagonal[i].y].elevation != elevation)
+                if (MapHolder.tiles[column + indexOffsetDiagonal[i].x, row + indexOffsetDiagonal[i].y].elevation < elevation)
                 {
                     if (emptyIndex.x == -2 || indexOffsetDiagonal[i].x != emptyIndex.x && indexOffsetDiagonal[i].y != emptyIndex.y)
                     {
@@ -248,7 +280,10 @@ public static  class Util
             }
             else
             {
-                return false;
+                if (emptyIndex.x == -2 || indexOffsetDiagonal[i].x != emptyIndex.x && indexOffsetDiagonal[i].y != emptyIndex.y)
+                {
+                    return false;
+                }
             }
         }
         
@@ -281,6 +316,11 @@ public static  class Util
         }
         
         return corners;
+    }
+
+    public static int GetIndex(int column, int row)
+    {
+        return row * MapHolder.width + column;
     }
 
 }

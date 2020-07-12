@@ -6,8 +6,6 @@ using UnityEngine.Serialization;
 
 public class CliffBuilder
 {
-    public static MapPrefabs mapPrefab;
-    
     public static void CreateCliffDiagonal(int column, int row)
     {
         if (MapHolder.tiles[column, row].backgroundType == TilePrefabType.CliffDiagonal)
@@ -26,19 +24,21 @@ public class CliffBuilder
                 }
                 corners = Util.RotateMatrix(corners);
 
-        }
+        } 
 
         MapHolder.tiles[column, row].HardErase();
         MapHolder.tiles[column, row].RemoveCliffs();
-        MapHolder.tiles[column, row].backgroundTile = GameObject.Instantiate(mapPrefab.lookUpTilePrefab[TilePrefabType.CliffDiagonal], MapHolder.elevationLevels[MapHolder.tiles[column, row].elevation]);
-        MapHolder.tiles[column, row].backgroundTile.transform.localPosition = new Vector3(column, 0, -row);
+        MapHolder.tiles[column, row].backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.CliffDiagonal],MapHolder.tiles[column,row].colliderObject.transform);//, MapHolder.elevationLevels[MapHolder.tiles[column, row].elevation]);
+        MapHolder.tiles[column, row].backgroundTile.transform.localPosition = Vector3.zero;//new Vector3(column, 0, -row);
         MapHolder.tiles[column, row].backgroundTile.transform.GetChild(0).localRotation = Quaternion.Euler(0,90*rotation,0);
+        MapHolder.tiles[column, row].diagonaCliffRotation = rotation;
         MapHolder.tiles[column, row].backgroundType = TilePrefabType.CliffDiagonal;
     }
     
     public static void CreateCliffSides(int column, int row)
     {
-        Debug.Log($"!!!!!");
+        MapHolder.tiles[column, row].diagonaCliffRotation = -1;
+        //Debug.Log($"!!!!!");
         int elevation = MapHolder.tiles[column, row].elevation;
         bool isWater = MapHolder.tiles[column, row].backgroundType == TilePrefabType.Water;
         
@@ -57,7 +57,7 @@ public class CliffBuilder
                 int cliffIndex = 4;
                 if (isWater)
                 {
-                    Debug.Log($"start {column} {row} {cliffIndex} { Util.indexOffsetCross[i]}");
+                    //Debug.Log($"start {column} {row} {cliffIndex} { Util.indexOffsetCross[i]}");
                     cliffIndex = 0;
                     
                     //uses offset cross coordinates in reverse (x -> y & y - >x) to check side tiles
@@ -67,7 +67,7 @@ public class CliffBuilder
                         //if side left tile has water
                         if (MapHolder.grid[column + Util.indexOffsetCross[i].x + MapHolder.width * (row + Util.indexOffsetCross[i].y)] == TileType.Water)
                         {
-                            cliffIndex += 1;
+                            cliffIndex += Mathf.Abs(Util.indexOffsetCross[i].x) * 1 +Mathf.Abs(Util.indexOffsetCross[i].y)*2;
                         }
                     }
                     
@@ -77,7 +77,8 @@ public class CliffBuilder
                         //if side right tile has water
                         if (MapHolder.grid[column -  Util.indexOffsetCross[i].x+ MapHolder.width * (row - Util.indexOffsetCross[i].y)] == TileType.Water)
                         {
-                            cliffIndex += 2;
+                            cliffIndex += Mathf.Abs(Util.indexOffsetCross[i].x) * 2 +Mathf.Abs(Util.indexOffsetCross[i].y)*1;
+                            //cliffIndex += 2;
                         }
                     }
                 }
@@ -86,7 +87,7 @@ public class CliffBuilder
                 {
                     MapHolder.tiles[column, row].RemoveCliff(i);
                     MapHolder.tiles[column, row].cliffSidesType[i] = cliffIndex;
-                    MapHolder.tiles[column, row].cliffSides[i] = GameObject.Instantiate(mapPrefab.cliffSidePrefabs[cliffIndex], MapHolder.tiles[column, row].backgroundTile.transform);
+                    MapHolder.tiles[column, row].cliffSides[i] = GameObject.Instantiate(MapHolder.mapPrefab.cliffSidePrefabs[cliffIndex], MapHolder.tiles[column, row].backgroundTile.transform);
                 }
                 MapHolder.tiles[column, row].cliffSides[i].transform.localPosition = Util.halfOffset;
                 MapHolder.tiles[column, row].cliffSides[i].transform.localRotation = Quaternion.Euler(0, 90 * i, 0);

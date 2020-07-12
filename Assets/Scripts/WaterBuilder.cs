@@ -2,11 +2,10 @@ using UnityEngine;
 
 public class WaterBuilder
 {
-    public static MapPrefabs mapPrefab;
-       
-    public static void MakeWaterTile(int column, int row,  int currentIndex, int elevationLevel)
+    public static void MakeWaterTile(int column, int row,  int elevationLevel)
     {
-        Debug.Log($"{column} {row} {MapHolder.grid[currentIndex]}");
+        int currentIndex = Util.GetIndex(column, row);
+        //Debug.Log($"{column} {row} {MapHolder.grid[currentIndex]}");
         //creates background tile and adds its reference to MapHolder
         if (MapHolder.tiles[column, row] != null)
         {
@@ -14,20 +13,20 @@ public class WaterBuilder
             {
                 MapHolder.tiles[column, row].HardErase();
                 MapHolder.tiles[column, row].backgroundTile = GameObject.Instantiate(
-                    mapPrefab.lookUpTilePrefab[TilePrefabType.Water], MapHolder.elevationLevels[elevationLevel]);
-                MapHolder.tiles[column, row].backgroundTile.transform.localPosition = new Vector3(column, 0, -row);
+                    MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Water], MapHolder.tiles[column,row].colliderObject.transform);
                 MapHolder.tiles[column, row].backgroundType = TilePrefabType.Water;
+                MapHolder.tiles[column,row].SetPosition(new Vector3(column, 0, -row));
             }
         }
         else
         {
-            MapHolder.tiles[column, row] = new MapTile(GameObject.Instantiate(mapPrefab.lookUpTilePrefab[TilePrefabType.Water], MapHolder.elevationLevels[elevationLevel]));
-            MapHolder.tiles[column, row].backgroundTile.transform.localPosition = new Vector3(column, 0, -row);
+            MapHolder.tiles[column, row] = new MapTile(GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Water]));
             MapHolder.tiles[column, row].backgroundType = TilePrefabType.Water;
+            MapHolder.tiles[column,row].SetPosition(new Vector3(column, 0, -row));
         }
         MapHolder.tiles[column, row].diagonalPathRotation = -1;
 
-        TileType[,] corners = Util.CreateMatrix(MapHolder.grid,currentIndex, column, row);
+        TileType[,] corners = Util.CreateMatrix(MapHolder.grid,column, row);
         //corners = Util.RemoveNulls(corners);
 
         if (MapHolder.grid[currentIndex] == TileType.WaterDiagonal)
@@ -36,6 +35,7 @@ public class WaterBuilder
         }
         else
         {
+            MapHolder.tiles[column, row].diagonaWaterRotation = -1;
             int[,] elevationCorners = Util.GetElevationCorners(column, row);
             for (int k = 0; k < 4; k++)
             {
@@ -78,7 +78,7 @@ public class WaterBuilder
             }
             else
             {
-                if (elevationCorners[1, 1] <= elevationCorners[0, 1] && elevationCorners[1, 1] <= elevationCorners[1, 0])
+                if (!(elevationCorners[1, 1] > elevationCorners[0, 1]))
                 {
                     type = TilePrefabType.WaterSide;
                 }
@@ -86,16 +86,17 @@ public class WaterBuilder
         }
         else
         {
-            if (corners[1, 0] != TileType.Water && corners[1, 0] != TileType.WaterDiagonal)
+            if (corners[1, 0] != TileType.Water && corners[1, 0] != TileType.WaterDiagonal )
             {
-                if (elevationCorners[1, 1] <= elevationCorners[0, 1] && elevationCorners[1, 1] <= elevationCorners[1, 0])
+                //if (elevationCorners[1, 1] <= elevationCorners[0, 1] && elevationCorners[1, 1] <= elevationCorners[1, 0])
+                if (!(elevationCorners[1, 1] > elevationCorners[1, 0]))
                 {
                     type = TilePrefabType.WaterSideRotated;
                 }
             }
             else
             {
-                if (corners[0, 0] != TileType.Water && corners[0, 0] != TileType.WaterDiagonal)
+                if (corners[0, 0] != TileType.Water && corners[0, 0] != TileType.WaterDiagonal && elevationCorners[0,0] >= elevationCorners[1,1])
                 {
                     type = TilePrefabType.WaterDiagonalQuarter;
                 }
@@ -111,7 +112,7 @@ public class WaterBuilder
         {
             MapHolder.tiles[column, row].RemoveQuarter(rotation);
 
-            GameObject prefab = mapPrefab.lookUpTilePrefab[type];
+            GameObject prefab = MapHolder.mapPrefab.prefabDictionary[type];
             MapHolder.tiles[column, row].type[rotation] = type;
 
             if (prefab != null)
@@ -146,6 +147,8 @@ public class WaterBuilder
 
         }
 
+        MapHolder.tiles[column, row].diagonaWaterRotation = rotation;
+        //Debug.Log($"{MapHolder.tiles[column, row].GetDirectionOfWater()}");
         Quaternion rotate = Quaternion.Euler(0, rotation * 90, 0);
         
 
@@ -154,7 +157,7 @@ public class WaterBuilder
             if (MapHolder.tiles[column, row].type[rotation] != TilePrefabType.WaterDiagonalQuarter)
             {
                 MapHolder.tiles[column, row].RemoveQuarter(rotation);
-                GameObject corner = GameObject.Instantiate(mapPrefab.lookUpTilePrefab[TilePrefabType.WaterDiagonalQuarter], MapHolder.tiles[column, row].backgroundTile.transform);
+                GameObject corner = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.WaterDiagonalQuarter], MapHolder.tiles[column, row].backgroundTile.transform);
 
                 corner.transform.localPosition = Util.offset[rotation];
                 corner.transform.localRotation = rotate;
@@ -175,7 +178,7 @@ public class WaterBuilder
         if (MapHolder.tiles[column, row].type[oppositeRotation] != TilePrefabType.WaterDiagonal)
         {
             MapHolder.tiles[column, row].RemoveQuarter(oppositeRotation);
-            GameObject diagonal = GameObject.Instantiate(mapPrefab.lookUpTilePrefab[TilePrefabType.WaterDiagonal], MapHolder.tiles[column, row].backgroundTile.transform);
+            GameObject diagonal = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.WaterDiagonal], MapHolder.tiles[column, row].backgroundTile.transform);
             diagonal.transform.localPosition = Util.halfOffset;
             diagonal.transform.localRotation = rotate;
             MapHolder.tiles[column, row].quarters[oppositeRotation] = diagonal;
