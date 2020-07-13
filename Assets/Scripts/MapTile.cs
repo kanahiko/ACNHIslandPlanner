@@ -2,6 +2,7 @@
 
 public class MapTile
 {
+    public TileType type;
     public GameObject colliderObject;
     public GameObject backgroundTile;
 
@@ -15,7 +16,7 @@ public class MapTile
 
     public TilePrefabType backgroundType;
 
-    public TilePrefabType[] type;
+    public TilePrefabType[] prefabType;
 
     public int diagonalPathRotation = -1;
     public int diagonaWaterRotation = -1;
@@ -33,7 +34,7 @@ public class MapTile
         this.backgroundTile = tile;
         backgroundTile.transform.SetParent(colliderObject.transform,false);
         quarters = new GameObject[4];
-        type = new TilePrefabType[4];
+        prefabType = new TilePrefabType[4];
         cliffSides = new GameObject[4];
         cliffSidesType = new int[4] { -1, -1, -1, -1 };
     }
@@ -84,7 +85,7 @@ public class MapTile
             {
                 GameObject.Destroy(quarters[i]);
                 quarters[i] = null;
-                type[i] = TilePrefabType.Null;
+                prefabType[i] = TilePrefabType.Null;
             }
         }
     }
@@ -96,7 +97,7 @@ public class MapTile
             {
                 GameObject.Destroy(quarters[i]);
                 quarters[i] = null;
-                type[i] = TilePrefabType.Null;
+                prefabType[i] = TilePrefabType.Null;
             }
         }
         diagonalPathRotation = -1;
@@ -113,7 +114,7 @@ public class MapTile
                 {
                     GameObject.Destroy(quarters[i]);
                     quarters[i] = null;
-                    type[i] = TilePrefabType.Null;
+                    prefabType[i] = TilePrefabType.Null;
                 }
             }
         }
@@ -124,7 +125,7 @@ public class MapTile
         {
             GameObject.Destroy(quarters[index]);
             quarters[index] = null;
-            type[index] = TilePrefabType.Null;
+            prefabType[index] = TilePrefabType.Null;
         }
     }
 

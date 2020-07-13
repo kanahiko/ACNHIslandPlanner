@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using RotaryHeart.Lib.SerializableDictionary;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Map Prefabs", fileName = "MapPrefabs")]
 public class MapPrefabs : ScriptableObject
 {
+    public int width = 92;
+    public int height = 73;
+
     [Header("Materials")]
     public List<Material> gridMaterials;
     public List<Material> elevationMaterials;
@@ -20,8 +24,12 @@ public class MapPrefabs : ScriptableObject
     public TypeToPrefabDictionary prefabDictionary;
 
     [Header("Decoration prefabs")]
-    public DecorationsPrefabDictionary decorationsPrefabDictionaryDictionary;
+    [FormerlySerializedAs("decorationsPrefabDictionaryDictionary")]
+    public DecorationsPrefabDictionary decorationsPrefabDictionary;
     public List<FenceList> fencePrefabDictionary;
+
+    public DecorationsSizeDictionary decorationsSizeDictionary;
+    public DecorationsMaxCountDictionary maxCount;
 
     [Header("Minimap")]
     public TileTypeToColorDictionary tileTypeColorDictionary;
@@ -96,8 +104,12 @@ public class FenceList
 
 [System.Serializable]
 public class DecorationsPrefabDictionary : SerializableDictionaryBase<DecorationType, GameObject> { }
-/*
 
+[System.Serializable]
+public class DecorationsSizeDictionary : SerializableDictionaryBase<DecorationType, Vector2Int> { }
+[System.Serializable]
+public class DecorationsMaxCountDictionary : SerializableDictionaryBase<DecorationType, int> { }
+/*
 [System.Serializable]
 public class FencePrefabDictionary : SerializableDictionaryBase<int, FenceList> { }*/
 

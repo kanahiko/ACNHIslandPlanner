@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -62,6 +63,10 @@ public class Controller : MonoBehaviour
 
     private float timeElapsedSinceClick;
 
+    public static Action<int, int, ToolType, ToolMode,int, DecorationType> ChangeTile;
+    public static Action<int,int> StartConstructionAction;
+    public static Action EndConstructionAction;
+
     private void Awake()
     {
         //Application.targetFrameRate = 60;
@@ -90,13 +95,13 @@ public class Controller : MonoBehaviour
         controls.MapControl.PlaceItem.performed += ctx =>
         {
             StartConstruction();
-            PlaceItem();
+            ChangeItem(ToolMode.Add);
         };
         controls.MapControl.PlaceItem.canceled += ctx => EndConstruction();
         controls.MapControl.RemoveItem.performed += ctx =>
         {
             StartConstruction();
-            RemoveItem();
+            ChangeItem(ToolMode.Remove);
         };
         controls.MapControl.RemoveItem.canceled += ctx => EndConstruction();
         controls.MapControl.SampleItem.performed += ctx => SampleItem();
@@ -122,14 +127,7 @@ public class Controller : MonoBehaviour
 
         if (construct != ToolMode.None && !(currentBlockX == prevBlockX && currentBlockY == prevBlockY))
         {
-            if (construct == ToolMode.Add)
-            {
-                PlaceItem();
-            }
-            else
-            {
-                RemoveItem();
-            }
+            ChangeItem(construct);
 
             currentBlockX = -1;
             currentBlockY = -1;
@@ -249,107 +247,37 @@ public class Controller : MonoBehaviour
     {
         if (construct == ToolMode.None && currentBlockX != -1)
         {
-            TerrainBuilder.StartConstruction(MapHolder.tiles[currentBlockX,Mathf.Abs(currentBlockY)].elevation);
+            StartConstructionAction?.Invoke(currentBlockX, Mathf.Abs(currentBlockY));
+            //TerrainBuilder.StartConstruction(MapHolder.tiles[].elevation);
         }
     }
 
     void EndConstruction()
     {
-        //Debug.Log($"construction ended {currentBlockX} {currentBlockY}");
         construct = ToolMode.None;
-        TerrainBuilder.EndConstruction();
+        EndConstructionAction?.Invoke();
+       // TerrainBuilder.EndConstruction();
     }
-
-    void PlaceItem()
+    void ChangeItem(ToolMode mode)
     {
         if (currentTool != ToolType.Null && currentBlockX != -1)
         {
             if (construct == ToolMode.None)
             {
-                construct = ToolMode.Add;
-                //Debug.Log($"construction started {construct} {MapHolder.tiles[currentBlockX,Mathf.Abs(currentBlockY)].elevation}");
+                construct = mode;
             }
             else
             {
-                if (construct != ToolMode.Add)
+                if (construct != mode)
                 {
                     return;
                 }
             }
-            switch (currentTool)
-            {
-                case ToolType.Waterscaping:
-                    TerrainBuilder.ChangeTile(TileType.Water, currentBlockX,Mathf.Abs(currentBlockY));
-                    break;
-                case ToolType.CliffConstruction:
-                    TerrainBuilder.ChangeTile(TileType.Cliff, currentBlockX, Mathf.Abs(currentBlockY));
-                    break;
-                case ToolType.PathPermit:
-                    TerrainBuilder.ChangeTile(TileType.Path, currentBlockX, Mathf.Abs(currentBlockY));
-                    break;
-                case ToolType.FenceBuilding:
-                    break;
-                case ToolType.BridgeMarkUp:
-                    break;
-                case ToolType.InclineMarkUp:
-                    break;
-                case ToolType.BushPlanting:
-                    break;
-                case ToolType.TreePlanting:
-                    break;
-                case ToolType.FlowerPlanting:
-                    break;
-                case ToolType.BuildingsMarkUp:
-                    break;
-            }
+
+            ChangeTile?.Invoke(currentBlockX, Mathf.Abs(currentBlockY), currentTool, construct, -1, DecorationType.Null);
 
             prevBlockX = currentBlockX;
             prevBlockY = currentBlockY;
-        }
-    }
-
-    private void RemoveItem()
-    {
-        if (currentTool != ToolType.Null && currentBlockX != -1)
-        {
-            if (construct == ToolMode.None)
-            {
-                construct = ToolMode.Remove;
-                Debug.Log($"construction started {construct}");
-            }
-            else
-            {
-                if (construct != ToolMode.Remove)
-                {
-                    return;
-                }
-            }
-            switch (currentTool)
-            {
-                case ToolType.Waterscaping:
-                    TerrainBuilder.RemoveTile(TileType.Water, currentBlockX,Mathf.Abs(currentBlockY));
-                    break;
-                case ToolType.CliffConstruction:
-                    TerrainBuilder.RemoveTile(TileType.Cliff, currentBlockX, Mathf.Abs(currentBlockY));
-                    break;
-                case ToolType.PathPermit:
-                    TerrainBuilder.RemoveTile(TileType.Path, currentBlockX, Mathf.Abs(currentBlockY));
-                    break;
-                case ToolType.FenceBuilding:
-                    break;
-                case ToolType.BridgeMarkUp:
-                    break;
-                case ToolType.InclineMarkUp:
-                    break;
-                case ToolType.BushPlanting:
-                    break;
-                case ToolType.TreePlanting:
-                    break;
-                case ToolType.FlowerPlanting:
-                    break;
-                case ToolType.BuildingsMarkUp:
-                    break;
-            }
         }
     }
 
@@ -357,7 +285,7 @@ public class Controller : MonoBehaviour
     {
         if (currentBlockX != -1)
         {
-            switch (MapHolder.grid[currentBlockX + Mathf.Abs(currentBlockY)*MapHolder.width])
+            switch (MapHolder.tiles[currentBlockX , Mathf.Abs(currentBlockY)].type)
             {
                 case TileType.Null:
                     break;

@@ -65,7 +65,7 @@ public class CliffBuilder
                         column + Util.indexOffsetCross[i].x >= 0 && column + Util.indexOffsetCross[i].x < MapHolder.width)
                     {
                         //if side left tile has water
-                        if (MapHolder.grid[column + Util.indexOffsetCross[i].x + MapHolder.width * (row + Util.indexOffsetCross[i].y)] == TileType.Water)
+                        if (MapHolder.tiles[column + Util.indexOffsetCross[i].x , row + Util.indexOffsetCross[i].y].type == TileType.Water)
                         {
                             cliffIndex += Mathf.Abs(Util.indexOffsetCross[i].x) * 1 +Mathf.Abs(Util.indexOffsetCross[i].y)*2;
                         }
@@ -75,7 +75,7 @@ public class CliffBuilder
                         column - Util.indexOffsetCross[i].x >= 0 && column - Util.indexOffsetCross[i].x < MapHolder.width)
                     {
                         //if side right tile has water
-                        if (MapHolder.grid[column -  Util.indexOffsetCross[i].x+ MapHolder.width * (row - Util.indexOffsetCross[i].y)] == TileType.Water)
+                        if (MapHolder.tiles[column -  Util.indexOffsetCross[i].x, row - Util.indexOffsetCross[i].y].type == TileType.Water)
                         {
                             cliffIndex += Mathf.Abs(Util.indexOffsetCross[i].x) * 2 +Mathf.Abs(Util.indexOffsetCross[i].y)*1;
                             //cliffIndex += 2;

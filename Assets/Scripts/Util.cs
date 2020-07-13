@@ -53,12 +53,17 @@ public enum ToolMode
 
 public enum DecorationType
 {
-    Fence = 0, Plaza = 1, NookShop = 2, Tailors = 3, Museum = 4, PlayerHouse = 5, House =6, Incline =7, Bridge = 80
+   Null = -1, Fence = 0, Plaza = 1, NookShop = 2, Tailors = 3, Museum = 4, PlayerHouse = 5, House =6, Incline =7, Bridge = 8, Camp =9
 }
 
 public enum FenceType
 {
     Linked = 0, Unlinked = 1, Diagonal = 2
+}
+
+public enum Direction
+{
+    up = 0, right = 1, down = 2, left = 3
 }
 
 [Serializable]
@@ -77,6 +82,11 @@ public class TileObject
 
 public static  class Util
 {
+    public static List<int> sortedDirectionalIndexes = new List<int>
+    {
+        (int) Direction.left,(int)Direction.right,(int)Direction.up, (int)Direction.down
+    };
+
     public static Vector3[] offset = new Vector3[]
         {
             new Vector3(0.25f,0,0.75f),
@@ -131,11 +141,11 @@ public static  class Util
     }
 
 
-    public static TileType[,] CreateMatrix(TileType[] grid, int column, int row)
+    public static TileType[,] CreateMatrix(int column, int row)
     {
         int elevation = MapHolder.tiles[column, row].elevation;
         TileType[,] corners = new TileType[3, 3];
-        corners[1, 1] = grid[GetIndex(column, row)];
+        corners[1, 1] = MapHolder.tiles[column, row].type;
 
         for (int i = -1; i <= 1; i++)
         {
@@ -151,7 +161,7 @@ public static  class Util
                     continue;
                 }
 
-                corners[i + 1, j + 1] = MapHolder.grid[(row + i) * MapHolder.width + column + j];
+                corners[i + 1, j + 1] = MapHolder.tiles[column + j, row + i].type;
                 
                 if ((corners[1, 1] == TileType.Path || corners[1, 1] == TileType.PathCurve) &&
                     ((corners[i + 1, j + 1] != TileType.Path && corners[i + 1, j + 1] != TileType.PathCurve) || MapHolder.tiles[column + j, row + i].elevation != elevation))
@@ -163,6 +173,25 @@ public static  class Util
 
         return corners;
     }
+
+    public static bool[] CreateFenceMatrix(int column, int row)
+    {
+        int elevation = MapHolder.tiles[column, row].elevation;
+        bool[] corners = new bool[4];
+
+        for (int i = 0; i < indexOffsetCross.Count; i++)
+        {
+            if (!(column + indexOffsetCross[i].y >= 0 && column + indexOffsetCross[i].y < MapHolder.width && 
+                row + indexOffsetCross[i].x >= 0 && row + indexOffsetCross[i].x < MapHolder.height))
+            {
+                corners[i] = false;
+                continue;
+            }
+        }
+
+        return corners;
+    }
+
 
     public static TileType[,] RemoveNulls(TileType[,] corners)
     {
@@ -194,7 +223,7 @@ public static  class Util
 
     public static bool CanInfluence(this TileType influencer, TileType influencee, int direction, Vector2Int directionOfPath, Vector2Int directionOfWater)
     {
-        Debug.Log($"{influencee} {influencer} {direction} dp={directionOfPath} dw={directionOfWater}");
+        //Debug.Log($"{influencee} {influencer} {direction} dp={directionOfPath} dw={directionOfWater}");
         if ((influencee == TileType.CliffDiagonal) &&
             (influencer == TileType.Cliff || influencer == TileType.CliffDiagonal) )
         {
@@ -206,7 +235,7 @@ public static  class Util
             return influencer == TileType.Path || influencer == TileType.PathCurve;
         }
 
-        return (influencee == TileType.WaterDiagonal);// && (direction == directionOfWater.x || direction == directionOfWater.y));
+        return (influencee == TileType.WaterDiagonal && (influencer == TileType.Water ||  (direction == directionOfWater.x || direction == directionOfWater.y)));
     }
 
     public static bool CheckSurroundedBySameElevation(int column, int row)
@@ -317,10 +346,28 @@ public static  class Util
         
         return corners;
     }
-
-    public static int GetIndex(int column, int row)
+    public static bool CanRemoveCliff(int column, int row)
     {
-        return row * MapHolder.width + column;
+        int elevation = MapHolder.tiles[column, row].elevation + 1;
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (i == 0 && j == 0)
+                {
+                    continue;
+                }
+                if (column + i >= 0 && column + i < MapHolder.width &&
+                    row + j >= 0 && row + j < MapHolder.height)
+                {
+                    if (MapHolder.tiles[column + i, row + j].elevation > elevation && !Util.CheckSurroundedBySameElevation(column + i, row + j))
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
 }

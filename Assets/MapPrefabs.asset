@@ -73,14 +73,14 @@ MonoBehaviour:
     - {fileID: 3758542555312703372, guid: 5906856e61a75ee4894e65a7db88e50d, type: 3}
     - {fileID: 2127154423232691640, guid: d1eeee75a7d9c32408332b75263e78c8, type: 3}
     - {fileID: 780577728891321065, guid: 25f612a0649dc7d4e88309c33559aba6, type: 3}
-  decorationsPrefabDictionaryDictionary:
+  decorationsPrefabDictionary:
     reorderableList:
       canAdd: 1
       canRemove: 1
       draggable: 1
       expandable: 1
       multipleSelection: 1
-      isExpanded: 1
+      isExpanded: 0
       label:
         m_Text: Keys
         m_Image: {fileID: 0}
@@ -95,23 +95,84 @@ MonoBehaviour:
       elementNameOverride: 
       elementIcon: {fileID: 0}
     reqReferences: {fileID: 0}
-    isExpanded: 1
-    _keyValues: 0100000002000000030000000400000005000000060000000700000050000000
-    _keys: 0100000002000000030000000400000005000000060000000700000050000000
+    isExpanded: 0
+    _keyValues: 01000000020000000300000004000000050000000600000009000000
+    _keys: 01000000020000000300000004000000050000000600000009000000
     _values:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: 3707058016247814278, guid: eedb84d6920f20746abdc79d3b10c6ce, type: 3}
+    - {fileID: 8552812209498091105, guid: e007a003413a5f840bde39ffc3abe129, type: 3}
+    - {fileID: 148874448034615241, guid: 8a172db94e513374ca77d6c68e9fd10e, type: 3}
+    - {fileID: 5533298821749537331, guid: 9b00d117d3cfa054086fcecdac576d49, type: 3}
+    - {fileID: 6406722457092513699, guid: 8c687fd438224b94c8450137a848494a, type: 3}
+    - {fileID: 7900206712588280057, guid: de7e4cf7646ecbc40979d924c6c2b1a7, type: 3}
+    - {fileID: 1647880122865077162, guid: 14750c02ad79f044f9dbf3695e8e8f30, type: 3}
   fencePrefabDictionary:
   - fencePrefabs:
     - {fileID: 7852311893817839320, guid: c16bf0d7d40595945b0c9bd8c3600c23, type: 3}
     - {fileID: 7079409637247608614, guid: 2881d41c4ce011948ba534e2d3c29fad, type: 3}
     - {fileID: 2487048491793275404, guid: 59e1c1dbeff34004d8bf7456560ff72a, type: 3}
+  decorationsSizeDictionary:
+    reorderableList:
+      canAdd: 1
+      canRemove: 1
+      draggable: 1
+      expandable: 1
+      multipleSelection: 1
+      isExpanded: 0
+      label:
+        m_Text: Keys
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+      headerHeight: 18
+      footerHeight: 13
+      slideEasing: 0.15
+      verticalSpacing: 2
+      showDefaultBackground: 1
+      elementDisplayType: 0
+      elementNameProperty: 
+      elementNameOverride: 
+      elementIcon: {fileID: 0}
+    reqReferences: {fileID: 0}
+    isExpanded: 0
+    _keyValues: 01000000000000000200000003000000040000000500000006000000090000000700000008000000
+    _keys: 01000000000000000200000003000000040000000500000006000000090000000700000008000000
+    _values:
+    - {x: 12, y: 10}
+    - {x: 3, y: 4}
+    - {x: 7, y: 4}
+    - {x: 5, y: 4}
+    - {x: 7, y: 4}
+    - {x: 5, y: 3}
+    - {x: 4, y: 4}
+    - {x: 4, y: 3}
+    - {x: 4, y: 2}
+    - {x: 4, y: 2}
+  maxCount:
+    reorderableList:
+      canAdd: 1
+      canRemove: 1
+      draggable: 1
+      expandable: 1
+      multipleSelection: 1
+      isExpanded: 0
+      label:
+        m_Text: Keys
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+      headerHeight: 18
+      footerHeight: 13
+      slideEasing: 0.15
+      verticalSpacing: 2
+      showDefaultBackground: 1
+      elementDisplayType: 0
+      elementNameProperty: 
+      elementNameOverride: 
+      elementIcon: {fileID: 0}
+    reqReferences: {fileID: 0}
+    isExpanded: 0
+    _keyValues: 010000000200000003000000040000000500000006000000070000000800000009000000
+    _keys: 010000000200000003000000040000000500000006000000070000000800000009000000
+    _values: 010000000100000001000000010000000100000008000000080000000000000008000000
   tileTypeColorDictionary:
     reorderableList:
       canAdd: 1

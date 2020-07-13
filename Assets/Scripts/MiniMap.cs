@@ -55,7 +55,7 @@ public static class MiniMap
             for (int j = 0; j < MapHolder.width; j++)
             {
                 
-                type = MapHolder.grid[i * MapHolder.width + j];
+                type = MapHolder.tiles[j,i].type;
                 elevation = MapHolder.tiles[j, i].elevation;
                 rotation = -1;
                 //if (previousTypes)
@@ -132,7 +132,7 @@ public static class MiniMap
     
     public static void ChangeMiniMap(int column, int row)
     {
-        TileType type = MapHolder.grid[row * MapHolder.width + column];
+        TileType type = MapHolder.tiles[column, row].type;
         Color color;
         Color secondaryColor = Color.white;
 
@@ -190,7 +190,7 @@ public static class MiniMap
         int elevation;
         foreach (var coordinate in coordinates)
         {
-            TileType type = MapHolder.grid[coordinate.y * MapHolder.width + coordinate.x];
+            TileType type = MapHolder.tiles[ coordinate.x , coordinate.y].type;
             elevation = MapHolder.tiles[coordinate.x, coordinate.y].elevation;
             rotation = -1;
             if (type == TileType.CliffDiagonal || type == TileType.Cliff || type == TileType.Land)

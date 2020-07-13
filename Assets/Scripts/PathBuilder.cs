@@ -8,7 +8,6 @@ public class PathBuilder
 {
     public static void CreatePath(int column, int row, int elevationLevel)
     {
-        int currentIndex = Util.GetIndex(column, row);
         if (MapHolder.tiles[column,row] != null)
         {
             if (MapHolder.tiles[column, row].backgroundType != TilePrefabType.Land)
@@ -28,9 +27,9 @@ public class PathBuilder
         }
         MapHolder.tiles[column, row].diagonaWaterRotation = -1;
 
-        TileType[,] corners = Util.CreateMatrix(MapHolder.grid, column, row);
+        TileType[,] corners = Util.CreateMatrix(column, row);
 
-        if (MapHolder.grid[currentIndex] == TileType.PathCurve)
+        if (MapHolder.tiles[column,row].type == TileType.PathCurve)
         {
             CreateCurvedPath(corners, column, row);
         }
@@ -85,10 +84,10 @@ public class PathBuilder
             rotate *= Quaternion.Euler(0, -90, 0);
         }
 
-        if (MapHolder.tiles[column, row].type[rotation] != type)
+        if (MapHolder.tiles[column, row].prefabType[rotation] != type)
         {
             MapHolder.tiles[column, row].RemoveQuarter(rotation);
-               MapHolder.tiles[column, row].type[rotation] = type;
+               MapHolder.tiles[column, row].prefabType[rotation] = type;
             //creates corner and adds its reference to MapHolder
             if (prefab != null)
             {
@@ -105,7 +104,7 @@ public class PathBuilder
             MapHolder.tiles[column, row].quarters[rotation].transform.localRotation = rotate;
         }
 
-        //MapHolder.grid[row * MapHolder.width + column] = TileType.Path;
+        //MapHolder.tiles[row * MapHolder.width + column] = TileType.Path;
     }
 
     public static void CreateCurvedPath(TileType[,] corners, int column, int row)
@@ -144,7 +143,7 @@ public class PathBuilder
             var oppositePrefabType = (corners[2, 2] != TileType.Path && corners[2, 2] != TileType.PathCurve) ? TilePrefabType.PathSmallCorner : TilePrefabType.PathFull;
 
             oppositePrefab = MapHolder.mapPrefab.prefabDictionary[oppositePrefabType];
-            MapHolder.tiles[column, row].type[oppositeRotation] = oppositePrefabType;
+            MapHolder.tiles[column, row].prefabType[oppositeRotation] = oppositePrefabType;
             //creates opposite corner and adds its reference to MapHolder
             GameObject oppositeTile = GameObject.Instantiate(oppositePrefab,MapHolder.tiles[column, row].backgroundTile.transform);
 
@@ -160,10 +159,10 @@ public class PathBuilder
         tile.transform.localRotation = Quaternion.Euler(0, rotation * 90, 0); 
         
         MapHolder.tiles[column, row].quarters[rotation] = tile;
-        MapHolder.tiles[column, row].type[rotation] = TilePrefabType.PathCurved;
+        MapHolder.tiles[column, row].prefabType[rotation] = TilePrefabType.PathCurved;
         Debug.Log($"path rotation {rotation}");
         MapHolder.tiles[column, row].diagonalPathRotation = rotation;
-        //MapHolder.grid[row * MapHolder.width + column] = TileType.PathCurve;
+        //MapHolder.tiles[row * MapHolder.width + column] = TileType.PathCurve;
         //Debug.Log($"{MapHolder.tiles[column, row].GetDirectionOfPath()}");
         //MapHolder.tiles[column, row].diagonalPathRotation = rotation;
 
