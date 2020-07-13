@@ -62,8 +62,10 @@ public class UIController : MonoBehaviour
             case ToolType.PathPermit:
                 PathToolButton.isOn = true;
                 break;
-            case ToolType.BridgeMarkUp:
+            case ToolType.FenceBuilding:
                 FenceToolButton.isOn = true;
+                break;
+            case ToolType.BridgeMarkUp:
                 break;
             case ToolType.InclineMarkUp:
                 break;
@@ -72,8 +74,6 @@ public class UIController : MonoBehaviour
             case ToolType.TreePlanting:
                 break;
             case ToolType.FlowerPlanting:
-                break;
-            case ToolType.FenceBuilding:
                 break;
             case ToolType.BuildingsMarkUp:
                 break;

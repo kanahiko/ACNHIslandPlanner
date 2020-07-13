@@ -129,6 +129,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Button"",
+                    ""id"": ""47cb29f6-cc22-4f23-917a-b2e3b7e34643"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -450,6 +458,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""SampleItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""de492d81-6086-411f-9c72-cd038338e77d"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -489,6 +508,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_MapControl_WaterscapingTool = m_MapControl.FindAction("WaterscapingTool", throwIfNotFound: true);
         m_MapControl_PathPermitTool = m_MapControl.FindAction("PathPermitTool", throwIfNotFound: true);
         m_MapControl_FenceTool = m_MapControl.FindAction("FenceTool", throwIfNotFound: true);
+        m_MapControl_Rotate = m_MapControl.FindAction("Rotate", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -552,6 +572,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_MapControl_WaterscapingTool;
     private readonly InputAction m_MapControl_PathPermitTool;
     private readonly InputAction m_MapControl_FenceTool;
+    private readonly InputAction m_MapControl_Rotate;
     public struct MapControlActions
     {
         private @Controls m_Wrapper;
@@ -570,6 +591,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @WaterscapingTool => m_Wrapper.m_MapControl_WaterscapingTool;
         public InputAction @PathPermitTool => m_Wrapper.m_MapControl_PathPermitTool;
         public InputAction @FenceTool => m_Wrapper.m_MapControl_FenceTool;
+        public InputAction @Rotate => m_Wrapper.m_MapControl_Rotate;
         public InputActionMap Get() { return m_Wrapper.m_MapControl; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -621,6 +643,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @FenceTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnFenceTool;
                 @FenceTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnFenceTool;
                 @FenceTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnFenceTool;
+                @Rotate.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnRotate;
+                @Rotate.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnRotate;
+                @Rotate.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnRotate;
             }
             m_Wrapper.m_MapControlActionsCallbackInterface = instance;
             if (instance != null)
@@ -667,6 +692,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @FenceTool.started += instance.OnFenceTool;
                 @FenceTool.performed += instance.OnFenceTool;
                 @FenceTool.canceled += instance.OnFenceTool;
+                @Rotate.started += instance.OnRotate;
+                @Rotate.performed += instance.OnRotate;
+                @Rotate.canceled += instance.OnRotate;
             }
         }
     }
@@ -696,5 +724,6 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnWaterscapingTool(InputAction.CallbackContext context);
         void OnPathPermitTool(InputAction.CallbackContext context);
         void OnFenceTool(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
     }
 }

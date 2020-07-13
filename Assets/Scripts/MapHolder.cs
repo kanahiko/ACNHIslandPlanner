@@ -7,6 +7,7 @@ using UnityEngine;
 public static class MapHolder
 {
     public static Transform decorationsParent;
+    public static Transform limboDecorationsParent;
 
     public static int maxElevation = 3;
 
@@ -29,7 +30,10 @@ public static class MapHolder
     {
         width = mapPrefab.width;
         height = mapPrefab.height;
-
+        
+        decorationsTiles = new DecorationTiles[width, height];
+        tiles = new MapTile[width, height];
+        
         mapPrefab.StartPrefab();
         uniqueBuildings = new Dictionary<DecorationType, List<UniqueBuilding>>();
 
@@ -66,6 +70,7 @@ public static class MapHolder
 
 public class DecorationTiles : IDisposable
 {
+    public GameObject decorationBackground;
     public DecorationType type;
 
     public bool isHorizontal;
@@ -82,12 +87,16 @@ public class DecorationTiles : IDisposable
     {
         quarters = new GameObject[4];
         isLinked = new bool[4];
+        decorationBackground = new GameObject("DecorationBase");
+        decorationBackground.transform.parent = MapHolder.decorationsParent;
     }
     public DecorationTiles(DecorationType type)
     {
         this.type = type;
         quarters = new GameObject[4];
         isLinked = new bool[4];
+        decorationBackground = new GameObject("DecorationBase");
+        decorationBackground.transform.parent = MapHolder.decorationsParent;
     }
 
     public void Dispose()

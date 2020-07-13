@@ -63,7 +63,11 @@ public class Controller : MonoBehaviour
 
     private float timeElapsedSinceClick;
 
-    public static Action<int, int, ToolType, ToolMode,int, DecorationType> ChangeTile;
+    private DecorationType currentDecorationTool;
+    private bool isHorizontal = true;
+    private int variation = 0;
+
+    public static Action<int, int, ToolType, ToolMode,int, DecorationType,bool> ChangeTile;
     public static Action<int,int> StartConstructionAction;
     public static Action EndConstructionAction;
 
@@ -105,6 +109,8 @@ public class Controller : MonoBehaviour
         };
         controls.MapControl.RemoveItem.canceled += ctx => EndConstruction();
         controls.MapControl.SampleItem.performed += ctx => SampleItem();
+
+        controls.MapControl.Rotate.performed += ctx => Rotate();
         
         construct = ToolMode.None;
 
@@ -142,6 +148,11 @@ public class Controller : MonoBehaviour
             TrackMousePositionOnGrid();
             cameraChanged = false;
         }
+    }
+
+    void Rotate()
+    {
+        isHorizontal = !isHorizontal;
     }
 
     void ShowGrid()
@@ -274,7 +285,7 @@ public class Controller : MonoBehaviour
                 }
             }
 
-            ChangeTile?.Invoke(currentBlockX, Mathf.Abs(currentBlockY), currentTool, construct, -1, DecorationType.Null);
+            ChangeTile?.Invoke(currentBlockX, Mathf.Abs(currentBlockY), currentTool, construct, variation, currentDecorationTool, isHorizontal);
 
             prevBlockX = currentBlockX;
             prevBlockY = currentBlockY;
@@ -312,21 +323,27 @@ public class Controller : MonoBehaviour
 
     public void WaterscapingButtonClick()
     {
+        currentDecorationTool = DecorationType.Null;
         ToolChange(ToolType.Waterscaping);
     }
     
     public void CliffConstructionButtonClick()
     {
+        currentDecorationTool = DecorationType.Null;
         ToolChange(ToolType.CliffConstruction);
     }
 
     public void PathPermitButtonClick()
     {
+        currentDecorationTool = DecorationType.Null;
         ToolChange(ToolType.PathPermit);
     }
 
     public void FencePermitButtonClick()
-    {
+    {    
+        variation = 0;
+        isHorizontal = true;
+        currentDecorationTool = DecorationType.Fence;
         ToolChange(ToolType.FenceBuilding);
     }
     

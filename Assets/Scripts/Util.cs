@@ -53,7 +53,7 @@ public enum ToolMode
 
 public enum DecorationType
 {
-   Null = -1, Fence = 0, Plaza = 1, NookShop = 2, Tailors = 3, Museum = 4, PlayerHouse = 5, House =6, Incline =7, Bridge = 8, Camp =9
+   Null = -1, Fence = 0, Plaza = 1, NookShop = 2, Tailors = 3, Museum = 4, PlayerHouse = 5, House =6, Incline =7, Bridge = 8, Camp =9, Flora = 10, Tree = 11
 }
 
 public enum FenceType
@@ -100,6 +100,9 @@ public static  class Util
 
     public static List<Vector2Int> indexOffsetCross = new List<Vector2Int>
     {
+        //up
+        //x = row
+        //y = column
         new Vector2Int(-1 , 0), new Vector2Int (0,1), new Vector2Int(1,0),new Vector2Int(0,-1)
     };
     public static List<Vector2Int> indexOffsetDiagonal = new List<Vector2Int>
@@ -176,37 +179,64 @@ public static  class Util
 
     public static bool[] CreateFenceMatrix(int column, int row)
     {
-        int elevation = MapHolder.tiles[column, row].elevation;
         bool[] corners = new bool[4];
+        int elevation = MapHolder.tiles[column, row].elevation;
 
         for (int i = 0; i < indexOffsetCross.Count; i++)
         {
-            if (!(column + indexOffsetCross[i].y >= 0 && column + indexOffsetCross[i].y < MapHolder.width && 
+            if ((column + indexOffsetCross[i].y >= 0 && column + indexOffsetCross[i].y < MapHolder.width && 
                 row + indexOffsetCross[i].x >= 0 && row + indexOffsetCross[i].x < MapHolder.height))
             {
-                corners[i] = false;
-                continue;
+                corners[i] = MapHolder.decorationsTiles[column + indexOffsetCross[i].y, row + indexOffsetCross[i].x] != null &&
+                             MapHolder.decorationsTiles[column + indexOffsetCross[i].y, row + indexOffsetCross[i].x].type == DecorationType.Fence &&
+                             elevation == MapHolder.tiles[column + indexOffsetCross[i].y, row + indexOffsetCross[i].x].elevation;
             }
         }
 
         return corners;
     }
-
-
-    public static TileType[,] RemoveNulls(TileType[,] corners)
+    /// <summary>
+    /// returns true if different orientation
+    /// false if still the same orientation or inconclusive
+    /// </summary>
+    /// <param name="column"></param>
+    /// <param name="row"></param>
+    /// <param name="isHorizontal"></param>
+    /// <returns></returns>
+    public static bool CheckIfChangeOrientation(int column, int row,bool isHorizontal)
     {
-        for (int i = 0; i < 3; i++)
+        if (MapHolder.decorationsTiles[column, row].quarters[0] == null &&
+            MapHolder.decorationsTiles[column, row].quarters[2] == null)
         {
-            for(int j = 0; j < 3; j++)
-            {
-                if (corners[i, j] == TileType.Null)
-                {
-                    corners[i, j] = TileType.Land;
-                }
-            }
+            return !isHorizontal;
+        }
+        
+        if (MapHolder.decorationsTiles[column, row].quarters[1] == null &&
+            MapHolder.decorationsTiles[column, row].quarters[3] == null)
+        {
+            return isHorizontal;
         }
 
-        return corners;
+        return false;
+    }
+
+    public static bool NoneOrOne(bool[] corners)
+    {
+        int sum = 0;
+        for (int i = 0; i< 4; i++)
+        {
+            if (corners[i])
+            { 
+                sum++; 
+            }
+        }
+        Debug.Log(sum);
+        return sum<= 1;
+    }
+    
+    public static float GetHeight(int column, int row)
+    {
+        return MapHolder.elevationLevels[MapHolder.tiles[column, row].elevation].transform.localPosition.y;
     }
 
     public static int GetRotation(int x, int y)
@@ -264,10 +294,10 @@ public static  class Util
         Vector2Int emptyIndex = new Vector2Int(-2,-2);
         for (int i = 0; i < 4; i++)
         {
-            if ((column + indexOffsetCross[i].x >= 0 && column + indexOffsetCross[i].y < MapHolder.width &&
-                  row + indexOffsetCross[i].y >= 0 && row + indexOffsetCross[i].y < MapHolder.height))
+            if ((column + indexOffsetCross[i].y >= 0 && column + indexOffsetCross[i].y < MapHolder.width &&
+                  row + indexOffsetCross[i].x >= 0 && row + indexOffsetCross[i].x < MapHolder.height))
             {
-                if (MapHolder.tiles[column + indexOffsetCross[i].x, row + indexOffsetCross[i].y].elevation < elevation)
+                if (MapHolder.tiles[column + indexOffsetCross[i].y, row + indexOffsetCross[i].x].elevation < elevation)
                 {
                     if (emptyIndex.x != -2)
                     {
@@ -296,8 +326,8 @@ public static  class Util
 
         for (int i = 0; i < 4; i++)
         {
-            if ((column + indexOffsetDiagonal[i].x >= 0 && column + indexOffsetDiagonal[i].y < MapHolder.width &&
-                  row + indexOffsetDiagonal[i].y >= 0 && row + indexOffsetDiagonal[i].y < MapHolder.height))
+            if ((column + indexOffsetDiagonal[i].y >= 0 && column + indexOffsetDiagonal[i].y < MapHolder.width &&
+                  row + indexOffsetDiagonal[i].x >= 0 && row + indexOffsetDiagonal[i].x < MapHolder.height))
             {
                 if (MapHolder.tiles[column + indexOffsetDiagonal[i].x, row + indexOffsetDiagonal[i].y].elevation < elevation)
                 {

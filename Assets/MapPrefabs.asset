@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c48d8f018641fd1479dd8f62852228b1, type: 3}
   m_Name: MapPrefabs
   m_EditorClassIdentifier: 
+  width: 92
+  height: 73
   gridMaterials:
   - {fileID: 2100000, guid: 85986eb5c2123fa4a9e18eb1c8f4914f, type: 2}
   - {fileID: 2100000, guid: 93c4fc2d66db6e54390b2c6125bf3b06, type: 2}
@@ -108,9 +110,8 @@ MonoBehaviour:
     - {fileID: 1647880122865077162, guid: 14750c02ad79f044f9dbf3695e8e8f30, type: 3}
   fencePrefabDictionary:
   - fencePrefabs:
-    - {fileID: 7852311893817839320, guid: c16bf0d7d40595945b0c9bd8c3600c23, type: 3}
     - {fileID: 7079409637247608614, guid: 2881d41c4ce011948ba534e2d3c29fad, type: 3}
-    - {fileID: 2487048491793275404, guid: 59e1c1dbeff34004d8bf7456560ff72a, type: 3}
+    - {fileID: 7852311893817839320, guid: c16bf0d7d40595945b0c9bd8c3600c23, type: 3}
   decorationsSizeDictionary:
     reorderableList:
       canAdd: 1

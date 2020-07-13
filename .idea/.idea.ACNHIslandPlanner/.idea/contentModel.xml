@@ -42,15 +42,17 @@
           </e>
         </e>
         <e p="Scripts" t="Include">
+          <e p="BuildersController.cs" t="Include" />
+          <e p="BuildingsBuilder.cs" t="Include" />
           <e p="CliffBuilder.cs" t="Include" />
           <e p="Controller.cs" t="Include" />
           <e p="Controls.cs" t="Include" />
           <e p="DecorationsBuilder.cs" t="Include" />
-          <e p="FenceBuilder.cs" t="Include" />
           <e p="MapHolder.cs" t="Include" />
           <e p="MapPrefabs.cs" t="Include" />
           <e p="MapTile.cs" t="Include" />
           <e p="MiniMap.cs" t="Include" />
+          <e p="NonBuildingsBuilder.cs" t="Include" />
           <e p="PathBuilder.cs" t="Include" />
           <e p="TerrainBuilder.cs" t="Include" />
           <e p="UIController.cs" t="Include" />

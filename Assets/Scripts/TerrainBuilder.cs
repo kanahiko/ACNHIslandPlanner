@@ -84,6 +84,11 @@ public class TerrainBuilder : MonoBehaviour
        // int index = row * MapHolder.width + column;
         TileType previousTileType = MapHolder.tiles[column,row].type;
 
+        if (MapHolder.decorationsTiles[column, row] != null)
+        {
+            return;
+        }
+        
         switch (type)
         {
             case TileType.Land:
@@ -255,11 +260,14 @@ public class TerrainBuilder : MonoBehaviour
 
     void RemoveTile(TileType type, int column, int row)
     {
+        if (MapHolder.decorationsTiles[column, row] != null)
+        {
+            return;
+        }
         changedCoordinates.Clear();
         toolMode = ToolMode.Remove;
         //int index = row * MapHolder.width + column;
         TileType previousTileType = MapHolder.tiles[column, row].type;
-
         switch (type)
         {
             case TileType.Land:

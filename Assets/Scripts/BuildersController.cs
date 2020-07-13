@@ -10,16 +10,14 @@ public class BuildersController : MonoBehaviour
 
     public MapPrefabs mapPrefab;
     public List<Transform> elevationLevels;
+    public Transform decorationsLimbo;
 
     private void Awake()
     {
         MapHolder.elevationLevels = elevationLevels;
         MapHolder.mapPrefab = mapPrefab;
-
+        MapHolder.limboDecorationsParent = decorationsLimbo;
         MapHolder.StartMapHolder();
-
-        MapHolder.tiles = new MapTile[MapHolder.width, MapHolder.height];
-
 
         MapHolder.offset = offsetTerrain;
         transform.position = offsetTerrain;
@@ -32,7 +30,7 @@ public class BuildersController : MonoBehaviour
         Controller.EndConstructionAction = terrainBuilder.EndConstruction;
     }
 
-    public void ChangeTile(int column, int row, ToolType tool, ToolMode mode , int variation, DecorationType decorationType)
+    public void ChangeTile(int column, int row, ToolType tool, ToolMode mode , int variation, DecorationType decorationType, bool isHorizontal)
     {
         switch (tool)
         {
@@ -52,6 +50,7 @@ public class BuildersController : MonoBehaviour
             case ToolType.FlowerPlanting:
                 break;
             case ToolType.FenceBuilding:
+                DecorationsBuilder.ChangeTile(column,row,decorationType,mode,variation,isHorizontal);
                 break;
             case ToolType.BuildingsMarkUp:
                 break;
