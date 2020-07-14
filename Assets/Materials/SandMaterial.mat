@@ -48,6 +48,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - BOOLEAN_738E83BE: 0
     - BOOLEAN_BD3C1490: 0
     - ShowElevation: 0
     - ShowGrid: 0
@@ -60,7 +61,7 @@ Material:
     - Vector1_E2B74B3D: 1
     - Vector1_E7944CA8: 0.5
     - Vector1_EA654C52: 1
-    - Vector1_F402CC69: 2.15
+    - Vector1_F402CC69: 1
     - Vector1_FDD56E9: 2
     m_Colors:
     - Color_3AA1389B: {r: 0.4917061, g: 0.46079564, b: 0.8962264, a: 1}
