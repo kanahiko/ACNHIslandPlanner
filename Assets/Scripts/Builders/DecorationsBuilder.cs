@@ -29,38 +29,13 @@ public class DecorationsBuilder : MonoBehaviour
 
         switch (type)
         {
-            case DecorationType.Fence:
-                NonBuildingsBuilder.ChangeTile(column,row,type,mode,variation,isHorizontal);
-                //FenceBuilder
+            case DecorationType.Tree:
                 break;
-            case DecorationType.Plaza:
-            case DecorationType.NookShop:
-            case DecorationType.Tailors:
-            case DecorationType.Museum:
-            case DecorationType.PlayerHouse:
-            case DecorationType.House:
-            case DecorationType.Incline:
-            case DecorationType.Bridge:
-            case DecorationType.Camp:
-                building = MapHolder.FindAvailiableBuilding(type);
+            case DecorationType.Flora:
+                NonBuildingsBuilder.ChangeTile(column, row, type, mode, variation, isHorizontal);
                 break;
-        }
-    }
-
-    public static void AddDecoration(int column, int row, DecorationType type, int variation = -1, bool isHorizontal = true)
-    {
-        //check if tile has something in it
-        //add to tile
-
-        //what to do with house and building?
-        //maybe make them fixed
-
-        UniqueBuilding building = null;
-
-        switch (type)
-        {
             case DecorationType.Fence:
-                //NonBuildingsBuilder.ChangeTile(column,row,variation,isHorizontal);
+                FenceBuilder.ChangeTile(column,row,mode,variation,isHorizontal);
                 //FenceBuilder
                 break;
             case DecorationType.Plaza:

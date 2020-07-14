@@ -160,7 +160,7 @@ public class PathBuilder
         
         MapHolder.tiles[column, row].quarters[rotation] = tile;
         MapHolder.tiles[column, row].prefabType[rotation] = TilePrefabType.PathCurved;
-        Debug.Log($"path rotation {rotation}");
+        //Debug.Log($"path rotation {rotation}");
         MapHolder.tiles[column, row].diagonalPathRotation = rotation;
         //MapHolder.tiles[row * MapHolder.width + column] = TileType.PathCurve;
         //Debug.Log($"{MapHolder.tiles[column, row].GetDirectionOfPath()}");

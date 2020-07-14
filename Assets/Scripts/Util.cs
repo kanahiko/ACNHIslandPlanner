@@ -97,6 +97,7 @@ public static  class Util
         };
     
     public static Vector3 halfOffset = new Vector3(0.5f, 0, 0.5f);
+    public static Vector3 cullingPosition = new Vector3(0, 50, 0);
 
     public static List<Vector2Int> indexOffsetCross = new List<Vector2Int>
     {

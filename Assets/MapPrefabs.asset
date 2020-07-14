@@ -109,9 +109,12 @@ MonoBehaviour:
     - {fileID: 7900206712588280057, guid: de7e4cf7646ecbc40979d924c6c2b1a7, type: 3}
     - {fileID: 1647880122865077162, guid: 14750c02ad79f044f9dbf3695e8e8f30, type: 3}
   fencePrefabDictionary:
-  - fencePrefabs:
+  - variationPrefabs:
     - {fileID: 7079409637247608614, guid: 2881d41c4ce011948ba534e2d3c29fad, type: 3}
     - {fileID: 7852311893817839320, guid: c16bf0d7d40595945b0c9bd8c3600c23, type: 3}
+  floraPrefabDictionary:
+  - {fileID: 2792735039589785439, guid: a294630a4f4bf67478cf26ff5639edeb, type: 3}
+  - {fileID: 5536630880792107103, guid: 904812feb218fa647aece055279f4306, type: 3}
   decorationsSizeDictionary:
     reorderableList:
       canAdd: 1

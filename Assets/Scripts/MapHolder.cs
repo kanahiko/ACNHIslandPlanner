@@ -44,7 +44,7 @@ public static class MapHolder
                 List<UniqueBuilding> list = new List<UniqueBuilding>();
                 for (int i = 0; i < building.Value; i++)
                 {
-                    list.Add(new UniqueBuilding(GameObject.Instantiate(mapPrefab.decorationsPrefabDictionary[building.Key], new Vector3(20, 0, 20), Quaternion.identity),
+                    list.Add(new UniqueBuilding(GameObject.Instantiate(mapPrefab.decorationsPrefabDictionary[building.Key], limboDecorationsParent),
                         building.Key, mapPrefab.decorationsSizeDictionary[building.Key]));
                 }
             }
@@ -70,12 +70,13 @@ public static class MapHolder
 
 public class DecorationTiles : IDisposable
 {
-    public GameObject decorationBackground;
+    public Transform decorationBackground;
     public DecorationType type;
 
     public bool isHorizontal;
     public GameObject mainTile;
-    public GameObject[] quarters;
+    public MeshRenderer mainTileRenderer;
+    public Transform[] quarters;
     public bool[] isLinked;
 
     //to mark which tiles are not empty and where to start to make them empty
@@ -85,18 +86,26 @@ public class DecorationTiles : IDisposable
 
     public DecorationTiles()
     {
-        quarters = new GameObject[4];
+        quarters = new Transform[4];
         isLinked = new bool[4];
-        decorationBackground = new GameObject("DecorationBase");
-        decorationBackground.transform.parent = MapHolder.decorationsParent;
+        decorationBackground = new GameObject("DecorationBase").transform;
+        decorationBackground.parent = MapHolder.decorationsParent;
     }
     public DecorationTiles(DecorationType type)
     {
         this.type = type;
-        quarters = new GameObject[4];
+        quarters = new Transform[4];
         isLinked = new bool[4];
-        decorationBackground = new GameObject("DecorationBase");
+        decorationBackground = new GameObject("DecorationBase").transform;
         decorationBackground.transform.parent = MapHolder.decorationsParent;
+    }
+
+    public void AddMainTile(GameObject mainTile)
+    {
+        this.mainTile = mainTile;
+        mainTile.transform.localPosition = Vector3.zero;
+        mainTile.transform.localRotation = Quaternion.identity;
+        mainTileRenderer = this.mainTile.GetComponent<MeshRenderer>();
     }
 
     public void Dispose()
@@ -105,20 +114,23 @@ public class DecorationTiles : IDisposable
 
     public void GoToLimbo()
     {
+        decorationBackground.position = Util.cullingPosition;
         if (mainTile)
         {
-            mainTile.SetActive(false);
+            mainTileRenderer.enabled = false;
+            //mainTile.SetActive(false);
         }
-        for (int i = 0; i < 4; i++)
+        /*for (int i = 0; i < 4; i++)
         {
             quarters[i] = null;
-        }
+        }*/
     }
     public void ReturnFromLimbo()
     {
         if (mainTile)
         {
-            mainTile.SetActive(true);
+            mainTileRenderer.enabled = true;
+            //mainTile.SetActive(true);
         }
     }
 }
@@ -135,7 +147,8 @@ public class UniqueBuilding
     public UniqueBuilding(GameObject model, DecorationType type, Vector2Int size)
     {
         this.model = model;
-        model.SetActive(false);
+        model.transform.position = Util.cullingPosition;
+        //model.SetActive(false);
         this.type = type;
         this.size = size;
     }

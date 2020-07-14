@@ -24,9 +24,9 @@ public class MapPrefabs : ScriptableObject
     public TypeToPrefabDictionary prefabDictionary;
 
     [Header("Decoration prefabs")]
-    [FormerlySerializedAs("decorationsPrefabDictionaryDictionary")]
     public DecorationsPrefabDictionary decorationsPrefabDictionary;
-    public List<FenceList> fencePrefabDictionary;
+    public List<VariationList> fencePrefabDictionary;
+    public List<GameObject> floraPrefabDictionary;
 
     public DecorationsSizeDictionary decorationsSizeDictionary;
     public DecorationsMaxCountDictionary maxCount;
@@ -38,7 +38,7 @@ public class MapPrefabs : ScriptableObject
     
     public Vector2Int miniMapOffset = new Vector2Int(5,5);
     
-    private int showGridId;
+    private int showGridId; 
     private int showElevationId;
     private bool isGridShown = false;
     private bool isElevationShown = false;
@@ -97,9 +97,9 @@ public class MapPrefabs : ScriptableObject
 }
 
 [Serializable]
-public class FenceList
+public class VariationList
 {
-    public List<GameObject> fencePrefabs;
+    public List<GameObject> variationPrefabs;
 }
 
 [System.Serializable]

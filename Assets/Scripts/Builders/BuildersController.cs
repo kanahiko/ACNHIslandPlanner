@@ -43,12 +43,10 @@ public class BuildersController : MonoBehaviour
                 break;
             case ToolType.InclineMarkUp:
                 break;
-            case ToolType.BushPlanting:
-                break;
             case ToolType.TreePlanting:
                 break;
+            case ToolType.BushPlanting:
             case ToolType.FlowerPlanting:
-                break;
             case ToolType.FenceBuilding:
                 DecorationsBuilder.ChangeTile(column,row,decorationType,mode,variation,isHorizontal);
                 break;

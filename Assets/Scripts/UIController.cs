@@ -13,6 +13,7 @@ public class UIController : MonoBehaviour
     public Toggle WaterToolButton;
     public Toggle PathToolButton;
     public Toggle FenceToolButton;
+    public Toggle BushToolButton;
 
     public AudioSource click;
 

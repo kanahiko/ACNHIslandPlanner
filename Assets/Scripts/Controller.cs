@@ -38,38 +38,41 @@ public class Controller : MonoBehaviour
 
     public float timeBetweenClicks = 0.1f;
 
+    //checks how much zoomed in or out
     float currentScroll = 0;
+    //of scroll
     Vector3 currentPosition;
 
     bool isCameraParallelToGround = false;
     float cameraDegrees = 45;
     bool cameraChanged;
+    Vector2 mousePos;
+    //moving
+    Vector2 moveVector;
+    float currentSpeedMultiplier = 1;
+    float scroll;
 
+    //tools
+    ToolMode construct = ToolMode.None;
+    DecorationType currentDecorationTool;
+    bool isHorizontal = true;
+    int variation = 0;
     int currentBlockX = -1;
     int currentBlockY = -1;
 
-    private int prevBlockX = -1;
-    private int prevBlockY = -1;
+    int prevBlockX = -1;
+    int prevBlockY = -1;
 
-    private ToolMode construct = ToolMode.None;
-    
-    Vector2 mousePos;
-    Vector2 moveVector;
-    float currentSpeedMultiplier = 1;
+    public static Action<int, int, ToolType, ToolMode, int, DecorationType, bool> ChangeTile;
+    public static Action<int, int> StartConstructionAction;
+    public static Action EndConstructionAction;
 
-    private float scroll;
+
 
     Controls controls;
 
     private float timeElapsedSinceClick;
 
-    private DecorationType currentDecorationTool;
-    private bool isHorizontal = true;
-    private int variation = 0;
-
-    public static Action<int, int, ToolType, ToolMode,int, DecorationType,bool> ChangeTile;
-    public static Action<int,int> StartConstructionAction;
-    public static Action EndConstructionAction;
 
     private void Awake()
     {
@@ -346,7 +349,14 @@ public class Controller : MonoBehaviour
         currentDecorationTool = DecorationType.Fence;
         ToolChange(ToolType.FenceBuilding);
     }
-    
+    public void BushPermitButtonClick()
+    {
+        variation = 0;
+        isHorizontal = true;
+        currentDecorationTool = DecorationType.Flora;
+        ToolChange(ToolType.BushPlanting);
+    }
+
     public void ToolChange(ToolType tool)
     {
         currentTool = tool;
