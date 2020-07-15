@@ -75,6 +75,7 @@
     <Compile Include="Assets\Rotary Heart\SerializableDictionaryLite\ReorderableList\ReorderableList.cs" />
     <Compile Include="Assets\Scripts\Builders\CliffBuilder.cs" />
     <Compile Include="Assets\Scripts\UIOnHover.cs" />
+    <Compile Include="Assets\Scripts\TilePreview.cs" />
     <None Include="Assets\Materials\DirectSpecular.hlsl" />
     <None Include="Assets\Materials\GetLighting.hlsl" />
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">

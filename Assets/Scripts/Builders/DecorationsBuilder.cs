@@ -30,7 +30,6 @@ public class DecorationsBuilder : MonoBehaviour
         switch (type)
         {
             case DecorationType.Tree:
-                break;
             case DecorationType.Flora:
                 NonBuildingsBuilder.ChangeTile(column, row, type, mode, variation, isHorizontal);
                 break;

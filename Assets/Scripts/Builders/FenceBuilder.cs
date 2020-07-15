@@ -203,7 +203,7 @@ public class FenceBuilder : MonoBehaviour
             fenceTilesLimbo.Add(tile);
             tile.GoToLimbo();
             //tile.decorationBackground.SetActive(false);
-            tile.decorationBackground.parent = MapHolder.limboDecorationsParent;
+            //tile.decorationBackground.parent = MapHolder.limboDecorationsParent;
             AddToFencePartsLimbo(tile);
         }
         else

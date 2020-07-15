@@ -24,6 +24,8 @@ public static class MapHolder
     public static List<Transform> elevationLevels;
     public static MapPrefabs mapPrefab;
 
+    public static int[,] treeInfluence;
+
     public static Dictionary<DecorationType, List<UniqueBuilding>> uniqueBuildings;
 
     public static void StartMapHolder()
@@ -33,7 +35,9 @@ public static class MapHolder
         
         decorationsTiles = new DecorationTiles[width, height];
         tiles = new MapTile[width, height];
-        
+        treeInfluence = new int[width, height];
+
+
         mapPrefab.StartPrefab();
         uniqueBuildings = new Dictionary<DecorationType, List<UniqueBuilding>>();
 
@@ -44,9 +48,10 @@ public static class MapHolder
                 List<UniqueBuilding> list = new List<UniqueBuilding>();
                 for (int i = 0; i < building.Value; i++)
                 {
-                    list.Add(new UniqueBuilding(GameObject.Instantiate(mapPrefab.decorationsPrefabDictionary[building.Key], limboDecorationsParent),
-                        building.Key, mapPrefab.decorationsSizeDictionary[building.Key]));
+                    list.Add(new UniqueBuilding(GameObject.Instantiate(mapPrefab.decorationsPrefabDictionary[building.Key]),
+                        building.Key, mapPrefab.decorationsSizeDictionary[building.Key]));                    
                 }
+                uniqueBuildings.Add(building.Key, list);
             }
         }
     }
@@ -57,7 +62,7 @@ public static class MapHolder
         {
             foreach(var building in uniqueBuildings[type])
             {
-                if (building.beginningOfChain == null)
+                if (building.startingColumn == -1)
                 {
                     return building;
                 }
@@ -114,11 +119,17 @@ public class DecorationTiles : IDisposable
 
     public void GoToLimbo()
     {
+        decorationBackground.parent = MapHolder.limboDecorationsParent;
         decorationBackground.position = Util.cullingPosition;
         if (mainTile)
         {
             mainTileRenderer.enabled = false;
             //mainTile.SetActive(false);
+        }
+
+        if (building != null)
+        {
+            building.GoToLimbo();
         }
         /*for (int i = 0; i < 4; i++)
         {
@@ -127,6 +138,7 @@ public class DecorationTiles : IDisposable
     }
     public void ReturnFromLimbo()
     {
+        //decorationBackground.parent = MapHolder.decorationsParent;
         if (mainTile)
         {
             mainTileRenderer.enabled = true;
@@ -138,7 +150,10 @@ public class DecorationTiles : IDisposable
 public class UniqueBuilding
 {
     public DecorationType type;
-    public DecorationTiles beginningOfChain;
+    public DecorationTiles tile;
+
+    public int startingColumn = -1;
+    public int startingRow = -1;
 
 
     public Vector2Int size;
@@ -147,9 +162,19 @@ public class UniqueBuilding
     public UniqueBuilding(GameObject model, DecorationType type, Vector2Int size)
     {
         this.model = model;
-        model.transform.position = Util.cullingPosition;
-        //model.SetActive(false);
         this.type = type;
         this.size = size;
+
+        tile = new DecorationTiles(DecorationType.Building);
+        tile.AddMainTile(model);
+        tile.building = this;
+        tile.GoToLimbo();
+        model.transform.SetParent(tile.decorationBackground,false);
+    }
+
+    public void GoToLimbo()
+    {
+        startingColumn = -1;
+        startingRow = -1;
     }
 }

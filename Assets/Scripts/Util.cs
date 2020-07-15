@@ -53,7 +53,7 @@ public enum ToolMode
 
 public enum DecorationType
 {
-   Null = -1, Fence = 0, Plaza = 1, NookShop = 2, Tailors = 3, Museum = 4, PlayerHouse = 5, House =6, Incline =7, Bridge = 8, Camp =9, Flora = 10, Tree = 11
+   Null = -1, Fence = 0, Plaza = 1, NookShop = 2, Tailors = 3, Museum = 4, PlayerHouse = 5, House =6, Incline =7, Bridge = 8, Camp =9, Flora = 10, Tree = 11, Building = 12
 }
 
 public enum FenceType
@@ -288,7 +288,65 @@ public static  class Util
         }
         return true;
     }
-    
+
+    public static bool CheckSurroundedByLandElevation(int column, int row)
+    {
+        int elevation = MapHolder.tiles[column, row].elevation;
+
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (i == 0 && j == 0)
+                {
+                    continue;
+                }
+                if (!(column + j >= 0 && column + j < MapHolder.width && row + i >= 0 && row + i < MapHolder.height))
+                {
+                    return false;
+                }
+                if (elevation > MapHolder.tiles[column + j, row + i].elevation || 
+                    (MapHolder.decorationsTiles[column + j, row - i] != null  && MapHolder.decorationsTiles[column + j, row - i].type == DecorationType.Building) ||
+                    !CheckSurroundedIsLand(column + j, row + i)) 
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static bool CheckEmptyLandElevation(int column, int row, int sizeX, int sizeY)
+    {
+        int elevation = MapHolder.tiles[column, row].elevation;
+
+
+        for (int i = 0; i < sizeY; i++)
+        {
+            for (int j = 0; j < sizeX; j++)
+            {
+                if (!(column + j >= 0 && column + j < MapHolder.width && row - i >= 0 && row - i < MapHolder.height))
+                {
+                    return false;
+                }
+                if (elevation > MapHolder.tiles[column + j, row - i].elevation ||
+                    !CheckSurroundedIsLand(column + j, row - i) || MapHolder.decorationsTiles[column+j,row-i] != null ||
+                    MapHolder.treeInfluence[column+j,row-i] > 0)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static bool CheckSurroundedIsLand(int column, int row)
+    {
+        return MapHolder.tiles[column, row].type != TileType.CliffDiagonal &&
+                    MapHolder.tiles[column, row].type != TileType.Water &&
+                    MapHolder.tiles[column, row].type != TileType.WaterDiagonal;
+    }
+
     public static bool CheckHalfSurroundedBySameElevation(int column, int row)
     {
         int elevation = MapHolder.tiles[column, row].elevation;
