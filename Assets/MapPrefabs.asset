@@ -113,8 +113,8 @@ MonoBehaviour:
     - {fileID: 7079409637247608614, guid: 2881d41c4ce011948ba534e2d3c29fad, type: 3}
     - {fileID: 7852311893817839320, guid: c16bf0d7d40595945b0c9bd8c3600c23, type: 3}
   floraPrefabDictionary:
-  - {fileID: 2792735039589785439, guid: a294630a4f4bf67478cf26ff5639edeb, type: 3}
   - {fileID: 5536630880792107103, guid: 904812feb218fa647aece055279f4306, type: 3}
+  - {fileID: 2792735039589785439, guid: a294630a4f4bf67478cf26ff5639edeb, type: 3}
   treePrefabDictionary:
   - {fileID: 7317034837161324369, guid: e91af21b995219148829585a0a359e9f, type: 3}
   decorationsSizeDictionary:
