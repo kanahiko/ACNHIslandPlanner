@@ -25,6 +25,7 @@ public static class MapHolder
     public static MapPrefabs mapPrefab;
 
     public static int[,] treeInfluence;
+    public static int[,] buildingsInfluence;
 
     public static Dictionary<DecorationType, List<UniqueBuilding>> uniqueBuildings;
 
@@ -36,7 +37,7 @@ public static class MapHolder
         decorationsTiles = new DecorationTiles[width, height];
         tiles = new MapTile[width, height];
         treeInfluence = new int[width, height];
-
+        buildingsInfluence = new int[width,height];
 
         mapPrefab.StartPrefab();
         uniqueBuildings = new Dictionary<DecorationType, List<UniqueBuilding>>();
@@ -156,10 +157,10 @@ public class UniqueBuilding
     public int startingRow = -1;
 
 
-    public Vector2Int size;
+    public Vector3Int size;
     public GameObject model;
 
-    public UniqueBuilding(GameObject model, DecorationType type, Vector2Int size)
+    public UniqueBuilding(GameObject model, DecorationType type, Vector3Int size)
     {
         this.model = model;
         this.type = type;

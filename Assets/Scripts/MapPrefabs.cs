@@ -107,7 +107,7 @@ public class VariationList
 public class DecorationsPrefabDictionary : SerializableDictionaryBase<DecorationType, GameObject> { }
 
 [System.Serializable]
-public class DecorationsSizeDictionary : SerializableDictionaryBase<DecorationType, Vector2Int> { }
+public class DecorationsSizeDictionary : SerializableDictionaryBase<DecorationType, Vector3Int> { }
 [System.Serializable]
 public class DecorationsMaxCountDictionary : SerializableDictionaryBase<DecorationType, int> { }
 /*

@@ -14,6 +14,7 @@ public class TilePreview : MonoBehaviour
 
     public Transform nullPreview;
 
+    private DecorationType currentType;
     Transform currentPreview;
 
     public void ChangeTile(DecorationType type = DecorationType.Null, int variation = -1)
@@ -49,10 +50,20 @@ public class TilePreview : MonoBehaviour
         if (currentPreview != null)
         {
             currentPreview.position = Util.cullingPosition;
+            if (currentType == DecorationType.Fence)
+            {
+                currentPreview.GetChild(0).localRotation = Quaternion.identity;
+            }
         }
 
         preview.localPosition = Vector3.zero;
         currentPreview = preview;
+        currentType = type;
+    }
+    
+    public void ChangeTileRotation(bool isRotated)
+    {
+        currentPreview.GetChild(0).localRotation = isRotated ? Quaternion.identity : Quaternion.Euler(0, 90, 0);
     }
 
     public void FollowMousePosition(Vector3 position)

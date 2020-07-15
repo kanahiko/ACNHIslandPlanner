@@ -165,7 +165,17 @@ public class PathBuilder
         //MapHolder.tiles[row * MapHolder.width + column] = TileType.PathCurve;
         //Debug.Log($"{MapHolder.tiles[column, row].GetDirectionOfPath()}");
         //MapHolder.tiles[column, row].diagonalPathRotation = rotation;
+    }
 
-
+    public static void RemovePathTiles(int column, int row, int sizeX, int sizeY)
+    {
+        for(int i = 0; i < sizeY; i++)
+        {
+            for(int j = 0; j < sizeX; j++)
+            {
+                //MapHolder.decorationsTiles[column+j, row-i] = tile;
+                //MapHolder.buildingsInfluence[column + j, row - i] = tile != null ? (i < size.z ? 1 : 2) : 0;
+            }
+        }
     }
 }

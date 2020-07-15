@@ -40,6 +40,8 @@ public class BuildingsBuilder
             building.startingRow = row;
             building.tile.ReturnFromLimbo();
 
+            //RedoTilesOfPath
+            
             MarkTile(newColumn, row, building.size, building.tile);
         }
     }
@@ -60,10 +62,6 @@ public class BuildingsBuilder
     static int FindStartingPoint(int column, int size)
     {
         int halfSize = size / 2;
-        //3 -> 1 (0, 1 ,2)
-        //5 -> 2 (0, 1, 2, 3, 4)
-        //4-> 2  (0, 1, 2, 3)
-
         if (size%2 == 0)
         {
             halfSize -= 1;
@@ -72,13 +70,14 @@ public class BuildingsBuilder
         return column - halfSize;
     }
 
-    static void MarkTile(int column, int row, Vector2Int size, DecorationTiles tile)
+    static void MarkTile(int column, int row, Vector3Int size, DecorationTiles tile)
     {
         for(int i = 0; i < size.y; i++)
         {
             for(int j = 0; j < size.x; j++)
             {
                 MapHolder.decorationsTiles[column+j, row-i] = tile;
+                MapHolder.buildingsInfluence[column + j, row - i] = tile != null ? (i < size.z ? 1 : 2) : 0;
             }
         }
     }

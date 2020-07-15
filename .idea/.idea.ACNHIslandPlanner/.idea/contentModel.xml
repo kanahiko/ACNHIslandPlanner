@@ -10,6 +10,10 @@
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
+        <e p="Materials" t="Include">
+          <e p="DirectSpecular.hlsl" t="Include" />
+          <e p="GetLighting.hlsl" t="Include" />
+        </e>
         <e p="Rotary Heart" t="Include">
           <e p="SerializableDictionaryLite" t="Include">
             <e p="DrawKeyAsPropertyAttribute.cs" t="Include" />
@@ -42,23 +46,27 @@
           </e>
         </e>
         <e p="Scripts" t="Include">
-          <e p="BuildersController.cs" t="Include" />
-          <e p="BuildingsBuilder.cs" t="Include" />
-          <e p="CliffBuilder.cs" t="Include" />
+          <e p="Builders" t="Include">
+            <e p="BuildersController.cs" t="Include" />
+            <e p="BuildingsBuilder.cs" t="Include" />
+            <e p="CliffBuilder.cs" t="Include" />
+            <e p="DecorationsBuilder.cs" t="Include" />
+            <e p="FenceBuilder.cs" t="Include" />
+            <e p="NonBuildingsBuilder.cs" t="Include" />
+            <e p="PathBuilder.cs" t="Include" />
+            <e p="TerrainBuilder.cs" t="Include" />
+            <e p="WaterBuilder.cs" t="Include" />
+          </e>
           <e p="Controller.cs" t="Include" />
           <e p="Controls.cs" t="Include" />
-          <e p="DecorationsBuilder.cs" t="Include" />
           <e p="MapHolder.cs" t="Include" />
           <e p="MapPrefabs.cs" t="Include" />
           <e p="MapTile.cs" t="Include" />
           <e p="MiniMap.cs" t="Include" />
-          <e p="NonBuildingsBuilder.cs" t="Include" />
-          <e p="PathBuilder.cs" t="Include" />
-          <e p="TerrainBuilder.cs" t="Include" />
+          <e p="TilePreview.cs" t="Include" />
           <e p="UIController.cs" t="Include" />
           <e p="UIOnHover.cs" t="Include" />
           <e p="Util.cs" t="Include" />
-          <e p="WaterBuilder.cs" t="Include" />
         </e>
       </e>
       <e p="Library" t="ExcludeRecursive" />

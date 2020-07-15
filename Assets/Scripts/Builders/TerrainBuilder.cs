@@ -57,7 +57,13 @@ public class TerrainBuilder : MonoBehaviour
 
     public void ChangeTile(ToolType type, ToolMode mode, int column, int row)
     {
-        if (type != ToolType.PathPermit && MapHolder.treeInfluence[column,row] > 0 || MapHolder.decorationsTiles[column, row] != null)
+        Debug.Log($"{MapHolder.buildingsInfluence[column, row]} {MapHolder.buildingsInfluence[column, row] == 2} " +
+                  $"{type != ToolType.PathPermit && MapHolder.treeInfluence[column,row] > 0} " +
+                  $"{MapHolder.decorationsTiles[column, row] != null} { MapHolder.buildingsInfluence[column, row] == 1} {type != ToolType.PathPermit}");
+        if ((MapHolder.buildingsInfluence[column, row] == 2 ||
+            type != ToolType.PathPermit && MapHolder.treeInfluence[column,row] > 0 || 
+            MapHolder.decorationsTiles[column, row] != null && (MapHolder.buildingsInfluence[column, row] == 0 ||
+             MapHolder.buildingsInfluence[column, row] == 1 && type != ToolType.PathPermit)))
         {
             return;
         }

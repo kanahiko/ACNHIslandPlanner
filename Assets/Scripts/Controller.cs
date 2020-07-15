@@ -68,6 +68,7 @@ public class Controller : MonoBehaviour
     public static Action EndConstructionAction;
 
     public Action<DecorationType, int> ChangeCursor;
+    public Action<bool> ChangeRotationCursor;
     public Action<Vector3> ChangeCursorPosition;
 
     public TilePreview cursor;
@@ -81,7 +82,7 @@ public class Controller : MonoBehaviour
     {
         ChangeCursor = cursor.ChangeTile;
         ChangeCursorPosition = cursor.FollowMousePosition;
-
+        ChangeRotationCursor = cursor.ChangeTileRotation;
 
         ChangeCursor.Invoke(DecorationType.Null, -1);
 
@@ -167,7 +168,11 @@ public class Controller : MonoBehaviour
 
     void Rotate()
     {
-        isHorizontal = !isHorizontal;
+        if (currentTool == ToolType.FenceBuilding)
+        {
+            isHorizontal = !isHorizontal;
+            ChangeRotationCursor?.Invoke(isHorizontal);
+        }
     }
 
     void ShowGrid()
