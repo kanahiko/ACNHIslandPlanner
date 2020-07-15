@@ -57,6 +57,11 @@ public class TerrainBuilder : MonoBehaviour
 
     public void ChangeTile(ToolType type, ToolMode mode, int column, int row)
     {
+        if (type != ToolType.PathPermit && MapHolder.treeInfluence[column,row] > 0 || MapHolder.decorationsTiles[column, row] != null)
+        {
+            return;
+        }
+
         TileType tileType = TileType.Water;
         switch (type)
         {
@@ -83,11 +88,6 @@ public class TerrainBuilder : MonoBehaviour
         changedCoordinates.Clear();
        // int index = row * MapHolder.width + column;
         TileType previousTileType = MapHolder.tiles[column,row].type;
-
-        if (MapHolder.decorationsTiles[column, row] != null)
-        {
-            return;
-        }
         
         switch (type)
         {
@@ -260,10 +260,6 @@ public class TerrainBuilder : MonoBehaviour
 
     void RemoveTile(TileType type, int column, int row)
     {
-        if (MapHolder.decorationsTiles[column, row] != null)
-        {
-            return;
-        }
         changedCoordinates.Clear();
         toolMode = ToolMode.Remove;
         //int index = row * MapHolder.width + column;

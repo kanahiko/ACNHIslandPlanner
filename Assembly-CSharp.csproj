@@ -80,6 +80,7 @@
     <Compile Include="Assets\Scripts\MiniMap.cs" />
     <Compile Include="Assets\Scripts\Builders\NonBuildingsBuilder.cs" />
     <Compile Include="Assets\Rotary Heart\SerializableDictionaryLite\References\RequiredReferences.cs" />
+    <Compile Include="Assets\Scripts\Builders\FenceBuilder.cs" />
     <Compile Include="Assets\Scripts\MapTile.cs" />
     <Compile Include="Assets\Scripts\Builders\BuildingsBuilder.cs" />
     <Compile Include="Assets\Scripts\Builders\DecorationsBuilder.cs" />
@@ -87,7 +88,7 @@
     <Compile Include="Assets\Rotary Heart\SerializableDictionaryLite\ReorderableList\ReorderableList.cs" />
     <Compile Include="Assets\Scripts\Builders\CliffBuilder.cs" />
     <Compile Include="Assets\Scripts\UIOnHover.cs" />
-    <Compile Include="Assets\Scripts\Builders\FenceBuilder.cs" />
+    <Compile Include="Assets\Scripts\TilePreview.cs" />
     <None Include="Assets\Materials\DirectSpecular.hlsl" />
     <None Include="Assets\Materials\GetLighting.hlsl" />
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">

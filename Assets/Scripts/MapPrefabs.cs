@@ -27,6 +27,7 @@ public class MapPrefabs : ScriptableObject
     public DecorationsPrefabDictionary decorationsPrefabDictionary;
     public List<VariationList> fencePrefabDictionary;
     public List<GameObject> floraPrefabDictionary;
+    public List<GameObject> treePrefabDictionary;
 
     public DecorationsSizeDictionary decorationsSizeDictionary;
     public DecorationsMaxCountDictionary maxCount;

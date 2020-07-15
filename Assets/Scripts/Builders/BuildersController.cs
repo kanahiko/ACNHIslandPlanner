@@ -51,6 +51,7 @@ public class BuildersController : MonoBehaviour
                 DecorationsBuilder.ChangeTile(column,row,decorationType,mode,variation,isHorizontal);
                 break;
             case ToolType.BuildingsMarkUp:
+                BuildingsBuilder.ChangeTile(column, row, mode, decorationType);
                 break;
             case ToolType.Null:
                 break;

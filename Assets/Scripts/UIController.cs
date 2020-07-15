@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RotaryHeart.Lib.SerializableDictionary;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,12 +9,15 @@ public class UIController : MonoBehaviour
 {
     public Vector3 buttonClickedSize;
     public Vector3 buttonHoverSize;
-    
+
+    public ToggleDictionary toggleDictionary;
+
     public Toggle CliffToolButton;
     public Toggle WaterToolButton;
     public Toggle PathToolButton;
     public Toggle FenceToolButton;
     public Toggle BushToolButton;
+    public Toggle TreeToolButton;
 
     public AudioSource click;
 
@@ -52,34 +56,9 @@ public class UIController : MonoBehaviour
 
     public void SetToolButton(ToolType type)
     {
-        switch (type)
+        if (toggleDictionary.ContainsKey(type))
         {
-            case ToolType.Waterscaping:
-                WaterToolButton.isOn = true;
-                break;
-            case ToolType.CliffConstruction:
-                CliffToolButton.isOn = true;
-                break;
-            case ToolType.PathPermit:
-                PathToolButton.isOn = true;
-                break;
-            case ToolType.FenceBuilding:
-                FenceToolButton.isOn = true;
-                break;
-            case ToolType.BridgeMarkUp:
-                break;
-            case ToolType.InclineMarkUp:
-                break;
-            case ToolType.BushPlanting:
-                break;
-            case ToolType.TreePlanting:
-                break;
-            case ToolType.FlowerPlanting:
-                break;
-            case ToolType.BuildingsMarkUp:
-                break;
-            case ToolType.Null:
-                break;
+            toggleDictionary[type].isOn = true;
         }
     }
     public void ScaleHoverButton(Transform rect)
@@ -130,3 +109,7 @@ public class UIController : MonoBehaviour
         click.Play();
     }
 }
+
+
+[System.Serializable]
+public class ToggleDictionary : SerializableDictionaryBase<ToolType, Toggle> { }

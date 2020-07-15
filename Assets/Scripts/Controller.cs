@@ -67,7 +67,10 @@ public class Controller : MonoBehaviour
     public static Action<int, int> StartConstructionAction;
     public static Action EndConstructionAction;
 
+    public Action<DecorationType, int> ChangeCursor;
+    public Action<Vector3> ChangeCursorPosition;
 
+    public TilePreview cursor;
 
     Controls controls;
 
@@ -76,6 +79,12 @@ public class Controller : MonoBehaviour
 
     private void Awake()
     {
+        ChangeCursor = cursor.ChangeTile;
+        ChangeCursorPosition = cursor.FollowMousePosition;
+
+
+        ChangeCursor.Invoke(DecorationType.Null, -1);
+
         //Application.targetFrameRate = 60;
         controls = new Controls();
         controls.MapControl.ShowGrid.performed += ctx => ShowGrid();
@@ -98,6 +107,9 @@ public class Controller : MonoBehaviour
         controls.MapControl.CliffConstructionTool.performed += ctx => controller.SetToolButton(ToolType.CliffConstruction);
         controls.MapControl.PathPermitTool.performed += ctx => controller.SetToolButton(ToolType.PathPermit);
         controls.MapControl.FenceTool.performed += ctx => controller.SetToolButton(ToolType.FenceBuilding);
+        controls.MapControl.BushTool.performed += ctx => controller.SetToolButton(ToolType.BushPlanting);
+        controls.MapControl.TreeTool.performed += ctx => controller.SetToolButton(ToolType.TreePlanting);
+        controls.MapControl.BuildingsTool.performed += ctx => controller.SetToolButton(ToolType.BuildingsMarkUp);
 
         controls.MapControl.PlaceItem.performed += ctx =>
         {
@@ -234,8 +246,8 @@ public class Controller : MonoBehaviour
             if (Physics.Raycast(mainCamera.ScreenPointToRay(mousePos), out hit, 50,256))
             {
                 //Vector3 newPos = mousePosition;
-                selectionCube.transform.localPosition = hit.collider.transform.position;
-
+                //selectionCube.transform.localPosition = hit.collider.transform.position;
+                ChangeCursorPosition.Invoke(hit.collider.transform.position);
                 currentBlockX = (int) (hit.collider.transform.position.x - MapHolder.offset.x);
                 currentBlockY = (int) (hit.collider.transform.position.z - MapHolder.offset.z);
 
@@ -244,14 +256,16 @@ public class Controller : MonoBehaviour
             }
             else
             {
-                selectionCube.transform.localPosition = new Vector3(20,0,20);
+                ChangeCursorPosition.Invoke(new Vector3(20, 0, 20));
+                //selectionCube.transform.localPosition = new Vector3(20,0,20);
                 currentBlockX = -1;
                 currentBlockY = -1;
             }
         }
         else
         {
-            selectionCube.transform.localPosition = new Vector3(20,0,20);
+            ChangeCursorPosition.Invoke(new Vector3(20, 0, 20));
+            //selectionCube.transform.localPosition = new Vector3(20,0,20);
             currentBlockX = -1;
             currentBlockY = -1;
         }
@@ -326,24 +340,29 @@ public class Controller : MonoBehaviour
 
     public void WaterscapingButtonClick()
     {
+        ChangeCursor.Invoke(DecorationType.Null, -1);
+        //ChangeCursor.?Invoke();
         currentDecorationTool = DecorationType.Null;
         ToolChange(ToolType.Waterscaping);
     }
     
     public void CliffConstructionButtonClick()
     {
+        ChangeCursor.Invoke(DecorationType.Null, -1);
         currentDecorationTool = DecorationType.Null;
         ToolChange(ToolType.CliffConstruction);
     }
 
     public void PathPermitButtonClick()
     {
+        ChangeCursor.Invoke(DecorationType.Null, -1);
         currentDecorationTool = DecorationType.Null;
         ToolChange(ToolType.PathPermit);
     }
 
     public void FencePermitButtonClick()
-    {    
+    {
+        ChangeCursor.Invoke(DecorationType.Fence, 0);
         variation = 0;
         isHorizontal = true;
         currentDecorationTool = DecorationType.Fence;
@@ -351,10 +370,32 @@ public class Controller : MonoBehaviour
     }
     public void BushPermitButtonClick()
     {
+        ChangeCursor.Invoke(DecorationType.Flora, 0);
         variation = 0;
         isHorizontal = true;
         currentDecorationTool = DecorationType.Flora;
         ToolChange(ToolType.BushPlanting);
+    }
+    public void TreePermitButtonClick()
+    {
+        ChangeCursor.Invoke(DecorationType.Tree, 0);
+        variation = 0;
+        isHorizontal = true;
+        currentDecorationTool = DecorationType.Tree;
+        ToolChange(ToolType.BushPlanting);
+    }
+    public void BuildingsPermitButtonClick()
+    {
+        ChangeCursor.Invoke(DecorationType.House, 0);
+        variation = 0;
+        isHorizontal = true;
+        currentDecorationTool = DecorationType.House;
+        ToolChange(ToolType.BuildingsMarkUp);
+    }
+
+    public void ChangeBuilding(int newBuilding)
+    {
+        currentDecorationTool = (DecorationType) newBuilding;
     }
 
     public void ToolChange(ToolType tool)

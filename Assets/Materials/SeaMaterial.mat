@@ -20,7 +20,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - Texture2D_1BD327C:
-        m_Texture: {fileID: 2800000, guid: fa8d30cfe6082c445bed83d22afefbeb, type: 3}
+        m_Texture: {fileID: 2800000, guid: f8c9044416ce39c4fb288a0849f3651f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_51A67DF4:
@@ -66,9 +66,9 @@ Material:
     m_Floats:
     - BOOLEAN_9589A6C7: 0
     - ShowGrid: 0
-    - Vector1_1776BC66: 0.7
+    - Vector1_1776BC66: 0.33
     - Vector1_26B986BC: 5
-    - Vector1_310FAF1B: 0.8
+    - Vector1_310FAF1B: 0.1
     - Vector1_38AC7655: 0.01
     - Vector1_3AE9F1BA: 0.3
     - Vector1_4CDC3BEF: 1
@@ -95,11 +95,11 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - Color_2F476E4A: {r: 0, g: 0, b: 0, a: 1}
+    - Color_2F476E4A: {r: 0.118592024, g: 0.39126477, b: 0.6132076, a: 1}
     - Color_31AC3021: {r: 0, g: 0, b: 0, a: 0}
-    - Color_5A1033B9: {r: 0.35294116, g: 0.6086644, b: 0.85882354, a: 1}
+    - Color_5A1033B9: {r: 0.27058825, g: 0.47843137, b: 0.68235296, a: 1}
     - Color_999FFEAF: {r: 1, g: 1, b: 1, a: 1}
-    - Color_DAB07069: {r: 1, g: 1, b: 1, a: 1}
+    - Color_DAB07069: {r: 0.4198113, g: 0.7161667, b: 1, a: 1}
     - Vector3_4339DAFD: {r: 1, g: 1, b: 0, a: 0}
     - Vector3_C38353C2: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 0.19999996, g: 0.73359627, b: 0.90588236, a: 1}

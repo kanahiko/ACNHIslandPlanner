@@ -30,10 +30,16 @@ public class NonBuildingsBuilder
 
     static void AddDecoration(DecorationType type,int column, int row, int variation)
     {
-        if (MapHolder.tiles[column,row].type != TileType.Land || MapHolder.decorationsTiles[column, row] != null && MapHolder.decorationsTiles[column,row].type != DecorationType.Flora)
+        if (MapHolder.tiles[column,row].type != TileType.Land || MapHolder.decorationsTiles[column, row] != null  &&
+            (MapHolder.decorationsTiles[column,row].type != DecorationType.Flora && MapHolder.decorationsTiles[column, row].type != DecorationType.Tree))
         {
             return;
         }
+        if (type == DecorationType.Tree && (!Util.CheckSurroundedByLandElevation(column, row) || MapHolder.treeInfluence[column,row] > 0))
+        {
+            return;
+        }
+
         if (MapHolder.decorationsTiles[column, row] != null)
         {
 
@@ -54,17 +60,45 @@ public class NonBuildingsBuilder
 
         MapHolder.decorationsTiles[column, row].type = type;
         MapHolder.decorationsTiles[column, row].variation = variation;
+
+        if (type == DecorationType.Tree)
+        {
+            AddTreeInfluence(column, row, true);
+        }
     }
+
+    static void AddTreeInfluence(int column, int row, bool add)
+    {
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (column + j >= 0 && column +j < MapHolder.width &&
+                    row+i>=0 && row + i <= MapHolder.height)
+                {
+                    MapHolder.treeInfluence[column+j, row+i] += add ? 1 : -1;
+                }
+            }
+        }
+    }
+
+    
     static void RemoveDecoration(DecorationType type, int column, int row)
     {
         if (MapHolder.decorationsTiles[column, row]  == null ||
-            MapHolder.decorationsTiles[column, row].type != DecorationType.Flora)
+            (MapHolder.decorationsTiles[column, row].type != DecorationType.Flora && 
+            MapHolder.decorationsTiles[column, row].type != DecorationType.Tree))
         {
             return;
         }
 
         AddToDecorationLimbo(MapHolder.decorationsTiles[column, row]);
         MapHolder.decorationsTiles[column, row] = null;
+
+        if (type == DecorationType.Tree)
+        {
+            AddTreeInfluence(column, row, false);
+        }
     }
 
     static void AddToDecorationLimbo(DecorationTiles tile)
@@ -89,13 +123,21 @@ public class NonBuildingsBuilder
     }
     static DecorationTiles GetTileFromDecorationLimbo(DecorationType type, int variation)
     {
-        if (decorationTilesLimbo == null || decorationTilesLimbo.Count == 0 || 
+        if (decorationTilesLimbo == null || decorationTilesLimbo.Count == 0 ||
             !decorationTilesLimbo.ContainsKey(type) || decorationTilesLimbo[type].Count < variation + 1 ||
             decorationTilesLimbo[type][variation].Count == 0)
         {
-            DecorationTiles newTile =  new DecorationTiles(DecorationType.Flora);
-            newTile.AddMainTile(GameObject.Instantiate(MapHolder.mapPrefab.floraPrefabDictionary[variation],newTile.decorationBackground));
-            return newTile;
+            if (type == DecorationType.Flora) {
+                DecorationTiles newTile = new DecorationTiles(DecorationType.Flora);
+                newTile.AddMainTile(GameObject.Instantiate(MapHolder.mapPrefab.floraPrefabDictionary[variation], newTile.decorationBackground));
+                return newTile;
+            }
+            else
+            {
+                DecorationTiles newTile = new DecorationTiles(DecorationType.Tree);
+                newTile.AddMainTile(GameObject.Instantiate(MapHolder.mapPrefab.treePrefabDictionary[variation], newTile.decorationBackground));
+                return newTile;
+            }
         }
         DecorationTiles oldTile = decorationTilesLimbo[type][variation][decorationTilesLimbo[type][variation].Count - 1];
         decorationTilesLimbo[type][variation].RemoveAt(decorationTilesLimbo[type][variation].Count - 1);
