@@ -23,7 +23,7 @@ public class BuildersController : MonoBehaviour
         transform.position = offsetTerrain;
 
 
-        terrainBuilder.CreateEmptyLand(MapHolder.width, MapHolder.height);
+        LandBuilder.CreateEmptyLand(MapHolder.width, MapHolder.height);
 
         Controller.ChangeTile = ChangeTile;
         Controller.StartConstructionAction = terrainBuilder.StartConstruction;

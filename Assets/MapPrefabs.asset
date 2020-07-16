@@ -105,7 +105,7 @@ MonoBehaviour:
     - {fileID: 8552812209498091105, guid: e007a003413a5f840bde39ffc3abe129, type: 3}
     - {fileID: 148874448034615241, guid: 8a172db94e513374ca77d6c68e9fd10e, type: 3}
     - {fileID: 5533298821749537331, guid: 9b00d117d3cfa054086fcecdac576d49, type: 3}
-    - {fileID: 6406722457092513699, guid: 8c687fd438224b94c8450137a848494a, type: 3}
+    - {fileID: 642937058525198240, guid: 38f3e2c9212487940b61763f27aae0c2, type: 3}
     - {fileID: 7900206712588280057, guid: de7e4cf7646ecbc40979d924c6c2b1a7, type: 3}
     - {fileID: 1647880122865077162, guid: 14750c02ad79f044f9dbf3695e8e8f30, type: 3}
   fencePrefabDictionary:
@@ -149,7 +149,7 @@ MonoBehaviour:
     - {x: 7, y: 4, z: 0}
     - {x: 5, y: 4, z: 1}
     - {x: 4, y: 4, z: 1}
-    - {x: 4, y: 3, z: 0}
+    - {x: 5, y: 4, z: 1}
     - {x: 4, y: 2, z: 0}
     - {x: 4, y: 2, z: 0}
   maxCount:

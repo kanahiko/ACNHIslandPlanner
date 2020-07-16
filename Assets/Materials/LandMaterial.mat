@@ -31,6 +31,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 91536e6d1e237b34c959fee130c4e63c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: d7c4506dcf462534b8deb960ade749fa, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - BOOLEAN_738E83BE: 0
     - BOOLEAN_BD3C1490: 1

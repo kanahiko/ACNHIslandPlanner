@@ -24,17 +24,6 @@ public class TerrainBuilder : MonoBehaviour
         ChangeMiniMap = MiniMap.ChangeMiniMap;
     }
     
-    public void CreateEmptyLand(int width, int height)
-    {
-        for (int row = 0; row < height; row++)
-        {
-            for (int column = 0; column < width; column++)
-            {
-                CreateLandTile(column ,row);
-            }
-        }
-    }
-    
     bool ToolModeChange(bool isAdd, int column, int row, TileType type)
     {
         //Debug.Log($"{toolMode} {isAdd} {index} {type}  willdo?");
@@ -57,9 +46,7 @@ public class TerrainBuilder : MonoBehaviour
 
     public void ChangeTile(ToolType type, ToolMode mode, int column, int row)
     {
-        Debug.Log($"{MapHolder.buildingsInfluence[column, row]} {MapHolder.buildingsInfluence[column, row] == 2} " +
-                  $"{type != ToolType.PathPermit && MapHolder.treeInfluence[column,row] > 0} " +
-                  $"{MapHolder.decorationsTiles[column, row] != null} { MapHolder.buildingsInfluence[column, row] == 1} {type != ToolType.PathPermit}");
+        //TODO building influence enum, switch to bool variables
         if ((MapHolder.buildingsInfluence[column, row] == 2 ||
             type != ToolType.PathPermit && MapHolder.treeInfluence[column,row] > 0 || 
             MapHolder.decorationsTiles[column, row] != null && (MapHolder.buildingsInfluence[column, row] == 0 ||
@@ -92,7 +79,6 @@ public class TerrainBuilder : MonoBehaviour
     void ChangeTile(TileType type, int column, int row)
     {
         changedCoordinates.Clear();
-       // int index = row * MapHolder.width + column;
         TileType previousTileType = MapHolder.tiles[column,row].type;
         
         switch (type)
@@ -123,7 +109,6 @@ public class TerrainBuilder : MonoBehaviour
                         else
                         {
                             ToolModeChange(true, column, row, TileType.Water);
-                            //return;
                         }
                     }
                     else
@@ -172,7 +157,6 @@ public class TerrainBuilder : MonoBehaviour
                         else
                         {
                             ToolModeChange(true, column, row, TileType.Path);
-                            //return;
                         }
                     }
                     else
@@ -410,7 +394,7 @@ public class TerrainBuilder : MonoBehaviour
             case TileType.Null:
                 break;
             case TileType.Land:
-                CreateLandTile(column, row, MapHolder.tiles[column, row].elevation);
+                LandBuilder.CreateLandTile(column, row, MapHolder.tiles[column, row].elevation);
                 break;
             case TileType.Water:
             case TileType.WaterDiagonal:
@@ -421,7 +405,7 @@ public class TerrainBuilder : MonoBehaviour
                 PathBuilder.CreatePath(column, row, MapHolder.tiles[column, row].elevation);
                 break;
             case TileType.Cliff:
-                CreateLandTile(column, row, MapHolder.tiles[column, row].elevation);
+                LandBuilder.CreateLandTile(column, row, MapHolder.tiles[column, row].elevation);
                 break;
             case TileType.CliffDiagonal:
                 CliffBuilder.CreateCliffDiagonal(column, row);
@@ -604,7 +588,7 @@ public class TerrainBuilder : MonoBehaviour
         switch (MapHolder.tiles[column, row].type)
         {
             case TileType.Land:
-                CreateLandTile(column, row, MapHolder.tiles[column, row].elevation);
+                LandBuilder.CreateLandTile(column, row, MapHolder.tiles[column, row].elevation);
                 break;
             case TileType.WaterDiagonal:
             case TileType.Water:
@@ -637,45 +621,7 @@ public class TerrainBuilder : MonoBehaviour
         }
     }
 
-    void CreateLandTile( int column ,int row, int elevation = 0)
-    {
-        //creates tile and adds its reference to MapHolder
-        if (MapHolder.tiles[column, row] != null)
-        {
-            if (MapHolder.tiles[column, row].backgroundType == TilePrefabType.Land)
-            {
-                MapHolder.tiles[column, row].RemoveQuarters();
-                MapHolder.tiles[column,row].SetElevation(MapHolder.elevationLevels[elevation]);
-            }
-            else
-            {
-                MapHolder.tiles[column, row].HardErase();
-                MapHolder.tiles[column, row].backgroundTile = Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Land], MapHolder.tiles[column,row].colliderObject.transform);
-                MapHolder.tiles[column, row].backgroundType = TilePrefabType.Land;
-                
-                MapHolder.tiles[column,row].SetElevation(MapHolder.elevationLevels[elevation]);
-            }
-        }
-        else
-        {
-            MapHolder.tiles[column, row] = new MapTile(Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Land]));
-            MapHolder.tiles[column, row].backgroundType = TilePrefabType.Land;
-            
-            MapHolder.tiles[column,row].SetCreatedElevation(MapHolder.elevationLevels[elevation]);
-            MapHolder.tiles[column,row].SetPosition(new Vector3(column, 0, -row));
-            MapHolder.tiles[column,row].colliderObject.name = $"{column} {row}";
-        }
-
-        MapHolder.tiles[column, row].elevation = elevation;
-        MapHolder.tiles[column, row].diagonalPathRotation = -1;
-        MapHolder.tiles[column, row].diagonaWaterRotation = -1;
-        MapHolder.tiles[column, row].type = TileType.Land;
-
-        if (elevation > 0)
-        {
-            CliffBuilder.CreateCliffSides(column, row);
-        }
-    }
+    
     public void StartConstruction(int column, int row)
     {
         toolMode = ToolMode.None;

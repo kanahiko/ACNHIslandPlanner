@@ -39,8 +39,7 @@ public class UIController : MonoBehaviour
                 hover.EnlargeHoverButton = EnlargeHoverButton;
                 hover.ScaleHoverButton = ScaleHoverButton;
             }
-        }
-        
+        }        
     }
 
     private void Start()

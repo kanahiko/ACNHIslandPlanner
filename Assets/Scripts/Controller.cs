@@ -398,6 +398,11 @@ public class Controller : MonoBehaviour
         ToolChange(ToolType.BuildingsMarkUp);
     }
 
+    public void ChooseVariation(int variation)
+    {
+        this.variation = variation;
+    }
+
     public void ChangeBuilding(int newBuilding)
     {
         currentDecorationTool = (DecorationType) newBuilding;

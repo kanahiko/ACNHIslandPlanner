@@ -47,6 +47,7 @@ public class PathBuilder
             CliffBuilder.CreateCliffSides(column, row);
         }
     }
+
     public static void FindCornerPath(TileType[,] corners, int rotation, int column, int row)
     {
         TilePrefabType type = TilePrefabType.PathFull;
@@ -167,15 +168,23 @@ public class PathBuilder
         //MapHolder.tiles[column, row].diagonalPathRotation = rotation;
     }
 
-    public static void RemovePathTiles(int column, int row, int sizeX, int sizeY)
+    public static void RedoTiles(HashSet<Vector2Int> pathTiles)
     {
-        for(int i = 0; i < sizeY; i++)
+        if (pathTiles.Count == 0)
         {
-            for(int j = 0; j < sizeX; j++)
+            return;
+        }
+
+        foreach(var path in pathTiles)
+        {
+            if (path.x >= 0 && path.x < MapHolder.width &&
+                path.y >=0 && path.y < MapHolder.height && 
+                (MapHolder.tiles[path.x,path.y].type == TileType.Path || MapHolder.tiles[path.x, path.y].type == TileType.PathCurve))
             {
-                //MapHolder.decorationsTiles[column+j, row-i] = tile;
-                //MapHolder.buildingsInfluence[column + j, row - i] = tile != null ? (i < size.z ? 1 : 2) : 0;
+                CreatePath(path.x, path.y, MapHolder.tiles[path.x, path.y].elevation);
             }
         }
+
     }
+
 }
