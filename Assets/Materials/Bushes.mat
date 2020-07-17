@@ -107,6 +107,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 0
     m_Colors:
+    - Color_3DA33B5D: {r: 1, g: 1, b: 1, a: 0}
     - Color_82B21856: {r: 0.25031152, g: 0.7075472, b: 0.5866194, a: 1}
     - Color_8D458201: {r: 1, g: 1, b: 1, a: 1}
     - Vector3_B5E4DCE5: {r: -0.51, g: 1, b: -0.9, a: 0}
@@ -116,6 +117,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0.015528596, g: 0.05660379, b: 0.014150947, a: 1}
     - _HueVariation: {r: 1, g: 0.5, b: 0, a: 0.1}
+    - _ShadowColor: {r: 0.2509804, g: 0.7058824, b: 0.5882353, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _UvOffset: {r: 0, g: 0, b: 0, a: 0}

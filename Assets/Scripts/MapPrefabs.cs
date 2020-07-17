@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RotaryHeart.Lib.SerializableDictionary;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Map Prefabs", fileName = "MapPrefabs")]
 public class MapPrefabs : ScriptableObject
@@ -39,7 +37,9 @@ public class MapPrefabs : ScriptableObject
     public List<Color> elevationColors;
     
     public Vector2Int miniMapOffset = new Vector2Int(5,5);
-    
+    public Color plazaColor;
+
+
     private int showGridId; 
     private int showElevationId;
     private bool isGridShown = false;
@@ -109,6 +109,7 @@ public class DecorationsPrefabDictionary : SerializableDictionaryBase<Decoration
 
 [System.Serializable]
 public class DecorationsSizeDictionary : SerializableDictionaryBase<DecorationType, Vector3Int> { }
+
 [System.Serializable]
 public class DecorationsMaxCountDictionary : SerializableDictionaryBase<DecorationType, int> { }
 /*

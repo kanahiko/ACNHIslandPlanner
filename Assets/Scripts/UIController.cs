@@ -17,6 +17,8 @@ public class UIController : MonoBehaviour
 
     public RawImage miniMap;
 
+    public MinimapDecorationsDictionary minimapPinsDictionary;
+
     private void Awake()
     {      
     }
@@ -25,6 +27,7 @@ public class UIController : MonoBehaviour
     {
         MiniMap.UpdateMiniMap = SetNewMiniMapTexture;
         MiniMap.CreateMiniMap();
+        MiniMap.CreatePins(minimapPinsDictionary);
     }
 
     void SetNewMiniMapTexture(Texture2D texture)

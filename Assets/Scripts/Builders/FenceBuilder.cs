@@ -114,7 +114,7 @@ public class FenceBuilder : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
         {
-            Debug.Log($"{isHorizontal}");
+            //Debug.Log($"{isHorizontal}");
             //means (isHorizontal && i <= 1) || (!isHorizontal && i> 1)
             if ((isHorizontal && i <= 1) || (!isHorizontal && i > 1))
             {
@@ -157,7 +157,7 @@ public class FenceBuilder : MonoBehaviour
     {
         if (MapHolder.decorationsTiles[column, row].quarters[rotation] != null)
         {
-            Debug.Log($"{MapHolder.decorationsTiles[column, row].quarters[rotation]}");
+            //Debug.Log($"{MapHolder.decorationsTiles[column, row].quarters[rotation]}");
             if (MapHolder.decorationsTiles[column, row].isLinked[rotation] == isLinked)
             {
                 return;
@@ -166,6 +166,7 @@ public class FenceBuilder : MonoBehaviour
                 MapHolder.decorationsTiles[column, row].variation,
                 MapHolder.decorationsTiles[column, row].isLinked[rotation]);
         }
+        Debug.Log($"!!---- {column} {row}");
         MapHolder.decorationsTiles[column, row].quarters[rotation] = GetTileFromFencePartLimbo(variation, isLinked);
 
         MapHolder.decorationsTiles[column, row].quarters[rotation].transform.parent = MapHolder.decorationsTiles[column, row].decorationBackground.transform;
@@ -218,10 +219,14 @@ public class FenceBuilder : MonoBehaviour
     {
         CheckForFenceParts(tile.variation);
 
+        Debug.Log($"before limbo contains unlinked={fencePartsLimbo[0][0].Count} linked={fencePartsLimbo[0][1].Count}");
         for (int i = 0; i < 4; i++)
         {
             AddToFencePartLimbo(tile.quarters[i], tile.variation, tile.isLinked[i]);
+            tile.quarters[i] = null;
         }
+
+        Debug.Log($"after limbo contains unlinked={fencePartsLimbo[0][0].Count} linked={fencePartsLimbo[0][1].Count}");
     }
 
     static void AddToFencePartsLimbo(Transform part, int variation, bool isLinked)
@@ -257,6 +262,8 @@ public class FenceBuilder : MonoBehaviour
             part.position = Util.cullingPosition;
             //part.SetActive(false);
             fencePartsLimbo[variation][(isLinked ? 1 : 0)].Add(part);
+
+            //Debug.Log($"!!---- {column} {fencePartsLimbo[variation][(isLinked ? 1 : 0)].Count}");
         }
         else
         {
@@ -271,7 +278,9 @@ public class FenceBuilder : MonoBehaviour
             return new DecorationTiles(DecorationType.Fence);
         }
         DecorationTiles tile = fenceTilesLimbo[fenceTilesLimbo.Count - 1];
+        //Debug.Log($"{fenceTilesLimbo.Count}");
         fenceTilesLimbo.RemoveAt(fenceTilesLimbo.Count - 1);
+        //Debug.Log($"{fenceTilesLimbo.Count}");
 
         //tile.decorationBackground.SetActive(true);
         return tile;
@@ -284,7 +293,9 @@ public class FenceBuilder : MonoBehaviour
             return GameObject.Instantiate(MapHolder.mapPrefab.fencePrefabDictionary[variation].variationPrefabs[isLinked ? 1 : 0]).transform;
         }
         Transform tile = fencePartsLimbo[variation][isLinked ? 1 : 0][fencePartsLimbo[variation][isLinked ? 1 : 0].Count - 1];
+        Debug.Log($"{isLinked} {fencePartsLimbo[variation][isLinked ? 1 : 0].Count}");
         fencePartsLimbo[variation][isLinked ? 1 : 0].RemoveAt(fencePartsLimbo[variation][isLinked ? 1 : 0].Count - 1);
+        Debug.Log($"{isLinked} {fencePartsLimbo[variation][isLinked ? 1 : 0].Count}");
         //tile.SetActive(true);
         return tile;
     }

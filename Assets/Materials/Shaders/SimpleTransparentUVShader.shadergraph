@@ -10,12 +10,13 @@
             "typeInfo": {
                 "fullName": "UnityEditor.ShaderGraph.Internal.ColorShaderProperty"
             },
-            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"222b526b-faf4-415f-b825-bcbeb12ad400\"\n    },\n    \"m_Name\": \"ShadowColor\",\n    \"m_DefaultReferenceName\": \"Color_82B21856\",\n    \"m_OverrideReferenceName\": \"\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Precision\": 0,\n    \"m_GPUInstanced\": false,\n    \"m_Hidden\": false,\n    \"m_Value\": {\n        \"r\": 0.49170610308647158,\n        \"g\": 0.46079564094543459,\n        \"b\": 0.8962264060974121,\n        \"a\": 1.0\n    },\n    \"m_ColorMode\": 0\n}"
+            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"222b526b-faf4-415f-b825-bcbeb12ad400\"\n    },\n    \"m_Name\": \"ShadowColor\",\n    \"m_DefaultReferenceName\": \"Color_82B21856\",\n    \"m_OverrideReferenceName\": \"_ShadowColor\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Precision\": 0,\n    \"m_GPUInstanced\": false,\n    \"m_Hidden\": false,\n    \"m_Value\": {\n        \"r\": 0.49170610308647158,\n        \"g\": 0.46079564094543459,\n        \"b\": 0.8962264060974121,\n        \"a\": 1.0\n    },\n    \"m_ColorMode\": 0\n}"
         },
         {
             "typeInfo": {
                 "fullName": "UnityEditor.ShaderGraph.Internal.ColorShaderProperty"
             },
+<<<<<<< HEAD:Assets/Materials/SimpleTransparentUVShader.shadergraph
             "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"40ffc35c-7715-4259-9c71-84cbe411db73\"\n    },\n    \"m_Name\": \"Color\",\n    \"m_DefaultReferenceName\": \"Color_3DA33B5D\",\n    \"m_OverrideReferenceName\": \"\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Precision\": 0,\n    \"m_GPUInstanced\": false,\n    \"m_Hidden\": false,\n    \"m_Value\": {\n        \"r\": 1.0,\n        \"g\": 1.0,\n        \"b\": 1.0,\n        \"a\": 0.0\n    },\n    \"m_ColorMode\": 0\n}"
         },
         {
@@ -31,8 +32,12 @@
                 "fullName": "UnityEditor.ShaderGraph.ShaderKeyword"
             },
             "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"f03e1cf3-4ff6-4d59-b242-f8084423cebf\"\n    },\n    \"m_Name\": \"ZWrite\",\n    \"m_DefaultReferenceName\": \"BOOLEAN_7AB501_ON\",\n    \"m_OverrideReferenceName\": \"ZWRITE\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_KeywordType\": 0,\n    \"m_KeywordDefinition\": 0,\n    \"m_KeywordScope\": 0,\n    \"m_Entries\": [],\n    \"m_Value\": 0,\n    \"m_IsEditable\": true,\n    \"m_IsExposable\": true\n}"
+=======
+            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"40ffc35c-7715-4259-9c71-84cbe411db73\"\n    },\n    \"m_Name\": \"Color\",\n    \"m_DefaultReferenceName\": \"Color_3DA33B5D\",\n    \"m_OverrideReferenceName\": \"_Color\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Precision\": 0,\n    \"m_GPUInstanced\": false,\n    \"m_Hidden\": false,\n    \"m_Value\": {\n        \"r\": 1.0,\n        \"g\": 1.0,\n        \"b\": 1.0,\n        \"a\": 1.0\n    },\n    \"m_ColorMode\": 0\n}"
+>>>>>>> forgot-to-push-home-commit:Assets/Materials/Shaders/SimpleTransparentUVShader.shadergraph
         }
     ],
+    "m_SerializedKeywords": [],
     "m_SerializableNodes": [
         {
             "typeInfo": {

@@ -19,6 +19,14 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - CliffTex:
+        m_Texture: {fileID: 2800000, guid: 91536e6d1e237b34c959fee130c4e63c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - ElevationTex:
+        m_Texture: {fileID: 2800000, guid: a98eaec9973141b4c8397d55dc11986a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_16C40F9:
         m_Texture: {fileID: 2800000, guid: a98eaec9973141b4c8397d55dc11986a, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -38,6 +46,12 @@ Material:
     m_Floats:
     - BOOLEAN_738E83BE: 0
     - BOOLEAN_BD3C1490: 1
+    - ElevationHeight: 10
+    - ElevationOffset: 0.15
+    - GridChunkSize: 16
+    - GridOffset: 0.5
+    - GridSize: 1
+    - GridWidth: 0.01
     - ShowElevation: 0
     - ShowGrid: 0
     - Vector1_386223C0: 0
@@ -51,10 +65,14 @@ Material:
     - Vector1_EA654C52: 0
     - Vector1_F402CC69: 0.5
     - Vector1_FDD56E9: 10
+    - _FresnelIntensity: 0.5
+    - _FresnelPower: 3.17
     m_Colors:
     - Color_3AA1389B: {r: 0.47129402, g: 0.46110716, b: 0.6226415, a: 1}
     - Color_48B6A9D6: {r: 1, g: 1, b: 1, a: 1}
     - Color_D7A85747: {r: 1, g: 1, b: 1, a: 1}
     - Color_D90027EF: {r: 0.5660378, g: 0.5612252, b: 0.37112856, a: 1}
     - Vector3_45A42360: {r: -0.51, g: 1, b: -0.9, a: 0}
+    - _ColorFresnel: {r: 0.5647059, g: 0.56078434, b: 0.37254903, a: 1}
+    - _ShadowColor: {r: 0.47129402, g: 0.46110716, b: 0.6226415, a: 1}
   m_BuildTextureStacks: []
