@@ -29,8 +29,6 @@ public static class MapHolder
     public static int[,] treeInfluence;
     public static int[,] buildingsInfluence;
 
-    public static Dictionary<DecorationType, List<UniqueBuilding>> uniqueBuildings;
-
     public static void StartMapHolder()
     {
         width = mapPrefab.width;
@@ -42,37 +40,6 @@ public static class MapHolder
         buildingsInfluence = new int[width,height];
 
         mapPrefab.StartPrefab();
-        uniqueBuildings = new Dictionary<DecorationType, List<UniqueBuilding>>();
-
-        foreach (var building in mapPrefab.maxCount)
-        {
-            if (mapPrefab.decorationsPrefabDictionary.ContainsKey(building.Key))
-            {
-                List<UniqueBuilding> list = new List<UniqueBuilding>();
-                for (int i = 0; i < building.Value; i++)
-                {
-                    list.Add(new UniqueBuilding(GameObject.Instantiate(mapPrefab.decorationsPrefabDictionary[building.Key]),
-                        building.Key, mapPrefab.decorationsSizeDictionary[building.Key]));                    
-                }
-                uniqueBuildings.Add(building.Key, list);
-            }
-        }
-    }
-
-    public static UniqueBuilding FindAvailiableBuilding(DecorationType type)
-    {
-        if (uniqueBuildings.ContainsKey(type))
-        {
-            foreach(var building in uniqueBuildings[type])
-            {
-                if (building.startingColumn == -1)
-                {
-                    return building;
-                }
-            }
-        }
-
-        return null;
     }
 }
 [System.Serializable]

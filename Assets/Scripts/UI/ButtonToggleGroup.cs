@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +7,9 @@ public class ButtonToggleGroup:MonoBehaviour
     private HashSet<FancyToggleButton> registeredToggleButtons;
     public HashSet<FancyToggleButton> activeToggles;
 
-    
+    public bool canTurnOff = false;
+
+    public Action<FancyToggleButton> buttonWasClicked;
     
     void Awake()
     {
@@ -27,12 +30,13 @@ public class ButtonToggleGroup:MonoBehaviour
             foreach (var activeToggle in activeToggles)
             {
                 if (activeToggle != toggle)
-                    activeToggle.ToggleChanged();
+                    activeToggle.TurnOffButton();
             }
             activeToggles.Clear();
         }
 
         activeToggles.Add(toggle);
+        buttonWasClicked?.Invoke(toggle);
     }
 
     public void TurnOffToggles()
@@ -41,7 +45,7 @@ public class ButtonToggleGroup:MonoBehaviour
         {
             foreach (var activeToggle in activeToggles)
             {
-                activeToggle.ToggleChanged();
+                activeToggle.TurnOffButton();
             }
             activeToggles.Clear();
         }

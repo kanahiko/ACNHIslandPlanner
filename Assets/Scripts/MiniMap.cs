@@ -12,16 +12,24 @@ public static class MiniMap
 
     public static Dictionary<DecorationType,List<Image>> minimapPins;
     public static Dictionary<DecorationType, List<Image>> minimapInactivePins;
-    public static Dictionary<Vector2Int, Image> minimapActivePins;
+    public static Dictionary<int, Image> minimapActivePins;
+    
+    static Vector3 hidePosition = Vector3.back;
+    
+    public static int pixelSize = 3;
+
+    public static Vector2 ratio;
+    public static Vector2 miniMapPosition;
+    
     public static void CreateMiniMap()
     {
         var mapPrefab = MapHolder.mapPrefab;
         if (miniMapTexture == null)
         {
             miniMapTexture = new Texture2D(MapHolder.width*3 + mapPrefab.miniMapOffset.x * 2 , MapHolder.height*3 + mapPrefab.miniMapOffset.y * 2, TextureFormat.ARGB32, false , true);
-
-            int fullHeight = MapHolder.height * 3 + mapPrefab.miniMapOffset.y * 2;
-            int fullWidth = MapHolder.width * 3 + mapPrefab.miniMapOffset.x * 2;
+            miniMapTexture.filterMode = FilterMode.Point;
+            int fullHeight = MapHolder.height * pixelSize + mapPrefab.miniMapOffset.y * 2;
+            int fullWidth = MapHolder.width * pixelSize + mapPrefab.miniMapOffset.x * 2;
             int halfWidth = fullWidth / 2;
             int halfHeight = fullHeight / 2;
             for (int i = 0; i <= mapPrefab.miniMapOffset.y; i++)
@@ -54,13 +62,13 @@ public static class MiniMap
         Color secondaryColor = Color.white;
         int rotation = -1;
         
-        for (int i = 0; i < MapHolder.height; i++)
+        for (int row = 0; row < MapHolder.height; row++)
         {
-            for (int j = 0; j < MapHolder.width; j++)
+            for (int column = 0; column < MapHolder.width; column++)
             {
                 
-                type = MapHolder.tiles[j,i].type;
-                elevation = MapHolder.tiles[j, i].elevation;
+                type = MapHolder.tiles[column,row].type;
+                elevation = MapHolder.tiles[column, row].elevation;
                 rotation = -1;
                 //if (previousTypes)
                 if (type == TileType.CliffDiagonal || type == TileType.Cliff || type == TileType.Land)
@@ -68,7 +76,7 @@ public static class MiniMap
                     color = mapPrefab.elevationColors[elevation];
                     if (type == TileType.CliffDiagonal)
                     {
-                        rotation = MapHolder.tiles[j, i].diagonaCliffRotation;
+                        rotation = MapHolder.tiles[column, row].diagonaCliffRotation;
                         secondaryColor = mapPrefab.elevationColors[elevation-1];
                     }
                     
@@ -78,24 +86,26 @@ public static class MiniMap
                     color = mapPrefab.tileTypeColorDictionary[type];
                     if (type == TileType.PathCurve)
                     {
-                        rotation = Util.SubstractRotation(MapHolder.tiles[j, i].diagonalPathRotation,2);
+                        rotation = Util.SubstractRotation(MapHolder.tiles[column, row].diagonalPathRotation,2);
                         secondaryColor = mapPrefab.elevationColors[elevation];
                     }
                     else
                     {
                         if (type == TileType.WaterDiagonal)
                         {
-                            rotation = MapHolder.tiles[j, i].diagonaWaterRotation;
+                            rotation = MapHolder.tiles[column, row].diagonaWaterRotation;
                             secondaryColor = mapPrefab.elevationColors[elevation];
                         }
                     }
                 }
                 
-                for (int k = 0; k < 3; k++)
+                for (int rowPixelAdd = 0; rowPixelAdd < pixelSize; rowPixelAdd++)
                 {
-                    for (int l = 0; l < 3; l++)
+                    for (int columnPixelAdd = 0; columnPixelAdd < pixelSize; columnPixelAdd++)
                     {
-                        miniMapTexture.SetPixel(j*3+l + mapPrefab.miniMapOffset.x, (MapHolder.height * 3) - (i*3+k)  + mapPrefab.miniMapOffset.y - 1, CheckCanSecondaryColor(rotation,l,k) ? secondaryColor : color);
+                        miniMapTexture.SetPixel( column * pixelSize +columnPixelAdd + mapPrefab.miniMapOffset.x, 
+                            (MapHolder.height * pixelSize) - (row * pixelSize+rowPixelAdd)  + mapPrefab.miniMapOffset.y - 1, 
+                            CheckCanSecondaryColor(rotation,columnPixelAdd,rowPixelAdd) ? secondaryColor : color);
                     }
                 }
             }
@@ -111,8 +121,7 @@ public static class MiniMap
     {
         minimapPins = new Dictionary<DecorationType, List<Image>>();
         minimapInactivePins = new Dictionary<DecorationType, List<Image>>();
-        minimapActivePins = new Dictionary<Vector2Int, Image>();
-
+        minimapActivePins = new Dictionary<int, Image>();
         foreach (var type in MapHolder.mapPrefab.maxCount)
         {
             if (minimapPinsDictionary.ContainsKey(type.Key))
@@ -120,11 +129,15 @@ public static class MiniMap
                 int count = type.Value - 1;
                 List<Image> images = new List<Image>();
                 images.Add(minimapPinsDictionary[type.Key]);
-                minimapPinsDictionary[type.Key].transform.localPosition = new Vector3(-100, -100);
+
+                if (hidePosition == Vector3.back)
+                {
+                    hidePosition = minimapPinsDictionary[type.Key].transform.localPosition;
+                }
                 while (count != 0)
                 {
                     Image image = GameObject.Instantiate(minimapPinsDictionary[type.Key], minimapPinsDictionary[type.Key].transform.parent);
-                    image.transform.localPosition = new Vector3(-100, -100);
+                    image.transform.localPosition = hidePosition;
                     images.Add(image);
                     count--;
                 }
@@ -135,24 +148,24 @@ public static class MiniMap
         }
     }
 
-    static bool CheckCanSecondaryColor(int rotation, int l, int k)
+    static bool CheckCanSecondaryColor(int rotation, int column, int row)
     {
         if (rotation != -1)
         {
-            if (l == 1)
+            if (column == 1)
             {
-                if (((rotation >= 2) && k == 0) ||
-                    ((rotation <= 1) && k == 2))
+                if (((rotation >= 2) && row == 0) ||
+                    ((rotation <= 1) && row == 2))
                 {
                     return true;
                 }
             }
             else
             {
-                if ((((rotation == 1 || rotation == 2) && l == 0) ||
-                     ((rotation == 0 || rotation == 3) && l == 2)) && 
-                    (((rotation >= 2) && k != 2) ||
-                     ((rotation <= 1) && k != 0)))
+                if ((((rotation == 1 || rotation == 2) && column == 0) ||
+                     ((rotation == 0 || rotation == 3) && column == 2)) && 
+                    (((rotation >= 2) && row != 2) ||
+                     ((rotation <= 1) && row != 0)))
                 {
                     return true;
                 }
@@ -198,11 +211,13 @@ public static class MiniMap
             }
         }
 
-        for (int k = 0; k < 3; k++)
+        for (int rowPixelAdd = 0; rowPixelAdd < pixelSize; rowPixelAdd++)
         {
-            for (int l = 0; l < 3; l++)
+            for (int columnPixelAdd = 0; columnPixelAdd < pixelSize; columnPixelAdd++)
             {
-                miniMapTexture.SetPixel(column*3+l + MapHolder.mapPrefab.miniMapOffset.x, (MapHolder.height * 3) - (row*3+k) + MapHolder.mapPrefab.miniMapOffset.y  - 1, CheckCanSecondaryColor(rotation,l,k) ? secondaryColor : color);
+                miniMapTexture.SetPixel(column * pixelSize + columnPixelAdd + MapHolder.mapPrefab.miniMapOffset.x, 
+                    (MapHolder.height * pixelSize) - (row * pixelSize + rowPixelAdd) + MapHolder.mapPrefab.miniMapOffset.y  - 1, 
+                    CheckCanSecondaryColor(rotation,columnPixelAdd,rowPixelAdd) ? secondaryColor : color);
             }
         }
         
@@ -253,13 +268,13 @@ public static class MiniMap
                 }
             }
 
-            for (int k = 0; k < 3; k++)
+            for (int rowPixelAdd = 0; rowPixelAdd < pixelSize; rowPixelAdd++)
             {
-                for (int l = 0; l < 3; l++)
+                for (int columnPixelAdd = 0; columnPixelAdd < pixelSize; columnPixelAdd++)
                 {
-                    miniMapTexture.SetPixel(coordinate.x*3+l  + MapHolder.mapPrefab.miniMapOffset.x, (MapHolder.height * 3) - (coordinate.y*3+k)  + MapHolder.mapPrefab.miniMapOffset.y  - 1, CheckCanSecondaryColor(rotation,l,k) ? secondaryColor : color);
-                    //miniMapTexture.SetPixel(l, MapHolder.height - k, color);
-                    //miniMapTexture.SetPixel(coordinate.x, MapHolder.height - coordinate.y, color);
+                    miniMapTexture.SetPixel(coordinate.x * pixelSize + columnPixelAdd  + MapHolder.mapPrefab.miniMapOffset.x, 
+                        (MapHolder.height * pixelSize) - (coordinate.y * pixelSize + rowPixelAdd)  + MapHolder.mapPrefab.miniMapOffset.y  - 1, 
+                        CheckCanSecondaryColor(rotation,columnPixelAdd,rowPixelAdd) ? secondaryColor : color);
                 }
             }
             //miniMapTexture.SetPixel(coordinate.x, MapHolder.height - coordinate.y, color);
@@ -270,82 +285,119 @@ public static class MiniMap
         UpdateMiniMap?.Invoke(miniMapTexture);
     }
 
-    public static void CreateBuilding(int column, int row, int sizeX, int sizeY)
+    public static void CreateBuilding(int column, int row, int sizeX, int sizeY, DecorationType type)
     {
         bool isAdd = MapHolder.decorationsTiles[column, row] != null;
+        if (type == DecorationType.Plaza)
+        {
+            CreateBuildingBackground(column, row, sizeX, sizeY, isAdd);
+        }
+        miniMapTexture.Apply();
+        UpdateMiniMap?.Invoke(miniMapTexture);
+
+        PutPin(column, row, sizeX, sizeY, type, isAdd);
+    }
+
+    static void CreateBuildingBackground(int column, int row, int sizeX, int sizeY, bool isAdd)
+    {
         Color color = MapHolder.mapPrefab.plazaColor;
         Color secondaryColor = MapHolder.mapPrefab.elevationColors[MapHolder.tiles[column, row].elevation];
-        for (int i=0;i<sizeY; i++)
-        {
-            for (int j = 0; j < sizeX; j++)
+        
+        for (int rowIndex = 0; rowIndex < sizeY; rowIndex++)
             {
-                if (!isAdd) 
+                for (int columnIndex = 0; columnIndex < sizeX; columnIndex++)
                 {
-                    miniMapTexture.SetPixel(column * 3 + j + MapHolder.mapPrefab.miniMapOffset.x,
-                      (MapHolder.height * 3) - (row * 3 - i) + MapHolder.mapPrefab.miniMapOffset.y - 1, secondaryColor);
-                    continue;
-                }
-                int rotation = -1;
-                if (j == 0)
-                {
-                    rotation =2;
-                }
-                else
-                {
-                    if (j + 1 == sizeX)
+                    if (!isAdd)
                     {
-                        rotation = 3;
+                        for (int rowPixelAdd = 0; rowPixelAdd < 3; rowPixelAdd++)
+                        {
+                            for (int columnPixelAdd = 0; columnPixelAdd < 3; columnPixelAdd++)
+                            {
+                                miniMapTexture.SetPixel((column + columnIndex) * pixelSize + columnPixelAdd + MapHolder.mapPrefab.miniMapOffset.x,
+                                    (MapHolder.height * pixelSize) - ((row - rowIndex) * pixelSize + rowPixelAdd) + MapHolder.mapPrefab.miniMapOffset.y - 1,
+                                    secondaryColor);
+                            }
+                        }
+
+                        continue;
                     }
-                }
-                if (rotation != -1)
-                {
-                    if (i == 0)
+
+                    int rotation = -1;
+                    if (columnIndex == 0)
                     {
-                        rotation = rotation == 2 ? 0 : 1;
+                        rotation = 2;
                     }
                     else
                     {
-                        if (i + 1 == sizeY)
+                        if (columnIndex + 1 == sizeX)
                         {
-                            rotation = rotation == 2 ? 3 : 2;
+                            rotation = 3;
+                        }
+                    }
+
+                    if (rotation != -1)
+                    {
+                        if (rowIndex == 0)
+                        {
+                            rotation = rotation == 2 ? 1 : 0;
                         }
                         else
                         {
-                            rotation = -1;
+                            if (rowIndex + 1 == sizeY)
+                            {
+                                rotation = rotation == 2 ? 2 : 3;
+                            }
+                            else
+                            {
+                                rotation = -1;
+                            }
                         }
                     }
+
+                    for (int rowPixelAdd = 0; rowPixelAdd < 3; rowPixelAdd++)
+                    {
+                        for (int columnPixelAdd = 0; columnPixelAdd < 3; columnPixelAdd++)
+                        {
+                            miniMapTexture.SetPixel((column + columnIndex) * pixelSize + columnPixelAdd + MapHolder.mapPrefab.miniMapOffset.x,
+                                (MapHolder.height * pixelSize) - ((row - rowIndex) * pixelSize + rowPixelAdd) + MapHolder.mapPrefab.miniMapOffset.y - 1,
+                                CheckCanSecondaryColor(rotation, columnPixelAdd, rowPixelAdd) ? secondaryColor : color);
+                        }
+                    }
+
                 }
-
-                miniMapTexture.SetPixel(column * 3 + j + MapHolder.mapPrefab.miniMapOffset.x, 
-                    (MapHolder.height * 3) - (row * 3 - i) + MapHolder.mapPrefab.miniMapOffset.y - 1, 
-                    CheckCanSecondaryColor(rotation, j, i) ? secondaryColor : color);
-
             }
-        }
     }
 
     static void PutPin(int column, int row, int sizeX, int sizeY, DecorationType type, bool isAdd)
     {
         if (isAdd)
         {
+            
             if (minimapInactivePins.ContainsKey(type))
             {
                 Image pin = minimapInactivePins[type][minimapInactivePins[type].Count - 1];
                 minimapInactivePins[type].RemoveAt(minimapInactivePins[type].Count - 1);
 
-                int newColumn = column / 2;
-                newColumn += column % 2 == 0 ? -1 : 0;
+                int newColumn = sizeX / 2;
+                newColumn += column + (sizeX % 2 == 0 ? -1 : 0);
 
-                minimapActivePins.Add(new Vector2Int(newColumn, row), pin);
+                Vector2 position = new Vector2();
+                position.x = (newColumn * pixelSize + MapHolder.mapPrefab.miniMapOffset.x + pixelSize * 0.5f) * ratio.x;
+                position.y = -(row * pixelSize + MapHolder.mapPrefab.miniMapOffset.y + pixelSize) * ratio.y;   
+                
+                pin.transform.localPosition = position;
+                
+                minimapActivePins.Add(column +  row *MapHolder.width, pin);
             }
         }
         else
         {
-            int newColumn = column / 2;
-            newColumn += column % 2 == 0 ? -1 : 0;
+            Image pin = minimapActivePins[column +  row *MapHolder.width];
+            
+            pin.transform.localPosition = hidePosition;
 
-
-            minimapActivePins.Remove(new Vector2Int(newColumn, row));
+            minimapInactivePins[type].Add(pin);
+            minimapActivePins.Remove(column +  row *MapHolder.width);
         }
     }
 }

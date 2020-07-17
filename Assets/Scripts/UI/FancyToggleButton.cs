@@ -23,8 +23,12 @@ public class FancyToggleButton : Button
 
     public Image graphic;
     private FancyToggleButton previousButton;
-    private FancyToggleButton firstChildButton;
+    //private FancyToggleButton firstChildButton;
 
+    private List<FancyToggleButton> children;
+
+    private int currentButton = -1;
+    
     protected override void OnEnable()
     {
         toggleGroup?.RegisterToggle(this);
@@ -46,10 +50,34 @@ public class FancyToggleButton : Button
 
         if (childrenToggleGroup)
         {
-            firstChildButton = childrenToggleGroup.transform.GetChild(0).GetComponent<FancyToggleButton>();
+            childrenToggleGroup.buttonWasClicked = button => currentButton = children.IndexOf(button);
+            children = new List<FancyToggleButton>();
+            for (int i = 0; i < childrenToggleGroup.transform.childCount; i++)
+            {
+                children.Add(childrenToggleGroup.transform.GetChild(i).GetComponent<FancyToggleButton>());
+            }
         }
-        
+
+        currentButton = -1;
         base.OnEnable();
+    }
+
+    public void WasClicked()
+    {
+        if (isOn && childrenToggleGroup)
+        {
+            currentButton++;
+            if (currentButton >= children.Count)
+            {
+                currentButton = 0;
+            }
+                
+            children[currentButton].onClick?.Invoke();
+        }
+        else
+        {
+            onClick?.Invoke();
+        }
     }
 
     public void ToggleChanged()
@@ -63,14 +91,16 @@ public class FancyToggleButton : Button
                 {
                     if (previousButton != null)
                     {
+                        currentButton = children.IndexOf(previousButton);
                         previousButton.onClick?.Invoke();
                         previousButton = null;
                     }
                     else
                     {
-                        if (firstChildButton)
+                        if (children.Count != 0)
                         {
-                            firstChildButton.onClick?.Invoke();
+                            children[0].onClick?.Invoke();
+                            currentButton = 0;
                         }
                     }
                     buttonsGroup.enabled = true;
@@ -80,6 +110,10 @@ public class FancyToggleButton : Button
             }
             else
             {
+                if (toggleGroup && !toggleGroup.canTurnOff)
+                {
+                    return;
+                }
                 if (buttonsGroup)
                 {
                     foreach (var toggleButton in childrenToggleGroup.activeToggles)
@@ -95,6 +129,29 @@ public class FancyToggleButton : Button
                 graphic.enabled = false;
             }
         }
+    }
+
+    public void TurnOffButton()
+    {
+        isOn =  false;
+        if (borderImage)
+        {
+            if (buttonsGroup)
+            {
+                foreach (var toggleButton in childrenToggleGroup.activeToggles)
+                {
+                    previousButton = toggleButton;
+                    //currentButton = -1;
+                    break;
+                }
+
+                childrenToggleGroup.TurnOffToggles();
+                buttonsGroup.enabled = false;
+            }
+            backgroundImage.color = normalColor;
+            graphic.enabled = false;
+        }
+        
     }
 
     

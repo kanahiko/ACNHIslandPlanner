@@ -126,7 +126,7 @@ public class NonBuildingsBuilder
         else
         {
             GameObject.Destroy(tile.mainTile);
-            GameObject.Destroy(tile.decorationBackground);
+            GameObject.Destroy(tile.decorationBackground.gameObject);
             tile.Dispose();
         }
     }

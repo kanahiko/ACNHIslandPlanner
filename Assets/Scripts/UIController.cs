@@ -19,15 +19,18 @@ public class UIController : MonoBehaviour
 
     public MinimapDecorationsDictionary minimapPinsDictionary;
 
-    private void Awake()
-    {      
-    }
 
     private void Start()
     {
         MiniMap.UpdateMiniMap = SetNewMiniMapTexture;
         MiniMap.CreateMiniMap();
         MiniMap.CreatePins(minimapPinsDictionary);
+        
+        MiniMap.ratio = new Vector2();
+        MiniMap.ratio.x = miniMap.rectTransform.rect.width / (MapHolder.width*MiniMap.pixelSize + MapHolder.mapPrefab.miniMapOffset.x * 2);
+        MiniMap.ratio.y = miniMap.rectTransform.rect.height / (MapHolder.height*MiniMap.pixelSize + MapHolder.mapPrefab.miniMapOffset.y * 2);
+
+        //MiniMap.miniMapPosition = miniMap.rectTransform.localPosition;
     }
 
     void SetNewMiniMapTexture(Texture2D texture)
@@ -39,7 +42,8 @@ public class UIController : MonoBehaviour
     {
         if (toggleDictionary.ContainsKey(type))
         {
-            toggleDictionary[type].onClick?.Invoke();
+            toggleDictionary[type].WasClicked();
+            //toggleDictionary[type].onClick?.Invoke();
         }
     }
     public void ScaleHoverButton(Transform rect)

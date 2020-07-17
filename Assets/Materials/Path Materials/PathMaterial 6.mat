@@ -40,12 +40,20 @@ Material:
         m_Texture: {fileID: 2800000, guid: 97e7dd5259607ac41b65202d70541019, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _AlphaTex:
+        m_Texture: {fileID: 2800000, guid: 6dee38385fb06c4499b74300019433cd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 91ef17a4a5aa45b48aa73dcb8d0237ca, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - BOOLEAN_12A9AAA0: 1
+    - GridChunkSize: 16
+    - GridOffset: 0.5
+    - GridSize: 1
+    - GridWidth: 0.01
     - ShowGrid: 0
     - Vector1_2A2C3DA0: 0
     - Vector1_2AE177C5: 0.5

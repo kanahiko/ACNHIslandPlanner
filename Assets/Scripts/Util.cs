@@ -8,7 +8,7 @@ using UnityEngine;
 public enum TileType
 {
     Null = 0, Land, Water, WaterDiagonal,
-    Path, PathCurve, Cliff, CliffDiagonal
+    Path, PathCurve, Cliff, CliffDiagonal, Sea, Sand
 }
 
 public enum TilePrefabType
@@ -28,7 +28,9 @@ public enum TilePrefabType
     PathSmallCorner,
     PathCurved,
     PathFull,
-    CliffDiagonal
+    CliffDiagonal,
+    Sand,
+    Sea
 }
 
 public enum ToolType
@@ -99,6 +101,9 @@ public static  class Util
     public static Vector3 halfOffset = new Vector3(0.5f, 0, 0.5f);
     public static Vector3 cullingPosition = new Vector3(0, 50, 0);
 
+    /// <summary>
+    /// x - row, y - column
+    /// </summary>
     public static List<Vector2Int> indexOffsetCross = new List<Vector2Int>
     {
         //up
@@ -106,9 +111,13 @@ public static  class Util
         //y = column
         new Vector2Int(-1 , 0), new Vector2Int (0,1), new Vector2Int(1,0),new Vector2Int(0,-1)
     };
+    
+    /// <summary>
+    /// x  - row, y - column
+    /// </summary>
     public static List<Vector2Int> indexOffsetDiagonal = new List<Vector2Int>
     {
-        new Vector2Int(-1 , -1), new Vector2Int (1,-1), new Vector2Int(-1,1),new Vector2Int(1,1)
+        new Vector2Int(-1 , -1), new Vector2Int (-1,1), new Vector2Int(1,1),new Vector2Int(1,-1)
     };
     
     public static T[,] RotateMatrix<T>(T[,] corners)
@@ -386,13 +395,12 @@ public static  class Util
             }
         }
 
-        //TODO:fix water on cliff
         for (int i = 0; i < 4; i++)
         {
             if ((column + indexOffsetDiagonal[i].y >= 0 && column + indexOffsetDiagonal[i].y < MapHolder.width &&
                   row + indexOffsetDiagonal[i].x >= 0 && row + indexOffsetDiagonal[i].x < MapHolder.height))
             {
-                if (MapHolder.tiles[column + indexOffsetDiagonal[i].x, row + indexOffsetDiagonal[i].y].elevation < elevation)
+                if (MapHolder.tiles[column + indexOffsetDiagonal[i].y, row + indexOffsetDiagonal[i].x].elevation < elevation)
                 {
                     if (emptyIndex.x == -2 || indexOffsetDiagonal[i].x != emptyIndex.x && indexOffsetDiagonal[i].y != emptyIndex.y)
                     {

@@ -4,8 +4,29 @@ using UnityEngine;
 
 public class BuildingsBuilder
 {
+
+    public static Dictionary<DecorationType, List<UniqueBuilding>> uniqueBuildings;
     //for building unique buildings
 
+    public static void CreateUniqueBuildings()
+    {
+        uniqueBuildings = new Dictionary<DecorationType, List<UniqueBuilding>>();
+
+        foreach (var building in MapHolder.mapPrefab.maxCount)
+        {
+            if (MapHolder.mapPrefab.decorationsPrefabDictionary.ContainsKey(building.Key))
+            {
+                List<UniqueBuilding> list = new List<UniqueBuilding>();
+                for (int i = 0; i < building.Value; i++)
+                {
+                    list.Add(new UniqueBuilding(GameObject.Instantiate(MapHolder.mapPrefab.decorationsPrefabDictionary[building.Key]),
+                        building.Key, MapHolder.mapPrefab.decorationsSizeDictionary[building.Key]));                    
+                }
+                uniqueBuildings.Add(building.Key, list);
+            }
+        }
+    }
+    
     public static void ChangeTile(int column, int row, ToolMode mode, DecorationType type)
     {
         if (mode == ToolMode.Add)
@@ -22,7 +43,7 @@ public class BuildingsBuilder
     {
         //all buildings DecorationTiles are going to have type building
 
-        UniqueBuilding building = MapHolder.FindAvailiableBuilding(type);
+        UniqueBuilding building = FindAvailiableBuilding(type);
 
         if (building == null)
         {
@@ -43,6 +64,8 @@ public class BuildingsBuilder
             //RedoTilesOfPath          
             
             MarkTile(newColumn, row, building.size, building.tile);
+            MiniMap.CreateBuilding(newColumn, row - MapHolder.mapPrefab.decorationsSizeDictionary[type].z, 
+                building.size.x, building.size.y - MapHolder.mapPrefab.decorationsSizeDictionary[type].z, building.type);
         }
     }
 
@@ -55,8 +78,15 @@ public class BuildingsBuilder
 
         UniqueBuilding building = MapHolder.decorationsTiles[column, row].building;
 
+        int startingColumn = building.startingColumn;
+        int startingRow = building.startingRow;
+        
         MarkTile(building.startingColumn, building.startingRow, building.size, null);
         building.tile.GoToLimbo();
+
+        MiniMap.CreateBuilding(startingColumn, startingRow - MapHolder.mapPrefab.decorationsSizeDictionary[building.type].z, 
+            building.size.x, building.size.y - MapHolder.mapPrefab.decorationsSizeDictionary[building.type].z, building.type);
+        
     }
 
     static int FindStartingPoint(int column, int size)
@@ -113,4 +143,20 @@ public class BuildingsBuilder
         MiniMap.ChangeMiniMap(changedTiles);
     }
 
+
+    public static UniqueBuilding FindAvailiableBuilding(DecorationType type)
+    {
+        if (uniqueBuildings.ContainsKey(type))
+        {
+            foreach(var building in uniqueBuildings[type])
+            {
+                if (building.startingColumn == -1)
+                {
+                    return building;
+                }
+            }
+        }
+
+        return null;
+    }
 }

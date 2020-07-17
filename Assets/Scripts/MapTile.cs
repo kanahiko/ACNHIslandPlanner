@@ -30,6 +30,16 @@ public class MapTile
     public int elevation;
     
 
+    public MapTile()
+    {
+        colliderObject = GameObject.Instantiate(MapHolder.mapPrefab.colliderPrefab);
+        collider = colliderObject.GetComponent<BoxCollider>();
+        quarters = new GameObject[4];
+        prefabType = new TilePrefabType[4];
+        cliffSides = new GameObject[4];
+        cliffSidesType = new int[4] { -1, -1, -1, -1 };
+    }
+    
     public MapTile(GameObject tile)
     {
         colliderObject = GameObject.Instantiate(MapHolder.mapPrefab.colliderPrefab);
@@ -159,8 +169,11 @@ public class MapTile
     public void SetPosition(Vector3 position)
     {
         colliderObject.transform.localPosition = position;
-        backgroundTile.transform.localPosition = Vector3.zero;
-        backgroundTile.transform.SetParent(colliderObject.transform,false);
+        if (backgroundTile)
+        {
+            backgroundTile.transform.localPosition = Vector3.zero;
+            backgroundTile.transform.SetParent(colliderObject.transform, false);
+        }
     }
 
     public void IgnoreElevation(bool isIgnoring = true)

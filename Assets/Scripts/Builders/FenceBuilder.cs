@@ -166,7 +166,7 @@ public class FenceBuilder : MonoBehaviour
                 MapHolder.decorationsTiles[column, row].variation,
                 MapHolder.decorationsTiles[column, row].isLinked[rotation]);
         }
-        Debug.Log($"!!---- {column} {row}");
+        //Debug.Log($"!!---- {column} {row}");
         MapHolder.decorationsTiles[column, row].quarters[rotation] = GetTileFromFencePartLimbo(variation, isLinked);
 
         MapHolder.decorationsTiles[column, row].quarters[rotation].transform.parent = MapHolder.decorationsTiles[column, row].decorationBackground.transform;
@@ -219,14 +219,14 @@ public class FenceBuilder : MonoBehaviour
     {
         CheckForFenceParts(tile.variation);
 
-        Debug.Log($"before limbo contains unlinked={fencePartsLimbo[0][0].Count} linked={fencePartsLimbo[0][1].Count}");
+        //Debug.Log($"before limbo contains unlinked={fencePartsLimbo[0][0].Count} linked={fencePartsLimbo[0][1].Count}");
         for (int i = 0; i < 4; i++)
         {
             AddToFencePartLimbo(tile.quarters[i], tile.variation, tile.isLinked[i]);
             tile.quarters[i] = null;
         }
 
-        Debug.Log($"after limbo contains unlinked={fencePartsLimbo[0][0].Count} linked={fencePartsLimbo[0][1].Count}");
+        //Debug.Log($"after limbo contains unlinked={fencePartsLimbo[0][0].Count} linked={fencePartsLimbo[0][1].Count}");
     }
 
     static void AddToFencePartsLimbo(Transform part, int variation, bool isLinked)
@@ -293,9 +293,9 @@ public class FenceBuilder : MonoBehaviour
             return GameObject.Instantiate(MapHolder.mapPrefab.fencePrefabDictionary[variation].variationPrefabs[isLinked ? 1 : 0]).transform;
         }
         Transform tile = fencePartsLimbo[variation][isLinked ? 1 : 0][fencePartsLimbo[variation][isLinked ? 1 : 0].Count - 1];
-        Debug.Log($"{isLinked} {fencePartsLimbo[variation][isLinked ? 1 : 0].Count}");
+        //Debug.Log($"{isLinked} {fencePartsLimbo[variation][isLinked ? 1 : 0].Count}");
         fencePartsLimbo[variation][isLinked ? 1 : 0].RemoveAt(fencePartsLimbo[variation][isLinked ? 1 : 0].Count - 1);
-        Debug.Log($"{isLinked} {fencePartsLimbo[variation][isLinked ? 1 : 0].Count}");
+        //Debug.Log($"{isLinked} {fencePartsLimbo[variation][isLinked ? 1 : 0].Count}");
         //tile.SetActive(true);
         return tile;
     }

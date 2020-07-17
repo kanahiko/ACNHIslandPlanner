@@ -24,6 +24,8 @@ public class BuildersController : MonoBehaviour
 
 
         LandBuilder.CreateEmptyLand(MapHolder.width, MapHolder.height);
+        
+        BuildingsBuilder.CreateUniqueBuildings();
 
         Controller.ChangeTile = ChangeTile;
         Controller.StartConstructionAction = terrainBuilder.StartConstruction;
@@ -44,7 +46,6 @@ public class BuildersController : MonoBehaviour
             case ToolType.InclineMarkUp:
                 break;
             case ToolType.TreePlanting:
-                break;
             case ToolType.BushPlanting:
             case ToolType.FlowerPlanting:
             case ToolType.FenceBuilding:
@@ -58,4 +59,5 @@ public class BuildersController : MonoBehaviour
                 break;
         }
     }
+
 }

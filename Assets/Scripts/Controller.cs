@@ -427,6 +427,7 @@ public class Controller : MonoBehaviour
 
     public void ChooseVariation(int variation)
     {
+        //Debug.Log($"test {variation}");
         this.variation = variation;
         switch (currentTool)
         {

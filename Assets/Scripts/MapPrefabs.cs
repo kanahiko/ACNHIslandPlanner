@@ -6,8 +6,24 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Map Prefabs", fileName = "MapPrefabs")]
 public class MapPrefabs : ScriptableObject
 {
-    public int width = 92;
-    public int height = 73;
+    public int width = 112; //92
+    public int height = 96; //73
+
+    public int maxBackLandIndex = 13;
+    public int maxFrontLandIndex = 6;
+    
+    /// <summary>
+    /// x - sides,
+    /// y - bottom,
+    /// z - top
+    /// </summary>
+    public Vector3Int sandStandardCreation;
+    /// <summary>
+    /// x - sides,
+    /// y - bottom,
+    /// z - top
+    /// </summary>
+    public Vector3Int seaStandardCreation;
 
     [Header("Materials")]
     public List<Material> gridMaterials;

@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c48d8f018641fd1479dd8f62852228b1, type: 3}
   m_Name: MapPrefabs
   m_EditorClassIdentifier: 
-  width: 92
-  height: 73
+  width: 112
+  height: 96
+  maxBackLandIndex: 13
+  maxFrontLandIndex: 6
+  sandStandardCreation: {x: 4, y: 7, z: 0}
+  seaStandardCreation: {x: 6, y: 3, z: 13}
   gridMaterials:
   - {fileID: 2100000, guid: 85986eb5c2123fa4a9e18eb1c8f4914f, type: 2}
   - {fileID: 2100000, guid: 93c4fc2d66db6e54390b2c6125bf3b06, type: 2}
@@ -56,10 +60,10 @@ MonoBehaviour:
       elementIcon: {fileID: 0}
     reqReferences: {fileID: 0}
     isExpanded: 0
-    _keyValues: 000000000100000008000000020000000300000004000000050000000600000007000000090000000a0000000b0000000c0000000d0000000e0000000f000000
-    _keys: 000000000100000008000000020000000300000004000000050000000600000007000000090000000a0000000b0000000c0000000d0000000e0000000f000000
+    _keyValues: 000000000100000008000000020000000300000004000000050000000600000007000000090000000a0000000b0000000c0000000d0000000e0000000f00000010000000
+    _keys: 000000000100000008000000020000000300000004000000050000000600000007000000090000000a0000000b0000000c0000000d0000000e0000000f00000010000000
     _values:
-    - {fileID: 0}
+    - {fileID: 780577728891321065, guid: 25f612a0649dc7d4e88309c33559aba6, type: 3}
     - {fileID: 6204120525491208915, guid: 07c16055e2f3e754eb2fa10a4557c5c5, type: 3}
     - {fileID: 4190279070646632014, guid: e4e73b1d900e5e24cb07e37a65994f96, type: 3}
     - {fileID: 9082948597709160632, guid: 43e35f2259a5fff46ae6de5ebc3d2ea0, type: 3}
@@ -75,6 +79,7 @@ MonoBehaviour:
     - {fileID: 3758542555312703372, guid: 5906856e61a75ee4894e65a7db88e50d, type: 3}
     - {fileID: 2127154423232691640, guid: d1eeee75a7d9c32408332b75263e78c8, type: 3}
     - {fileID: 780577728891321065, guid: 25f612a0649dc7d4e88309c33559aba6, type: 3}
+    - {fileID: 6204120525491208915, guid: 4011b57ebb537be45881247304d23f1d, type: 3}
   pathVariationMaterial:
   - {fileID: 2100000, guid: 68078f02f8f8fef42b8ff8587f7d22bc, type: 2}
   - {fileID: 2100000, guid: 273e3c75297db394ab62fd5110c5baf2, type: 2}
@@ -168,32 +173,6 @@ MonoBehaviour:
       draggable: 1
       expandable: 1
       multipleSelection: 1
-      isExpanded: 1
-      label:
-        m_Text: Keys
-        m_Image: {fileID: 0}
-        m_Tooltip: 
-      headerHeight: 18
-      footerHeight: 13
-      slideEasing: 0.15
-      verticalSpacing: 2
-      showDefaultBackground: 1
-      elementDisplayType: 0
-      elementNameProperty: 
-      elementNameOverride: 
-      elementIcon: {fileID: 0}
-    reqReferences: {fileID: 0}
-    isExpanded: 1
-    _keyValues: 010000000200000003000000040000000500000006000000070000000800000009000000
-    _keys: 010000000200000003000000040000000500000006000000070000000800000009000000
-    _values: 010000000100000001000000010000000100000008000000080000000800000001000000
-  tileTypeColorDictionary:
-    reorderableList:
-      canAdd: 1
-      canRemove: 1
-      draggable: 1
-      expandable: 1
-      multipleSelection: 1
       isExpanded: 0
       label:
         m_Text: Keys
@@ -210,13 +189,41 @@ MonoBehaviour:
       elementIcon: {fileID: 0}
     reqReferences: {fileID: 0}
     isExpanded: 0
-    _keyValues: 04000000050000000200000003000000
-    _keys: 04000000050000000200000003000000
+    _keyValues: 010000000200000003000000040000000500000006000000070000000800000009000000
+    _keys: 010000000200000003000000040000000500000006000000070000000800000009000000
+    _values: 010000000100000001000000010000000100000008000000080000000800000001000000
+  tileTypeColorDictionary:
+    reorderableList:
+      canAdd: 1
+      canRemove: 1
+      draggable: 1
+      expandable: 1
+      multipleSelection: 1
+      isExpanded: 1
+      label:
+        m_Text: Keys
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+      headerHeight: 18
+      footerHeight: 13
+      slideEasing: 0.15
+      verticalSpacing: 2
+      showDefaultBackground: 1
+      elementDisplayType: 0
+      elementNameProperty: 
+      elementNameOverride: 
+      elementIcon: {fileID: 0}
+    reqReferences: {fileID: 0}
+    isExpanded: 1
+    _keyValues: 040000000500000002000000030000000900000008000000
+    _keys: 040000000500000002000000030000000900000008000000
     _values:
     - {r: 0.70980394, g: 0.654902, b: 0.4627451, a: 1}
     - {r: 0.70980394, g: 0.654902, b: 0.4627451, a: 1}
     - {r: 0.5529412, g: 0.81960785, b: 0.76862746, a: 1}
     - {r: 0.5529412, g: 0.81960785, b: 0.76862746, a: 1}
+    - {r: 0.9333334, g: 0.91372555, b: 0.6627451, a: 1}
+    - {r: 0.5529412, g: 0.8196079, b: 0.7686275, a: 1}
   elevationColors:
   - {r: 0.30980393, g: 0.45882353, b: 0.27450982, a: 1}
   - {r: 0.38039216, g: 0.627451, b: 0.31764707, a: 1}
