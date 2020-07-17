@@ -55,6 +55,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NoiseA:
+        m_Texture: {fileID: 2800000, guid: f8c9044416ce39c4fb288a0849f3651f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseB:
+        m_Texture: {fileID: 2800000, guid: f8c9044416ce39c4fb288a0849f3651f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -65,6 +73,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - BOOLEAN_9589A6C7: 1
+    - GridChunkSize: 16
+    - GridOffset: 0.5
+    - GridSIze: 1
+    - GridWidth: 0.01
     - ShowGrid: 0
     - Vector1_1776BC66: 0.4
     - Vector1_26B986BC: 8
@@ -82,13 +94,20 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _FresnelIntensity: 1.3
+    - _FresnelPower: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
+    - _NoiseASize: 0.5
+    - _NoiseASpeed: 8
+    - _NoiseBSize: 0.4
+    - _NoiseBSpeed: 3.5
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -102,6 +121,10 @@ Material:
     - Color_DAB07069: {r: 0.5330188, g: 0.77154875, b: 1, a: 1}
     - Vector3_4339DAFD: {r: 1, g: 1, b: 1, a: 0}
     - Vector3_C38353C2: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.19999996, g: 0.73359627, b: 0.90588236, a: 1}
+    - _Color: {r: 0.27058825, g: 0.4784314, b: 0.68235296, a: 1}
+    - _ColorFresnel: {r: 0.53333336, g: 0.7725491, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ShadowColor: {r: 0.07450981, g: 0.3803922, b: 0.6313726, a: 1}
+    - _SpecColor: {r: 0.3137255, g: 0.29411766, b: 0.6901961, a: 1}
+    - _Specular: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []

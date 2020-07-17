@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RotaryHeart.Lib.SerializableDictionary;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Map Prefabs", fileName = "MapPrefabs")]
 public class MapPrefabs : ScriptableObject

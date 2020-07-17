@@ -118,8 +118,17 @@ public class NonBuildingsBuilder
                 decorationTilesLimbo[tile.type].Add(new List<DecorationTiles>());
             }
         }
-        decorationTilesLimbo[tile.type][tile.variation].Add(tile);
-        tile.GoToLimbo();
+        if (decorationTilesLimbo[tile.type][tile.variation].Count < maxDecorationLimboCount)
+        {
+            decorationTilesLimbo[tile.type][tile.variation].Add(tile);
+            tile.GoToLimbo();
+        }
+        else
+        {
+            GameObject.Destroy(tile.mainTile);
+            GameObject.Destroy(tile.decorationBackground);
+            tile.Dispose();
+        }
     }
     static DecorationTiles GetTileFromDecorationLimbo(DecorationType type, int variation)
     {

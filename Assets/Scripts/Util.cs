@@ -231,7 +231,7 @@ public static  class Util
                 sum++; 
             }
         }
-        Debug.Log(sum);
+        //Debug.Log(sum);
         return sum<= 1;
     }
     

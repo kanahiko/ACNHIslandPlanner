@@ -32,6 +32,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - ElevationTex:
+        m_Texture: {fileID: 2800000, guid: a98eaec9973141b4c8397d55dc11986a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_224CEE60:
         m_Texture: {fileID: 2800000, guid: 91536e6d1e237b34c959fee130c4e63c, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -77,6 +81,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - ElevationHeight: 10
+    - ElevationOffset: 0.15
     - ShowElevation: 0
     - Vector1_1F8626A0: 0.2
     - Vector1_386223C0: 0
@@ -97,6 +103,8 @@ Material:
     - _Cutoff: 0.5
     - _DstBlend: 0
     - _EnvironmentReflections: 1
+    - _FresnelIntensity: 0.2
+    - _FresnelPower: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -122,6 +130,8 @@ Material:
     - Vector3_45A42360: {r: -0.51, g: 1, b: -0.9, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorFresnel: {r: 1, g: 0.96862745, b: 0.4392157, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ShadowColor: {r: 0.47129402, g: 0.46110716, b: 0.6226415, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
