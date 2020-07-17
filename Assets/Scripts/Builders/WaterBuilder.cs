@@ -48,6 +48,7 @@ public class WaterBuilder
         {
             CliffBuilder.CreateCliffSides(column, row);
         }
+
     }
 
     static void FindWaterCorner(TileType[,] corners,int[,] elevationCorners, int rotation, int column, int row)

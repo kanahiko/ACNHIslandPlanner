@@ -118,6 +118,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "BuildingsTool",
+                    "type": "Button",
+                    "id": "5bd46dfe-d3c1-457c-9f5a-ff7ead375a12",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "BushTool",
                     "type": "Button",
                     "id": "50e2bc62-4838-40dd-bfe9-516c67836dac",
@@ -129,14 +137,6 @@
                     "name": "TreeTool",
                     "type": "Button",
                     "id": "800e2e29-e978-4089-b175-3fdc48cce14c",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "BuildingsTool",
-                    "type": "Button",
-                    "id": "5bd46dfe-d3c1-457c-9f5a-ff7ead375a12",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -484,7 +484,7 @@
                 {
                     "name": "",
                     "id": "a723e897-7c81-4e3d-b55b-4fa076a531e7",
-                    "path": "<Keyboard>/5",
+                    "path": "<Keyboard>/6",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -495,7 +495,7 @@
                 {
                     "name": "",
                     "id": "f247aa73-95ef-4899-b625-aa1e9b308ef3",
-                    "path": "<Keyboard>/numpad5",
+                    "path": "<Keyboard>/numpad6",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -506,7 +506,7 @@
                 {
                     "name": "",
                     "id": "5ee8958a-4962-45f8-8a6a-e9f19a891956",
-                    "path": "<Keyboard>/6",
+                    "path": "<Keyboard>/8",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -517,7 +517,7 @@
                 {
                     "name": "",
                     "id": "6a1fb84f-3137-4ac8-a453-4524d13d3d16",
-                    "path": "<Keyboard>/numpad6",
+                    "path": "<Keyboard>/numpad8",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -528,7 +528,7 @@
                 {
                     "name": "",
                     "id": "45f28111-721f-49c8-b552-9589eb1d247e",
-                    "path": "<Keyboard>/7",
+                    "path": "<Keyboard>/5",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -539,7 +539,7 @@
                 {
                     "name": "",
                     "id": "0e528dff-fe38-49db-b56a-874744bdbca3",
-                    "path": "<Keyboard>/numpad7",
+                    "path": "<Keyboard>/numpad5",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",

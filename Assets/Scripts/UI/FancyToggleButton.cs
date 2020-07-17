@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class FancyToggleButton : Toggle, IPointerEnterHandler, IPointerExitHandler
+public class FancyToggleButton : Button
 {
     public Image backgroundImage;
 
@@ -15,64 +15,84 @@ public class FancyToggleButton : Toggle, IPointerEnterHandler, IPointerExitHandl
     public Vector2 hoverBorderSize = new Vector2(1.2f,1.2f);
     Vector2 borderSize;
 
-    public ToggleGroup toggleGroup;
-
-    public ToggleGroup childrenToggleGroup;
+    public ButtonToggleGroup toggleGroup;
+    public ButtonToggleGroup childrenToggleGroup;
     public Canvas buttonsGroup;
+
+    public bool isOn = false;
+
+    public Image graphic;
+    private FancyToggleButton previousButton;
+    private FancyToggleButton firstChildButton;
 
     protected override void OnEnable()
     {
-        if (toggleGroup)
-        {
-            toggleGroup.RegisterToggle(this);
-        }
-        onValueChanged.AddListener(ToggleChanged);
+        toggleGroup?.RegisterToggle(this);
+        onClick.AddListener(ToggleChanged);
         if (borderImage)
         {
             borderSize = borderImage.transform.localScale;
         }
+
+        if (backgroundImage)
+        {
+            backgroundImage.color = isOn ? pressedColor : normalColor;
+        }
+
+        if (graphic)
+        {
+            graphic.enabled = isOn;
+        }
+
+        if (childrenToggleGroup)
+        {
+            firstChildButton = childrenToggleGroup.transform.GetChild(0).GetComponent<FancyToggleButton>();
+        }
+        
         base.OnEnable();
     }
 
-    void ToggleChanged(bool isOn)
+    public void ToggleChanged()
     {
-
+        isOn = !isOn;
         if (borderImage)
         {
             if (isOn)
             {
                 if (buttonsGroup)
-                { 
+                {
+                    if (previousButton != null)
+                    {
+                        previousButton.onClick?.Invoke();
+                        previousButton = null;
+                    }
+                    else
+                    {
+                        if (firstChildButton)
+                        {
+                            firstChildButton.onClick?.Invoke();
+                        }
+                    }
                     buttonsGroup.enabled = true;
                 }
-
-
-                    if (toggleGroup)
-                {
-                    var toggles = toggleGroup.ActiveToggles();
-
-                    foreach (var toggle in toggles)
-                    {
-                        if (toggle != this)
-                            toggle.isOn=false;
-                    }
-                }
                 backgroundImage.color = pressedColor;
+                graphic.enabled = true;
             }
             else
             {
                 if (buttonsGroup)
                 {
-                    var toggles = childrenToggleGroup.ActiveToggles();
-
-                    foreach (var toggle in toggles)
+                    foreach (var toggleButton in childrenToggleGroup.activeToggles)
                     {
-                        if (toggle != this)
-                            toggle.isOn = false;
+                        previousButton = toggleButton;
+                        break;
                     }
+
+                    childrenToggleGroup.TurnOffToggles();
                     buttonsGroup.enabled = false;
                 }
                 backgroundImage.color = normalColor;
+                graphic.enabled = false;
             }
         }
     }

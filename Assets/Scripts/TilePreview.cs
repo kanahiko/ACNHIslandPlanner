@@ -1,6 +1,7 @@
 ﻿using RotaryHeart.Lib.SerializableDictionary;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TilePreview : MonoBehaviour
@@ -26,13 +27,34 @@ public class TilePreview : MonoBehaviour
                 preview = nullPreview;
                 break;
             case DecorationType.Fence:
-                preview = previewFence[variation];
+                if (previewFence.Count < variation + 1)
+                {
+                    preview = previewFence[previewFence.Count - 1];
+                }
+                else
+                {
+                    preview = previewFence[variation];
+                }
+
                 break;
             case DecorationType.Flora:
-                preview = previewFlora[variation];
+                if (previewFlora.Count < variation + 1)
+                {
+                    preview = previewFlora[previewFlora.Count - 1];
+                }else
+                {
+                    preview = previewFlora[variation];
+                }
                 break;
             case DecorationType.Tree:
-                preview = previewTree[variation];
+                if (previewTree.Count < variation + 1)
+                {
+                    preview = previewTree[previewTree.Count - 1];
+                }
+                else
+                {
+                    preview = previewTree[variation];
+                }
                 break;
             case DecorationType.Plaza:
             case DecorationType.NookShop:
@@ -44,7 +66,14 @@ public class TilePreview : MonoBehaviour
             case DecorationType.Bridge:
             case DecorationType.Camp:
             case DecorationType.Building:
-                preview = previewBuilding[type];
+                if (!previewBuilding.ContainsKey(type))
+                {
+                    preview = nullPreview;
+                }
+                else
+                {
+                    preview = previewBuilding[type];
+                }
                 break;
         }
         if (currentPreview != null)

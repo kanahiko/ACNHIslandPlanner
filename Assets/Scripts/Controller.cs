@@ -132,6 +132,11 @@ public class Controller : MonoBehaviour
 
     }
 
+    void SetToolButton(ToolType type)
+    {
+        controller.SetToolButton(type);
+    }
+
     void Start()
     {
         playerFieldSizeMin.y = playerFieldSizeMax.y - MapHolder.height;
@@ -345,62 +350,103 @@ public class Controller : MonoBehaviour
 
     public void WaterscapingButtonClick()
     {
-        ChangeCursor.Invoke(DecorationType.Null, -1);
-        //ChangeCursor.?Invoke();
-        currentDecorationTool = DecorationType.Null;
-        ToolChange(ToolType.Waterscaping);
+        if (currentTool != ToolType.Waterscaping)
+        {
+            ChangeCursor.Invoke(DecorationType.Null, -1);
+            //ChangeCursor.?Invoke();
+            currentDecorationTool = DecorationType.Null;
+            ToolChange(ToolType.Waterscaping);
+        }
     }
     
     public void CliffConstructionButtonClick()
     {
-        ChangeCursor.Invoke(DecorationType.Null, -1);
-        currentDecorationTool = DecorationType.Null;
-        ToolChange(ToolType.CliffConstruction);
+        if (currentTool != ToolType.CliffConstruction)
+        {
+            ChangeCursor.Invoke(DecorationType.Null, -1);
+            currentDecorationTool = DecorationType.Null;
+            ToolChange(ToolType.CliffConstruction);
+        }
     }
 
     public void PathPermitButtonClick()
     {
-        ChangeCursor.Invoke(DecorationType.Null, -1);
-        currentDecorationTool = DecorationType.Null;
-        ToolChange(ToolType.PathPermit);
+        if (currentTool != ToolType.PathPermit)
+        {
+            ChangeCursor.Invoke(DecorationType.Null, -1);
+            currentDecorationTool = DecorationType.Null;
+            ToolChange(ToolType.PathPermit);
+        }
     }
 
     public void FencePermitButtonClick()
     {
-        ChangeCursor.Invoke(DecorationType.Fence, 0);
-        variation = 0;
-        isHorizontal = true;
-        currentDecorationTool = DecorationType.Fence;
-        ToolChange(ToolType.FenceBuilding);
+        //ChangeCursor.Invoke(DecorationType.Fence, 0);
+        //variation = 0;
+        if (currentTool != ToolType.FenceBuilding)
+        {
+            isHorizontal = true;
+            currentDecorationTool = DecorationType.Fence;
+            ToolChange(ToolType.FenceBuilding);
+        }
     }
     public void BushPermitButtonClick()
     {
-        ChangeCursor.Invoke(DecorationType.Flora, 0);
-        variation = 0;
-        isHorizontal = true;
-        currentDecorationTool = DecorationType.Flora;
-        ToolChange(ToolType.BushPlanting);
+        //ChangeCursor.Invoke(DecorationType.Flora, 0);
+        //variation = 0;
+        if (currentTool != ToolType.BushPlanting)
+        {
+            isHorizontal = true;
+            currentDecorationTool = DecorationType.Flora;
+            ToolChange(ToolType.BushPlanting);
+        }
     }
+    
     public void TreePermitButtonClick()
     {
-        ChangeCursor.Invoke(DecorationType.Tree, 0);
-        variation = 0;
-        isHorizontal = true;
-        currentDecorationTool = DecorationType.Tree;
-        ToolChange(ToolType.BushPlanting);
+        //ChangeCursor.Invoke(DecorationType.Tree, 0);
+        //variation = 0;
+        if (currentTool != ToolType.TreePlanting)
+        {
+            isHorizontal = true;
+            currentDecorationTool = DecorationType.Tree;
+            ToolChange(ToolType.TreePlanting);
+        }
     }
     public void BuildingsPermitButtonClick()
     {
-        ChangeCursor.Invoke(DecorationType.House, 0);
-        variation = 0;
-        isHorizontal = true;
-        currentDecorationTool = DecorationType.House;
-        ToolChange(ToolType.BuildingsMarkUp);
+        //ChangeCursor.Invoke(DecorationType.House, 0);
+        //variation = 0;
+        if (currentTool != ToolType.BuildingsMarkUp)
+        {
+            isHorizontal = true;
+            currentDecorationTool = DecorationType.House;
+            ToolChange(ToolType.BuildingsMarkUp);
+        }
     }
 
     public void ChooseVariation(int variation)
     {
         this.variation = variation;
+        switch (currentTool)
+        {
+            case ToolType.BridgeMarkUp:
+                break;
+            case ToolType.InclineMarkUp:
+                break;
+            case ToolType.TreePlanting:
+                ChangeCursor.Invoke(DecorationType.Tree, variation);
+                break;
+            case ToolType.BushPlanting:
+                ChangeCursor.Invoke(DecorationType.Flora, variation);
+                break;
+            case ToolType.FenceBuilding:
+                ChangeCursor.Invoke(DecorationType.Fence, variation);
+                break;
+            case ToolType.BuildingsMarkUp:
+                ChangeCursor.Invoke((DecorationType)variation, -1);
+                break;
+        }
     }
 
     public void ChangeBuilding(int newBuilding)

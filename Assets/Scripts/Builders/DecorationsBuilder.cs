@@ -46,7 +46,7 @@ public class DecorationsBuilder : MonoBehaviour
             case DecorationType.Incline:
             case DecorationType.Bridge:
             case DecorationType.Camp:
-                building = MapHolder.FindAvailiableBuilding(type);
+                BuildingsBuilder.ChangeTile(column, row, mode, (DecorationType)variation);
                 break;
         }
     }

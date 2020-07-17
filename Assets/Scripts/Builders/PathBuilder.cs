@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 public class PathBuilder
 {
-    public static void CreatePath(int column, int row, int elevationLevel)
+    public static void CreatePath(int column, int row, int elevationLevel, int variation)
     {
         if (MapHolder.tiles[column,row] != null)
         {
@@ -27,17 +27,17 @@ public class PathBuilder
         }
         MapHolder.tiles[column, row].diagonaWaterRotation = -1;
 
-        TileType[,] corners = Util.CreateMatrix(column, row);
+        TileType[,] corners = Util.CreateMatrix(column, row, variation);
 
         if (MapHolder.tiles[column,row].type == TileType.PathCurve)
         {
-            CreateCurvedPath(corners, column, row);
+            CreateCurvedPath(corners, column, row,variation);
         }
         else
         {
             for (int k = 0; k < 4; k++)
             {
-                FindCornerPath(corners, k, column, row);
+                FindCornerPath(corners, k, column, row,variation);
                 corners = Util.RotateMatrix(corners);
             }
             MapHolder.tiles[column, row].diagonalPathRotation = -1;
@@ -48,7 +48,7 @@ public class PathBuilder
         }
     }
 
-    public static void FindCornerPath(TileType[,] corners, int rotation, int column, int row)
+    public static void FindCornerPath(TileType[,] corners, int rotation, int column, int row, int variation)
     {
         TilePrefabType type = TilePrefabType.PathFull;
         if (corners[0, 1] == TileType.Land)
@@ -105,10 +105,14 @@ public class PathBuilder
             MapHolder.tiles[column, row].quarters[rotation].transform.localRotation = rotate;
         }
 
-        //MapHolder.tiles[row * MapHolder.width + column] = TileType.Path;
+        if (variation >= 0)
+        {
+            MapHolder.tiles[column, row].quarters[rotation].GetComponentInChildren<MeshRenderer>().material =
+                MapHolder.mapPrefab.pathVariationMaterial[variation];
+        }
     }
 
-    public static void CreateCurvedPath(TileType[,] corners, int column, int row)
+    public static void CreateCurvedPath(TileType[,] corners, int column, int row, int variation)
     {
         
         int rotation = MapHolder.tiles[column, row].diagonalPathRotation;
@@ -152,6 +156,10 @@ public class PathBuilder
             oppositeTile.transform.localRotation = Quaternion.Euler(0, oppositeRotation * 90, 0);
             MapHolder.tiles[column, row].quarters[oppositeRotation] = oppositeTile;
             
+            if (variation >= 0)
+            {
+                oppositeTile.GetComponentInChildren<MeshRenderer>().material = MapHolder.mapPrefab.pathVariationMaterial[variation];
+            }
         }
 
         //creates curved corner and adds its reference to MapHolder
@@ -161,11 +169,13 @@ public class PathBuilder
         
         MapHolder.tiles[column, row].quarters[rotation] = tile;
         MapHolder.tiles[column, row].prefabType[rotation] = TilePrefabType.PathCurved;
-        //Debug.Log($"path rotation {rotation}");
         MapHolder.tiles[column, row].diagonalPathRotation = rotation;
-        //MapHolder.tiles[row * MapHolder.width + column] = TileType.PathCurve;
-        //Debug.Log($"{MapHolder.tiles[column, row].GetDirectionOfPath()}");
-        //MapHolder.tiles[column, row].diagonalPathRotation = rotation;
+        
+        
+        if (variation >= 0)
+        {
+            tile.GetComponentInChildren<MeshRenderer>().material = MapHolder.mapPrefab.pathVariationMaterial[variation];
+        }
     }
 
     public static void RedoTiles(HashSet<Vector2Int> pathTiles)
@@ -181,7 +191,7 @@ public class PathBuilder
                 path.y >=0 && path.y < MapHolder.height && 
                 (MapHolder.tiles[path.x,path.y].type == TileType.Path || MapHolder.tiles[path.x, path.y].type == TileType.PathCurve))
             {
-                CreatePath(path.x, path.y, MapHolder.tiles[path.x, path.y].elevation);
+                CreatePath(path.x, path.y, MapHolder.tiles[path.x, path.y].elevation, MapHolder.tiles[path.x,path.y].variation);
             }
         }
 

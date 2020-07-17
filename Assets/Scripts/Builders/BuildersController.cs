@@ -37,7 +37,7 @@ public class BuildersController : MonoBehaviour
             case ToolType.Waterscaping:
             case ToolType.CliffConstruction:
             case ToolType.PathPermit:
-                terrainBuilder.ChangeTile(tool, mode, column, row);
+                terrainBuilder.ChangeTile(tool, mode, column, row, variation);
                 break;
             case ToolType.BridgeMarkUp:
                 break;
@@ -48,11 +48,12 @@ public class BuildersController : MonoBehaviour
             case ToolType.BushPlanting:
             case ToolType.FlowerPlanting:
             case ToolType.FenceBuilding:
+            case ToolType.BuildingsMarkUp:
                 DecorationsBuilder.ChangeTile(column,row,decorationType,mode,variation,isHorizontal);
                 break;
-            case ToolType.BuildingsMarkUp:
+            /*case ToolType.BuildingsMarkUp:
                 BuildingsBuilder.ChangeTile(column, row, mode, decorationType);
-                break;
+                break;*/
             case ToolType.Null:
                 break;
         }

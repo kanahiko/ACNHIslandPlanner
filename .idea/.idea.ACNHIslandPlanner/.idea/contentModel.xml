@@ -52,6 +52,7 @@
             <e p="CliffBuilder.cs" t="Include" />
             <e p="DecorationsBuilder.cs" t="Include" />
             <e p="FenceBuilder.cs" t="Include" />
+            <e p="LandBuilder.cs" t="Include" />
             <e p="NonBuildingsBuilder.cs" t="Include" />
             <e p="PathBuilder.cs" t="Include" />
             <e p="TerrainBuilder.cs" t="Include" />
@@ -59,11 +60,18 @@
           </e>
           <e p="Controller.cs" t="Include" />
           <e p="Controls.cs" t="Include" />
+          <e p="Editor" t="Include">
+            <e p="FancyToggleEditor.cs" t="Include" />
+          </e>
           <e p="MapHolder.cs" t="Include" />
           <e p="MapPrefabs.cs" t="Include" />
           <e p="MapTile.cs" t="Include" />
           <e p="MiniMap.cs" t="Include" />
           <e p="TilePreview.cs" t="Include" />
+          <e p="UI" t="Include">
+            <e p="ButtonToggleGroup.cs" t="Include" />
+            <e p="FancyToggleButton.cs" t="Include" />
+          </e>
           <e p="UIController.cs" t="Include" />
           <e p="UIOnHover.cs" t="Include" />
           <e p="Util.cs" t="Include" />

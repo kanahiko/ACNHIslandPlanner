@@ -145,7 +145,7 @@ public static  class Util
     }
 
 
-    public static TileType[,] CreateMatrix(int column, int row)
+    public static TileType[,] CreateMatrix(int column, int row, int variation = -1)
     {
         int elevation = MapHolder.tiles[column, row].elevation;
         TileType[,] corners = new TileType[3, 3];
@@ -167,8 +167,11 @@ public static  class Util
 
                 corners[i + 1, j + 1] = MapHolder.tiles[column + j, row + i].type;
                 
+                //Debug.Log($"{variation} { MapHolder.tiles[column + j, row + i].variation}");
                 if ((corners[1, 1] == TileType.Path || corners[1, 1] == TileType.PathCurve) &&
-                    ((corners[i + 1, j + 1] != TileType.Path && corners[i + 1, j + 1] != TileType.PathCurve) || MapHolder.tiles[column + j, row + i].elevation != elevation))
+                    ((corners[i + 1, j + 1] != TileType.Path && corners[i + 1, j + 1] != TileType.PathCurve) || 
+                     MapHolder.tiles[column + j, row + i].elevation != elevation ||
+                     MapHolder.tiles[column + j, row + i].variation != variation))
                 {
                     corners[i + 1, j + 1] = TileType.Land;
                 }
@@ -252,7 +255,7 @@ public static  class Util
         }
     }
 
-    public static bool CanInfluence(this TileType influencer, TileType influencee, int direction, Vector2Int directionOfPath, Vector2Int directionOfWater)
+    public static bool CanInfluence(this TileType influencer, TileType influencee, int direction, Vector2Int directionOfPath, Vector2Int directionOfWater, bool isSameVariation)
     {
         //Debug.Log($"{influencee} {influencer} {direction} dp={directionOfPath} dw={directionOfWater}");
         if ((influencee == TileType.CliffDiagonal) &&
@@ -261,7 +264,7 @@ public static  class Util
             return true; 
         }
 
-        if (influencee == TileType.PathCurve && (direction == directionOfPath.x || direction == directionOfPath.y))
+        if (isSameVariation && influencee == TileType.PathCurve && (direction == directionOfPath.x || direction == directionOfPath.y))
         {
             return influencer == TileType.Path || influencer == TileType.PathCurve;
         }
@@ -383,6 +386,7 @@ public static  class Util
             }
         }
 
+        //TODO:fix water on cliff
         for (int i = 0; i < 4; i++)
         {
             if ((column + indexOffsetDiagonal[i].y >= 0 && column + indexOffsetDiagonal[i].y < MapHolder.width &&

@@ -52,5 +52,7 @@ public class LandBuilder : MonoBehaviour
         {
             CliffBuilder.CreateCliffSides(column, row);
         }
+        
+        MapHolder.tiles[column, row].variation = -1;
     }
 }

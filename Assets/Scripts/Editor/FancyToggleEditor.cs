@@ -10,10 +10,13 @@ public class FancyToggleButtonEditor : Editor
 {
     SerializedProperty toggleEvents;
     SerializedProperty toggleTransition;
+
+    private bool showDefaultInspector = true;
+    
     private void OnEnable()
     {
-        toggleEvents = serializedObject.FindProperty("onValueChanged");
-        toggleTransition = serializedObject.FindProperty("toggleTransition");
+        toggleEvents = serializedObject.FindProperty("onClick");
+        //toggleTransition = serializedObject.FindProperty("toggleTransition");
     }
 
     public override void OnInspectorGUI()
@@ -29,23 +32,31 @@ public class FancyToggleButtonEditor : Editor
         toggle.hoverBorderSize = EditorGUILayout.Vector2Field("Toggle border hover size", toggle.hoverBorderSize);
 
         toggle.buttonsGroup = EditorGUILayout.ObjectField("Panel", toggle.buttonsGroup, typeof(Canvas), true) as Canvas;
-        toggle.childrenToggleGroup = EditorGUILayout.ObjectField("Children toggle group", toggle.childrenToggleGroup, typeof(ToggleGroup), true) as ToggleGroup;
+        toggle.childrenToggleGroup = EditorGUILayout.ObjectField("Children toggle group", toggle.childrenToggleGroup, typeof(ButtonToggleGroup), true) as ButtonToggleGroup;
 
         toggle.interactable = EditorGUILayout.Toggle("Interactable", toggle.interactable);
 
         toggle.isOn = EditorGUILayout.Toggle("Is on",toggle.isOn);
 
-        this.serializedObject.Update();
+        /*this.serializedObject.Update();
         EditorGUILayout.PropertyField(toggleTransition, new GUIContent("Toggle transition"));
-        this.serializedObject.ApplyModifiedProperties();
+        this.serializedObject.ApplyModifiedProperties();*/
 
-        toggle.toggleGroup = EditorGUILayout.ObjectField("Toggle group", toggle.toggleGroup, typeof(ToggleGroup), true) as ToggleGroup;
+        toggle.toggleGroup = EditorGUILayout.ObjectField("Toggle group", toggle.toggleGroup, typeof(ButtonToggleGroup), true) as ButtonToggleGroup;
         toggle.graphic = EditorGUILayout.ObjectField("Checkmark graphic", toggle.graphic, typeof(Image), true) as Image;
 
-        this.serializedObject.Update();
-        EditorGUILayout.PropertyField(toggleEvents, new GUIContent("On Value Changed (bool)"));
+        if (toggleEvents != null)
+        {
+            this.serializedObject.Update();
+            EditorGUILayout.PropertyField(toggleEvents, new GUIContent("On Click"));
+            this.serializedObject.ApplyModifiedProperties();
+        }
         this.serializedObject.ApplyModifiedProperties();
+        showDefaultInspector = EditorGUILayout.Foldout(showDefaultInspector, "Show default inspector");
         // Show default inspector property editor
-        //DrawDefaultInspector();
+        if (showDefaultInspector)
+        {
+            DrawDefaultInspector();
+        }
     }
 }

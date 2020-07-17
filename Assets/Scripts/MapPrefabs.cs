@@ -22,6 +22,7 @@ public class MapPrefabs : ScriptableObject
     public List<GameObject> cliffSidePrefabs;
     
     public TypeToPrefabDictionary prefabDictionary;
+    public List<Material> pathVariationMaterial;
 
     [Header("Decoration prefabs")]
     public DecorationsPrefabDictionary decorationsPrefabDictionary;

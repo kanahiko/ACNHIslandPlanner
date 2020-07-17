@@ -25,7 +25,10 @@ public class MapTile
     private BoxCollider collider;
     //public bool isDirty;
 
+    public int variation;
+
     public int elevation;
+    
 
     public MapTile(GameObject tile)
     {

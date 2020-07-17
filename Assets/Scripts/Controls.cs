@@ -131,6 +131,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""BuildingsTool"",
+                    ""type"": ""Button"",
+                    ""id"": ""5bd46dfe-d3c1-457c-9f5a-ff7ead375a12"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""BushTool"",
                     ""type"": ""Button"",
                     ""id"": ""50e2bc62-4838-40dd-bfe9-516c67836dac"",
@@ -142,14 +150,6 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""name"": ""TreeTool"",
                     ""type"": ""Button"",
                     ""id"": ""800e2e29-e978-4089-b175-3fdc48cce14c"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""BuildingsTool"",
-                    ""type"": ""Button"",
-                    ""id"": ""5bd46dfe-d3c1-457c-9f5a-ff7ead375a12"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -497,7 +497,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a723e897-7c81-4e3d-b55b-4fa076a531e7"",
-                    ""path"": ""<Keyboard>/5"",
+                    ""path"": ""<Keyboard>/6"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -508,7 +508,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f247aa73-95ef-4899-b625-aa1e9b308ef3"",
-                    ""path"": ""<Keyboard>/numpad5"",
+                    ""path"": ""<Keyboard>/numpad6"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -519,7 +519,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""5ee8958a-4962-45f8-8a6a-e9f19a891956"",
-                    ""path"": ""<Keyboard>/6"",
+                    ""path"": ""<Keyboard>/8"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -530,7 +530,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""6a1fb84f-3137-4ac8-a453-4524d13d3d16"",
-                    ""path"": ""<Keyboard>/numpad6"",
+                    ""path"": ""<Keyboard>/numpad8"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -541,7 +541,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""45f28111-721f-49c8-b552-9589eb1d247e"",
-                    ""path"": ""<Keyboard>/7"",
+                    ""path"": ""<Keyboard>/5"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -552,7 +552,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0e528dff-fe38-49db-b56a-874744bdbca3"",
-                    ""path"": ""<Keyboard>/numpad7"",
+                    ""path"": ""<Keyboard>/numpad5"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -598,9 +598,9 @@ public class @Controls : IInputActionCollection, IDisposable
         m_MapControl_WaterscapingTool = m_MapControl.FindAction("WaterscapingTool", throwIfNotFound: true);
         m_MapControl_PathPermitTool = m_MapControl.FindAction("PathPermitTool", throwIfNotFound: true);
         m_MapControl_FenceTool = m_MapControl.FindAction("FenceTool", throwIfNotFound: true);
+        m_MapControl_BuildingsTool = m_MapControl.FindAction("BuildingsTool", throwIfNotFound: true);
         m_MapControl_BushTool = m_MapControl.FindAction("BushTool", throwIfNotFound: true);
         m_MapControl_TreeTool = m_MapControl.FindAction("TreeTool", throwIfNotFound: true);
-        m_MapControl_BuildingsTool = m_MapControl.FindAction("BuildingsTool", throwIfNotFound: true);
         m_MapControl_Rotate = m_MapControl.FindAction("Rotate", throwIfNotFound: true);
     }
 
@@ -665,9 +665,9 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_MapControl_WaterscapingTool;
     private readonly InputAction m_MapControl_PathPermitTool;
     private readonly InputAction m_MapControl_FenceTool;
+    private readonly InputAction m_MapControl_BuildingsTool;
     private readonly InputAction m_MapControl_BushTool;
     private readonly InputAction m_MapControl_TreeTool;
-    private readonly InputAction m_MapControl_BuildingsTool;
     private readonly InputAction m_MapControl_Rotate;
     public struct MapControlActions
     {
@@ -687,9 +687,9 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @WaterscapingTool => m_Wrapper.m_MapControl_WaterscapingTool;
         public InputAction @PathPermitTool => m_Wrapper.m_MapControl_PathPermitTool;
         public InputAction @FenceTool => m_Wrapper.m_MapControl_FenceTool;
+        public InputAction @BuildingsTool => m_Wrapper.m_MapControl_BuildingsTool;
         public InputAction @BushTool => m_Wrapper.m_MapControl_BushTool;
         public InputAction @TreeTool => m_Wrapper.m_MapControl_TreeTool;
-        public InputAction @BuildingsTool => m_Wrapper.m_MapControl_BuildingsTool;
         public InputAction @Rotate => m_Wrapper.m_MapControl_Rotate;
         public InputActionMap Get() { return m_Wrapper.m_MapControl; }
         public void Enable() { Get().Enable(); }
@@ -742,15 +742,15 @@ public class @Controls : IInputActionCollection, IDisposable
                 @FenceTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnFenceTool;
                 @FenceTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnFenceTool;
                 @FenceTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnFenceTool;
+                @BuildingsTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBuildingsTool;
+                @BuildingsTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBuildingsTool;
+                @BuildingsTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBuildingsTool;
                 @BushTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBushTool;
                 @BushTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBushTool;
                 @BushTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBushTool;
                 @TreeTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnTreeTool;
                 @TreeTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnTreeTool;
                 @TreeTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnTreeTool;
-                @BuildingsTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBuildingsTool;
-                @BuildingsTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBuildingsTool;
-                @BuildingsTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBuildingsTool;
                 @Rotate.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnRotate;
                 @Rotate.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnRotate;
                 @Rotate.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnRotate;
@@ -800,15 +800,15 @@ public class @Controls : IInputActionCollection, IDisposable
                 @FenceTool.started += instance.OnFenceTool;
                 @FenceTool.performed += instance.OnFenceTool;
                 @FenceTool.canceled += instance.OnFenceTool;
+                @BuildingsTool.started += instance.OnBuildingsTool;
+                @BuildingsTool.performed += instance.OnBuildingsTool;
+                @BuildingsTool.canceled += instance.OnBuildingsTool;
                 @BushTool.started += instance.OnBushTool;
                 @BushTool.performed += instance.OnBushTool;
                 @BushTool.canceled += instance.OnBushTool;
                 @TreeTool.started += instance.OnTreeTool;
                 @TreeTool.performed += instance.OnTreeTool;
                 @TreeTool.canceled += instance.OnTreeTool;
-                @BuildingsTool.started += instance.OnBuildingsTool;
-                @BuildingsTool.performed += instance.OnBuildingsTool;
-                @BuildingsTool.canceled += instance.OnBuildingsTool;
                 @Rotate.started += instance.OnRotate;
                 @Rotate.performed += instance.OnRotate;
                 @Rotate.canceled += instance.OnRotate;
@@ -841,9 +841,9 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnWaterscapingTool(InputAction.CallbackContext context);
         void OnPathPermitTool(InputAction.CallbackContext context);
         void OnFenceTool(InputAction.CallbackContext context);
+        void OnBuildingsTool(InputAction.CallbackContext context);
         void OnBushTool(InputAction.CallbackContext context);
         void OnTreeTool(InputAction.CallbackContext context);
-        void OnBuildingsTool(InputAction.CallbackContext context);
         void OnRotate(InputAction.CallbackContext context);
     }
 }

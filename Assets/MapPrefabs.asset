@@ -75,6 +75,15 @@ MonoBehaviour:
     - {fileID: 3758542555312703372, guid: 5906856e61a75ee4894e65a7db88e50d, type: 3}
     - {fileID: 2127154423232691640, guid: d1eeee75a7d9c32408332b75263e78c8, type: 3}
     - {fileID: 780577728891321065, guid: 25f612a0649dc7d4e88309c33559aba6, type: 3}
+  pathVariationMaterial:
+  - {fileID: 2100000, guid: 68078f02f8f8fef42b8ff8587f7d22bc, type: 2}
+  - {fileID: 2100000, guid: 273e3c75297db394ab62fd5110c5baf2, type: 2}
+  - {fileID: 2100000, guid: 002c7a97c40db99448c2ae04efaf49b1, type: 2}
+  - {fileID: 2100000, guid: b6801041da6eb16439ae764773ecef05, type: 2}
+  - {fileID: 2100000, guid: 593ff2d9d51f969448dda36b13986295, type: 2}
+  - {fileID: 2100000, guid: edcb268d8115f7d43bdb451f8aea04d4, type: 2}
+  - {fileID: 2100000, guid: 4f8a803849cc7d245b7585747f52babd, type: 2}
+  - {fileID: 2100000, guid: 6b20709f15cc7eb45ade4c4a4e8cd21c, type: 2}
   decorationsPrefabDictionary:
     reorderableList:
       canAdd: 1
@@ -124,41 +133,6 @@ MonoBehaviour:
       draggable: 1
       expandable: 1
       multipleSelection: 1
-      isExpanded: 1
-      label:
-        m_Text: Keys
-        m_Image: {fileID: 0}
-        m_Tooltip: 
-      headerHeight: 18
-      footerHeight: 13
-      slideEasing: 0.15
-      verticalSpacing: 2
-      showDefaultBackground: 1
-      elementDisplayType: 0
-      elementNameProperty: 
-      elementNameOverride: 
-      elementIcon: {fileID: 0}
-    reqReferences: {fileID: 0}
-    isExpanded: 1
-    _keyValues: 010000000200000003000000040000000500000006000000090000000700000008000000
-    _keys: 010000000200000003000000040000000500000006000000090000000700000008000000
-    _values:
-    - {x: 12, y: 10, z: 0}
-    - {x: 7, y: 4, z: 0}
-    - {x: 5, y: 4, z: 1}
-    - {x: 7, y: 4, z: 0}
-    - {x: 5, y: 4, z: 1}
-    - {x: 4, y: 4, z: 1}
-    - {x: 5, y: 4, z: 1}
-    - {x: 4, y: 2, z: 0}
-    - {x: 4, y: 2, z: 0}
-  maxCount:
-    reorderableList:
-      canAdd: 1
-      canRemove: 1
-      draggable: 1
-      expandable: 1
-      multipleSelection: 1
       isExpanded: 0
       label:
         m_Text: Keys
@@ -175,9 +149,44 @@ MonoBehaviour:
       elementIcon: {fileID: 0}
     reqReferences: {fileID: 0}
     isExpanded: 0
+    _keyValues: 010000000200000003000000040000000500000006000000090000000700000008000000
+    _keys: 010000000200000003000000040000000500000006000000090000000700000008000000
+    _values:
+    - {x: 12, y: 10, z: 0}
+    - {x: 7, y: 4, z: 0}
+    - {x: 5, y: 4, z: 1}
+    - {x: 7, y: 4, z: 0}
+    - {x: 5, y: 4, z: 1}
+    - {x: 4, y: 4, z: 1}
+    - {x: 4, y: 5, z: 1}
+    - {x: 4, y: 2, z: 0}
+    - {x: 4, y: 2, z: 0}
+  maxCount:
+    reorderableList:
+      canAdd: 1
+      canRemove: 1
+      draggable: 1
+      expandable: 1
+      multipleSelection: 1
+      isExpanded: 1
+      label:
+        m_Text: Keys
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+      headerHeight: 18
+      footerHeight: 13
+      slideEasing: 0.15
+      verticalSpacing: 2
+      showDefaultBackground: 1
+      elementDisplayType: 0
+      elementNameProperty: 
+      elementNameOverride: 
+      elementIcon: {fileID: 0}
+    reqReferences: {fileID: 0}
+    isExpanded: 1
     _keyValues: 010000000200000003000000040000000500000006000000070000000800000009000000
     _keys: 010000000200000003000000040000000500000006000000070000000800000009000000
-    _values: 010000000100000001000000010000000100000008000000080000000000000008000000
+    _values: 010000000100000001000000010000000100000008000000080000000800000001000000
   tileTypeColorDictionary:
     reorderableList:
       canAdd: 1
