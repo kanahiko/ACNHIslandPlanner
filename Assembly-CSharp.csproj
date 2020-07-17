@@ -91,8 +91,9 @@
     <Compile Include="Assets\Scripts\Builders\CliffBuilder.cs" />
     <Compile Include="Assets\Scripts\UIOnHover.cs" />
     <Compile Include="Assets\Scripts\TilePreview.cs" />
-    <None Include="Assets\Materials\ShaderNodes\DirectSpecular.hlsl" />
-    <None Include="Assets\Materials\ShaderNodes\GetLighting.hlsl" />
+    <Compile Include="Assets\Scripts\UI\Test.cs" />
+    <None Include="Assets\Materials\DirectSpecular.hlsl" />
+    <None Include="Assets\Materials\GetLighting.hlsl" />
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
       <HintPath>C:/Users/a.moskaleva/Downloads/workacnh/ACNHIslandPlanner/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
     </Reference>

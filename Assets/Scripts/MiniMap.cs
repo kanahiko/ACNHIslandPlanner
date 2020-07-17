@@ -2,13 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public static class MiniMap
 {
     private static Texture2D miniMapTexture;
 
     public static Action<Texture2D> UpdateMiniMap;
-    
+
+    public static Dictionary<DecorationType,List<Image>> minimapPins;
+    public static Dictionary<DecorationType, List<Image>> minimapInactivePins;
+    public static Dictionary<Vector2Int, Image> minimapActivePins;
     public static void CreateMiniMap()
     {
         var mapPrefab = MapHolder.mapPrefab;
@@ -101,6 +105,34 @@ public static class MiniMap
         miniMapTexture.Apply();
 
         UpdateMiniMap?.Invoke(miniMapTexture);
+    }
+
+    public static void CreatePins(MinimapDecorationsDictionary minimapPinsDictionary)
+    {
+        minimapPins = new Dictionary<DecorationType, List<Image>>();
+        minimapInactivePins = new Dictionary<DecorationType, List<Image>>();
+        minimapActivePins = new Dictionary<Vector2Int, Image>();
+
+        foreach (var type in MapHolder.mapPrefab.maxCount)
+        {
+            if (minimapPinsDictionary.ContainsKey(type.Key))
+            {
+                int count = type.Value - 1;
+                List<Image> images = new List<Image>();
+                images.Add(minimapPinsDictionary[type.Key]);
+                minimapPinsDictionary[type.Key].transform.localPosition = new Vector3(-100, -100);
+                while (count != 0)
+                {
+                    Image image = GameObject.Instantiate(minimapPinsDictionary[type.Key], minimapPinsDictionary[type.Key].transform.parent);
+                    image.transform.localPosition = new Vector3(-100, -100);
+                    images.Add(image);
+                    count--;
+                }
+
+                minimapPins.Add(type.Key, images);
+                minimapInactivePins.Add(type.Key, images);
+            }
+        }
     }
 
     static bool CheckCanSecondaryColor(int rotation, int l, int k)
@@ -236,5 +268,84 @@ public static class MiniMap
         // Apply all SetPixel calls
         miniMapTexture.Apply();
         UpdateMiniMap?.Invoke(miniMapTexture);
+    }
+
+    public static void CreateBuilding(int column, int row, int sizeX, int sizeY)
+    {
+        bool isAdd = MapHolder.decorationsTiles[column, row] != null;
+        Color color = MapHolder.mapPrefab.plazaColor;
+        Color secondaryColor = MapHolder.mapPrefab.elevationColors[MapHolder.tiles[column, row].elevation];
+        for (int i=0;i<sizeY; i++)
+        {
+            for (int j = 0; j < sizeX; j++)
+            {
+                if (!isAdd) 
+                {
+                    miniMapTexture.SetPixel(column * 3 + j + MapHolder.mapPrefab.miniMapOffset.x,
+                      (MapHolder.height * 3) - (row * 3 - i) + MapHolder.mapPrefab.miniMapOffset.y - 1, secondaryColor);
+                    continue;
+                }
+                int rotation = -1;
+                if (j == 0)
+                {
+                    rotation =2;
+                }
+                else
+                {
+                    if (j + 1 == sizeX)
+                    {
+                        rotation = 3;
+                    }
+                }
+                if (rotation != -1)
+                {
+                    if (i == 0)
+                    {
+                        rotation = rotation == 2 ? 0 : 1;
+                    }
+                    else
+                    {
+                        if (i + 1 == sizeY)
+                        {
+                            rotation = rotation == 2 ? 3 : 2;
+                        }
+                        else
+                        {
+                            rotation = -1;
+                        }
+                    }
+                }
+
+                miniMapTexture.SetPixel(column * 3 + j + MapHolder.mapPrefab.miniMapOffset.x, 
+                    (MapHolder.height * 3) - (row * 3 - i) + MapHolder.mapPrefab.miniMapOffset.y - 1, 
+                    CheckCanSecondaryColor(rotation, j, i) ? secondaryColor : color);
+
+            }
+        }
+    }
+
+    static void PutPin(int column, int row, int sizeX, int sizeY, DecorationType type, bool isAdd)
+    {
+        if (isAdd)
+        {
+            if (minimapInactivePins.ContainsKey(type))
+            {
+                Image pin = minimapInactivePins[type][minimapInactivePins[type].Count - 1];
+                minimapInactivePins[type].RemoveAt(minimapInactivePins[type].Count - 1);
+
+                int newColumn = column / 2;
+                newColumn += column % 2 == 0 ? -1 : 0;
+
+                minimapActivePins.Add(new Vector2Int(newColumn, row), pin);
+            }
+        }
+        else
+        {
+            int newColumn = column / 2;
+            newColumn += column % 2 == 0 ? -1 : 0;
+
+
+            minimapActivePins.Remove(new Vector2Int(newColumn, row));
+        }
     }
 }

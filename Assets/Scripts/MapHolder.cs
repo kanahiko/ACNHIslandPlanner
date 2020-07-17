@@ -1,8 +1,10 @@
-﻿using System;
+﻿using RotaryHeart.Lib.SerializableDictionary;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 public static class MapHolder
 {
@@ -73,6 +75,8 @@ public static class MapHolder
         return null;
     }
 }
+[System.Serializable]
+public class MinimapDecorationsDictionary : SerializableDictionaryBase<DecorationType, Image> { }
 
 public class DecorationTiles : IDisposable
 {
