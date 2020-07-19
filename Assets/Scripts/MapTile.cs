@@ -1,32 +1,53 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Xml.Serialization;
+using UnityEngine;
 
+[Serializable]
 public class MapTile
 {
+    [XmlElement("Type")]
     public TileType type;
+    
+    [XmlIgnore]
     public GameObject colliderObject;
+    [XmlIgnore]
     public GameObject backgroundTile;
-
+    
+    [XmlIgnore]
     public GameObject[] quarters;
+    [XmlIgnore]
     public GameObject[] cliffSides;
     /// <summary>
     /// false means regular side
     /// true = water side
     /// </summary>
+    
+    [XmlArray("CliffSidesType"), XmlArrayItem("side")]
     public int[] cliffSidesType;
 
+    [XmlElement("BackgroundType")]
     public TilePrefabType backgroundType;
 
+    [XmlArray("QuarterPrefabType"), XmlArrayItem("quarter")]
     public TilePrefabType[] prefabType;
 
-    public int diagonalPathRotation = -1;
-    public int diagonaWaterRotation = -1;
-    public int diagonaCliffRotation = -1;
+    [XmlElement("DiagonalRotation")]
+    public int diagonalRotation = -1;
 
+    /*public int diagonalRotation
+    {
+        get { return _diagonalRotation; }
+        set { Debug.Log($"{colliderObject.gameObject.name}   {value}");_diagonalRotation = value; }
+    }*/
+    
+    
+    [XmlIgnore]
     private BoxCollider collider;
-    //public bool isDirty;
 
+    [XmlElement("Variation")]
     public int variation;
 
+    [XmlElement("Elevation")]
     public int elevation;
     
 
@@ -59,6 +80,11 @@ public class MapTile
     
     public void SetElevation(Transform elevation)
     {
+        if (backgroundTile == null)
+        {
+            colliderObject.transform.SetParent(elevation, true);
+            return;
+        }
         if (Mathf.Abs(backgroundTile.transform.position.y - elevation.transform.position.y) > 0.5f)
         {
             Vector3 pos = backgroundTile.transform.position;
@@ -68,28 +94,28 @@ public class MapTile
         }
     }
 
-    public Vector2Int GetDirectionOfPath()
+    public Vector2Int GetDirection()
     {
-        if (diagonalPathRotation != -1)
+        switch (type)
         {
-            return new Vector2Int(diagonalPathRotation, Util.SubstractRotation(diagonalPathRotation, 3));
-        }
-        return new Vector2Int(-1, -1);
-    }
-
-    public Vector2Int GetDirectionOfWater()
-    {
-        if (diagonaWaterRotation != -1)
-        {
-            return new Vector2Int(diagonaWaterRotation, Util.SubstractRotation(diagonaWaterRotation, 3));
+            case TileType.WaterDiagonal:
+                return new Vector2Int(diagonalRotation, Util.SubstractRotation(diagonalRotation, 3));
+                break;
+            case TileType.PathCurve:
+                return new Vector2Int(diagonalRotation, Util.SubstractRotation(diagonalRotation, 3));
+                break;
+            case TileType.CliffDiagonal:
+                break;
+            case TileType.SeaDiagonal:
+            case TileType.SandDiagonal:
+                return new Vector2Int(Util.SubstractRotation(diagonalRotation, 1), Util.SubstractRotation(diagonalRotation, 2));
+                break;
         }
         return new Vector2Int(-1, -1);
     }
     public void HardErase()
     {
-        diagonalPathRotation = -1;
-        diagonaWaterRotation = -1;
-        diagonaCliffRotation = -1;
+        diagonalRotation = -1;
         GameObject.Destroy(backgroundTile);
         backgroundTile = null;
         for(int i=0;i<4;i++)
@@ -113,9 +139,7 @@ public class MapTile
                 prefabType[i] = TilePrefabType.Null;
             }
         }
-        diagonalPathRotation = -1;
-        diagonaWaterRotation = -1;
-        diagonaCliffRotation = -1;
+        //diagonalRotation = -1;
     }
     public void RemoveQuarters(int exception1, int exception2 = -1, int exception3 = -1)
     {

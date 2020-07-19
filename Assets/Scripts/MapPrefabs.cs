@@ -47,6 +47,9 @@ public class MapPrefabs : ScriptableObject
     public DecorationsSizeDictionary decorationsSizeDictionary;
     public DecorationsMaxCountDictionary maxCount;
 
+    public List<GameObject> inclinePrefabDictionary;
+    public List<BridgeSizeList> bridgePrefabDictionary;
+
     [Header("Minimap")]
     public TileTypeToColorDictionary tileTypeColorDictionary;
 
@@ -118,6 +121,16 @@ public class MapPrefabs : ScriptableObject
 public class VariationList
 {
     public List<GameObject> variationPrefabs;
+}
+[Serializable]
+public class BridgeSizeList
+{
+    public GameObject[] bridgePrefabs;
+
+    public BridgeSizeList()
+    {
+        bridgePrefabs = new GameObject[3];
+    }
 }
 
 [System.Serializable]

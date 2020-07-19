@@ -20,6 +20,8 @@ public static class MiniMap
 
     public static Vector2 ratio;
     public static Vector2 miniMapPosition;
+
+    public static Image cameraPosition;
     
     public static void CreateMiniMap()
     {
@@ -76,7 +78,7 @@ public static class MiniMap
                     color = mapPrefab.elevationColors[elevation];
                     if (type == TileType.CliffDiagonal)
                     {
-                        rotation = MapHolder.tiles[column, row].diagonaCliffRotation;
+                        rotation = MapHolder.tiles[column, row].diagonalRotation;
                         secondaryColor = mapPrefab.elevationColors[elevation-1];
                     }
                     
@@ -86,14 +88,14 @@ public static class MiniMap
                     color = mapPrefab.tileTypeColorDictionary[type];
                     if (type == TileType.PathCurve)
                     {
-                        rotation = Util.SubstractRotation(MapHolder.tiles[column, row].diagonalPathRotation,2);
+                        rotation = Util.SubstractRotation(MapHolder.tiles[column, row].diagonalRotation,2);
                         secondaryColor = mapPrefab.elevationColors[elevation];
                     }
                     else
                     {
                         if (type == TileType.WaterDiagonal)
                         {
-                            rotation = MapHolder.tiles[column, row].diagonaWaterRotation;
+                            rotation = MapHolder.tiles[column, row].diagonalRotation;
                             secondaryColor = mapPrefab.elevationColors[elevation];
                         }
                     }
@@ -188,7 +190,7 @@ public static class MiniMap
             color = MapHolder.mapPrefab.elevationColors[MapHolder.tiles[column,row].elevation];
             if (type == TileType.CliffDiagonal)
             {
-                rotation = MapHolder.tiles[column, row].diagonaCliffRotation;
+                rotation = MapHolder.tiles[column, row].diagonalRotation;
                 secondaryColor = MapHolder.mapPrefab.elevationColors[elevation-1];
             }
                     
@@ -198,14 +200,14 @@ public static class MiniMap
             color = MapHolder.mapPrefab.tileTypeColorDictionary[type];
             if (type == TileType.PathCurve)
             {
-                rotation = Util.SubstractRotation(MapHolder.tiles[column, row].diagonalPathRotation,2);
+                rotation = Util.SubstractRotation(MapHolder.tiles[column, row].diagonalRotation,2);
                 secondaryColor = MapHolder.mapPrefab.elevationColors[elevation];
             }
             else
             {
                 if (type == TileType.WaterDiagonal)
                 {
-                    rotation = MapHolder.tiles[column, row].diagonaWaterRotation;
+                    rotation = MapHolder.tiles[column, row].diagonalRotation;
                     secondaryColor = MapHolder.mapPrefab.elevationColors[elevation];
                 }
             }
@@ -245,7 +247,7 @@ public static class MiniMap
                 color = MapHolder.mapPrefab.elevationColors[MapHolder.tiles[coordinate.x, coordinate.y].elevation];
                 if (type == TileType.CliffDiagonal)
                 {
-                    rotation = MapHolder.tiles[coordinate.x, coordinate.y].diagonaCliffRotation;
+                    rotation = MapHolder.tiles[coordinate.x, coordinate.y].diagonalRotation;
                     secondaryColor = mapPrefab.elevationColors[elevation-1];
                 }
 
@@ -255,15 +257,39 @@ public static class MiniMap
                 color = MapHolder.mapPrefab.tileTypeColorDictionary[type];
                 if (type == TileType.PathCurve)
                 {
-                    rotation = Util.SubstractRotation(MapHolder.tiles[coordinate.x, coordinate.y].diagonalPathRotation,2);
+                    rotation = Util.SubstractRotation(MapHolder.tiles[coordinate.x, coordinate.y].diagonalRotation,2);
                     secondaryColor = mapPrefab.elevationColors[elevation];
                 }
                 else
                 {
                     if (type == TileType.WaterDiagonal)
                     {
-                        rotation = MapHolder.tiles[coordinate.x, coordinate.y].diagonaWaterRotation;
+                        rotation = MapHolder.tiles[coordinate.x, coordinate.y].diagonalRotation;
                         secondaryColor = mapPrefab.elevationColors[elevation];
+                    }
+                    else
+                    {
+                        if (type == TileType.SandDiagonal)
+                        {
+                            rotation = MapHolder.tiles[coordinate.x, coordinate.y].diagonalRotation;
+                            if (Util.CoordinateExists(coordinate.x + Util.oppositeCornerForSand[rotation].x, coordinate.y + Util.oppositeCornerForSand[rotation].y) &&
+                                MapHolder.tiles[coordinate.x + Util.oppositeCornerForSand[rotation].x, coordinate.y + Util.oppositeCornerForSand[rotation].y].type != TileType.Sea)
+                            {
+                                secondaryColor = mapPrefab.elevationColors[0];
+                            }
+                            else
+                            {
+                                secondaryColor = mapPrefab.tileTypeColorDictionary[TileType.Sea];
+                            }
+                            rotation =Util.SubstractRotation(rotation,2);
+                        }
+                        
+                        if (type == TileType.SeaDiagonal)
+                        {
+                            rotation = MapHolder.tiles[coordinate.x, coordinate.y].diagonalRotation;
+                            secondaryColor = mapPrefab.elevationColors[0];
+                            rotation =Util.SubstractRotation(rotation,2);
+                        }
                     }
                 }
             }
@@ -399,5 +425,15 @@ public static class MiniMap
             minimapInactivePins[type].Add(pin);
             minimapActivePins.Remove(column +  row *MapHolder.width);
         }
+    }
+
+    public static void ChangeCameraPosition(Vector2 newPosition, float scroll)
+    {
+        Vector2 position = new Vector2();
+        position.x = (newPosition.x * pixelSize + MapHolder.mapPrefab.miniMapOffset.x) * ratio.x;
+        position.y = -(newPosition.y * pixelSize + MapHolder.mapPrefab.miniMapOffset.y) * ratio.y;
+        cameraPosition.transform.localPosition = position;
+        
+        //cameraPosition.transform.localScale = Vector3.one * (Mathf.Log(scroll) + 1);
     }
 }

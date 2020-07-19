@@ -30,7 +30,7 @@ public class LandBuilder : MonoBehaviour
                 
                 if (column < 16 || column >= width - 16)
                 {
-                    if (column <= MapHolder.mapPrefab.seaStandardCreation.x || 
+                    if (column + 1 <= MapHolder.mapPrefab.seaStandardCreation.x || 
                         column >= width - MapHolder.mapPrefab.seaStandardCreation.x)
                     {
                         type = TileType.Sea;
@@ -38,7 +38,7 @@ public class LandBuilder : MonoBehaviour
                     else
                     {
                         if (type != TileType.Sea && 
-                            (column <= MapHolder.mapPrefab.sandStandardCreation.x + MapHolder.mapPrefab.seaStandardCreation.x || 
+                            (column + 1 <= MapHolder.mapPrefab.sandStandardCreation.x + MapHolder.mapPrefab.seaStandardCreation.x || 
                             column >= width - MapHolder.mapPrefab.sandStandardCreation.x  - MapHolder.mapPrefab.seaStandardCreation.x))
                         {
                             type = TileType.Sand;
@@ -108,8 +108,7 @@ public class LandBuilder : MonoBehaviour
         }
 
         MapHolder.tiles[column, row].elevation = elevation;
-        MapHolder.tiles[column, row].diagonalPathRotation = -1;
-        MapHolder.tiles[column, row].diagonaWaterRotation = -1;
+        MapHolder.tiles[column, row].diagonalRotation = -1;
         MapHolder.tiles[column, row].type = TileType.Land;
 
         if (elevation > 0)
@@ -150,8 +149,7 @@ public class LandBuilder : MonoBehaviour
         }
 
         MapHolder.tiles[column, row].elevation = 0;
-        MapHolder.tiles[column, row].diagonalPathRotation = -1;
-        MapHolder.tiles[column, row].diagonaWaterRotation = -1;
+        MapHolder.tiles[column, row].diagonalRotation = -1;
         MapHolder.tiles[column, row].type = TileType.Sand;
         
         MapHolder.tiles[column, row].variation = -1;
@@ -183,10 +181,196 @@ public class LandBuilder : MonoBehaviour
         }
 
         MapHolder.tiles[column, row].elevation = 0;
-        MapHolder.tiles[column, row].diagonalPathRotation = -1;
-        MapHolder.tiles[column, row].diagonaWaterRotation = -1;
+        MapHolder.tiles[column, row].diagonalRotation = -1;
         MapHolder.tiles[column, row].type = TileType.Sea;
         
         MapHolder.tiles[column, row].variation = -1;
+    }
+
+    public static bool CheckSandTile(int column, int row, TileType previousTileType, ref ToolMode toolMode)
+    {
+        if (!Util.CoordinateOnBorderChunks(column,row))
+        {
+            return false;
+        }
+
+        if (previousTileType == TileType.Sand)
+        {
+            if (CheckCanCurveSand(column,row, MapHolder.tiles[column,row]))
+            {
+                if (toolMode == ToolMode.None)
+                {
+                    toolMode = ToolMode.Add;
+                    MapHolder.tiles[column, row].type = TileType.SandDiagonal;
+                    return true;
+                }
+            }
+            return Util.ToolModeChange(false, column, row, TileType.Land, ref toolMode);
+        }
+        else
+        {
+            if (previousTileType == TileType.SandDiagonal)
+            {
+                return Util.ToolModeChange(false, column, row, TileType.Land, ref toolMode);
+            }
+            else
+            {
+                if (previousTileType == TileType.SeaDiagonal)
+                {
+                    return Util.ToolModeChange(false, column, row, TileType.Sea, ref toolMode);
+                }
+                if (previousTileType == TileType.Land)
+                {
+                    if (CheckCanCurveSea(column, row, MapHolder.tiles[column, row]))
+                    {
+                        if (toolMode == ToolMode.None)
+                        {
+                            toolMode = ToolMode.Add;
+                            MapHolder.tiles[column, row].type = TileType.SeaDiagonal;
+                            return true;
+                        }
+                    }
+                    return Util.ToolModeChange(true, column, row, TileType.Sand, ref toolMode);
+                }
+                if (previousTileType == TileType.Sea ||
+                    previousTileType == TileType.Path || previousTileType == TileType.PathCurve ||
+                    previousTileType == TileType.Water || previousTileType == TileType.WaterDiagonal)
+                {
+                    if (MapHolder.tiles[column, row].elevation == 0)
+                    {
+                        return Util.ToolModeChange(true, column, row, TileType.Sand, ref toolMode);
+                    }
+                }
+            }
+        }
+        
+
+        return false;
+    }
+    
+    static bool CheckCanCurveSea(int column,int row, MapTile tile)
+    {
+        int elevation = MapHolder.tiles[column, row].elevation;
+        //int index = row * MapHolder.width + column;
+        TileType[] types = new TileType[7];
+
+        types[1] = CheckTile(column, row + 1);
+        types[2] = CheckTile(column - 1, row);
+        types[3] = CheckTile(column, row - 1);
+        types[4] = CheckTile(column + 1, row);
+
+        types[5] = types[1];
+        types[6] = types[2];
+        types[0] = types[4];
+        for (int i = 1; i < 5; i++)
+        {
+            if (types[i] == TileType.Sea && types[i - 1] == TileType.Sea && 
+                types[i + 1] != TileType.Sea && types[i + 1] != TileType.Sand && types[i + 1] != TileType.SandDiagonal &&
+                types[i + 2] != TileType.Sea && types[i + 2] != TileType.Sand && types[i + 2] != TileType.SandDiagonal &&types[i+1] == types[i+2])
+            {
+                if (tile != null)
+                {
+                    tile.diagonalRotation = i - 1;
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    static bool CheckCanCurveSand(int column,int row, MapTile tile)
+    {
+        int elevation = MapHolder.tiles[column, row].elevation;
+        //int index = row * MapHolder.width + column;
+        TileType[] types = new TileType[7];
+
+        types[1] = CheckTile(column, row + 1);
+        types[2] = CheckTile(column - 1, row);
+        types[3] = CheckTile(column, row - 1);
+        types[4] = CheckTile(column + 1, row);
+
+        types[5] = types[1];
+        types[6] = types[2];
+        types[0] = types[4];
+        for (int i = 1; i < 5; i++)
+        {
+            if (types[i] == TileType.Sand && types[i - 1] == TileType.Sand && 
+                types[i + 1] != TileType.Sand && types[i + 2] != TileType.Sand && types[i+1] == types[i+2])
+            {
+                if (tile != null)
+                {
+                    tile.diagonalRotation = i - 1;
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    static TileType CheckTile(int column, int row)
+    {
+        if (column >= 0 && column < MapHolder.width &&
+            row >= 0 && row < MapHolder.height)
+        {
+            if (MapHolder.tiles[column, row].backgroundType == TilePrefabType.Sea)
+            {
+                return TileType.Sea;
+            }
+            else
+            {
+                if (MapHolder.tiles[column, row].backgroundType == TilePrefabType.Sand || 
+                    MapHolder.tiles[column, row].backgroundType == TilePrefabType.SandDiagonal)
+                {
+                    return TileType.Sand;
+                }
+
+                return TileType.Land;
+            }
+        }
+
+        return TileType.Sea;
+    }
+    
+    public static void CreateDiagonalSand(int column, int row)
+    {
+        int rotation = MapHolder.tiles[column,row].diagonalRotation;
+        int oppositeRotation = Util.SubstractRotation(rotation, 2);
+
+        TilePrefabType type = TilePrefabType.SandDiagonal;
+        if (Util.CoordinateExists(column + Util.oppositeCornerForSand[rotation].x, row + Util.oppositeCornerForSand[rotation].y) &&
+            MapHolder.tiles[column + Util.oppositeCornerForSand[rotation].x, row + Util.oppositeCornerForSand[rotation].y].type != TileType.Sea)
+        {
+            type = TilePrefabType.SandDiagonalLand;
+        }
+
+        MapHolder.tiles[column, row].HardErase();
+        MapHolder.tiles[column, row].RemoveCliffs();
+        MapHolder.tiles[column, row].backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[type],
+            MapHolder.tiles[column,row].colliderObject.transform);
+        MapHolder.tiles[column, row].backgroundTile.transform.localPosition = Util.halfOffset;
+        MapHolder.tiles[column, row].backgroundTile.transform.GetChild(0).localRotation = Quaternion.Euler(0,90*rotation,0);
+        MapHolder.tiles[column, row].backgroundType = TilePrefabType.SandDiagonal;
+        MapHolder.tiles[column, row].diagonalRotation = rotation;
+    }
+    
+    
+    
+    public static void CreateDiagonalSea(int column, int row)
+    {
+        int rotation = MapHolder.tiles[column,row].diagonalRotation;
+        int oppositeRotation = Util.SubstractRotation(rotation, 2);
+
+        TilePrefabType type = TilePrefabType.SeaDiagonal;
+
+        MapHolder.tiles[column, row].HardErase();
+        MapHolder.tiles[column, row].RemoveCliffs();
+        MapHolder.tiles[column, row].backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[type],
+            MapHolder.tiles[column,row].colliderObject.transform);
+        MapHolder.tiles[column, row].backgroundTile.transform.localPosition = Util.halfOffset;
+        MapHolder.tiles[column, row].backgroundTile.transform.GetChild(0).localRotation = Quaternion.Euler(0,90*rotation,0);
+        MapHolder.tiles[column, row].backgroundType = TilePrefabType.SeaDiagonal;
+        MapHolder.tiles[column, row].diagonalRotation = rotation;
     }
 }

@@ -18,13 +18,14 @@ public class UIController : MonoBehaviour
     public RawImage miniMap;
 
     public MinimapDecorationsDictionary minimapPinsDictionary;
-
+    public Image cameraPosition;
 
     private void Start()
     {
         MiniMap.UpdateMiniMap = SetNewMiniMapTexture;
         MiniMap.CreateMiniMap();
         MiniMap.CreatePins(minimapPinsDictionary);
+        MiniMap.cameraPosition = cameraPosition;
         
         MiniMap.ratio = new Vector2();
         MiniMap.ratio.x = miniMap.rectTransform.rect.width / (MapHolder.width*MiniMap.pixelSize + MapHolder.mapPrefab.miniMapOffset.x * 2);
@@ -67,6 +68,18 @@ public class UIController : MonoBehaviour
         click.Stop();
         click.pitch = 2f;
         click.Play();
+    }
+
+    public void OnMiniMapClick(Transform miniMapTransform)
+    {
+        if (miniMapTransform.transform.localScale.x < 1.1f)
+        {
+            miniMapTransform.transform.localScale = Vector3.one * 1.5f;
+        }else
+        {
+            miniMapTransform.transform.localScale = Vector3.one;
+            
+        }
     }
 }
 

@@ -24,243 +24,88 @@ public class TerrainBuilder : MonoBehaviour
         ChangeMiniMap = MiniMap.ChangeMiniMap;
     }
     
-    bool ToolModeChange(bool isAdd, int column, int row, TileType type)
-    {
-        //Debug.Log($"{toolMode} {isAdd} {index} {type}  willdo?");
-        if (toolMode == ToolMode.None)
-        {
-            toolMode = isAdd? ToolMode.Add : ToolMode.Remove;
-            MapHolder.tiles[column, row].type = type;
-            return true;
-        }
-        else
-        {
-            if ((toolMode == ToolMode.Add && isAdd) || (toolMode == ToolMode.Remove && !isAdd))
-            {
-                MapHolder.tiles[column, row].type = type;
-                return true;
-            }
-        }
-        return false;
-    }
 
     public void ChangeTile(ToolType type, ToolMode mode, int column, int row, int variation)
     {
         //TODO building influence enum, switch to bool variables
-        if ((MapHolder.buildingsInfluence[column, row] == 2 ||
+        if ((MapHolder.buildingsInfluence[column, row] == BuildingInfluence.fullInfluence ||
             type != ToolType.PathPermit && MapHolder.treeInfluence[column,row] > 0 || 
-            MapHolder.decorationsTiles[column, row] != null && (MapHolder.buildingsInfluence[column, row] == 0 ||
-             MapHolder.buildingsInfluence[column, row] == 1 && type != ToolType.PathPermit)))
+            MapHolder.decorationsTiles[column, row] != null && 
+            (MapHolder.buildingsInfluence[column, row] == 0 || 
+             type != ToolType.PathPermit && MapHolder.buildingsInfluence[column, row] == BuildingInfluence.pathsOnly)))
         {
             return;
         }
-
-        TileType tileType = TileType.Water;
-        switch (type)
-        {
-            case ToolType.CliffConstruction:
-                tileType = TileType.Cliff;
-                break;
-            case ToolType.PathPermit:
-                tileType = TileType.Path;
-                break;
-        }
+        
 
         if (mode == ToolMode.Add)
         {
-            ChangeTile(tileType, column, row,variation);
+            ChangeTile(type, column, row,variation);
         }
         else
         {
-            RemoveTile(tileType, column, row);
+            RemoveTile(type, column, row);
         }
     }
 
-    void ChangeTile(TileType type, int column, int row, int variation)
+    void ChangeTile(ToolType type, int column, int row, int variation)
     {
         changedCoordinates.Clear();
         TileType previousTileType = MapHolder.tiles[column,row].type;
-        
+        TileType newType = TileType.Null;
         switch (type)
         {
-            case TileType.Land:
-                MapHolder.tiles[column, row].type = TileType.Land;
+            case ToolType.SandPermit:
+                if (!LandBuilder.CheckSandTile(column, row, previousTileType, ref toolMode))
+                {
+                    return;
+                }
+                newType = MapHolder.tiles[column, row].type;
                 break;
-            case TileType.Water:
-                if (previousTileType == TileType.CliffDiagonal)
+            case ToolType.Waterscaping:
+                if (!WaterBuilder.CheckWater(column,row,previousTileType,ref toolMode))
                 {
                     return;
                 }
 
-                if (MapHolder.tiles[column, row].elevation > 0 && !Util.CheckHalfSurroundedBySameElevation(column,row))
+                newType = MapHolder.tiles[column, row].type;
+                break;
+            case ToolType.PathPermit:
+                if (!PathBuilder.CheckPath(column,row,previousTileType,ref toolMode,variation))
                 {
                     return;
                 }
+                newType = MapHolder.tiles[column, row].type;
+                break;
+            case ToolType.CliffConstruction:
                 
-                if (previousTileType == TileType.Water)
+                if (CliffBuilder.CheckCliff(column,row,previousTileType,ref toolMode,ref cliffConstructionElevationLevel, out newType))
                 {
-                    if (CheckCanCurveWater(column, row))
-                    {
-                        if (toolMode == ToolMode.None)
-                        {
-                            toolMode = ToolMode.Add;
-                            MapHolder.tiles[column, row].type = TileType.WaterDiagonal;
-                        }
-                        else
-                        {
-                            ToolModeChange(true, column, row, TileType.Water);
-                        }
-                    }
-                    else
-                    {
-                        if (!ToolModeChange(false, column, row, TileType.Land))
-                        {
-                            return;
-                        }
-
-                    }
-                }
-                else
-                {
-                    if (previousTileType== TileType.WaterDiagonal)
-                    {
-                        if (!ToolModeChange(false, column, row, TileType.Land))
-                        {
-                            ToolModeChange(true, column, row, TileType.Water);
-                        }
-                    }
-                    else
-                    {
-                        if (!ToolModeChange(true, column, row, TileType.Water))
-                        {
-                            return;
-                        }
-                    }
-                }
-                changedCoordinates.Add(new Vector2Int(column, row));
-                CreateTile(column, row, MapHolder.tiles[column, row].type);
-                break;
-            case TileType.Path:
-                if (previousTileType == TileType.CliffDiagonal)
-                {
-                    return;
-                }
-                if (previousTileType == TileType.Path)
-                {
-                    if (MapHolder.tiles[column,row].variation == variation &&
-                        CheckCanCurvePath(column, row, variation, MapHolder.tiles[column,row]))
-                    {
-                        if (toolMode == ToolMode.None)
-                        {
-                            toolMode = ToolMode.Add;
-                            MapHolder.tiles[column, row].type = TileType.PathCurve;
-                        }
-                        else
-                        {
-                            ToolModeChange(true, column, row, TileType.Path);
-                        }
-                    }
-                    else
-                    {
-                        ToolModeChange(false, column, row, TileType.Land);
-                    }
-                }
-                else
-                {
-                    if (previousTileType == TileType.PathCurve)
-                    {
-                        ToolModeChange(false, column, row, TileType.Land);
-                    }
-                    else
-                    {
-                        ToolModeChange(true, column, row, TileType.Path);
-                    }
-                }
-                changedCoordinates.Add(new Vector2Int(column, row));
-                CreateTile(column, row, MapHolder.tiles[column, row].type, variation);
-                break;
-            case TileType.Cliff:
-                //Debug.Log($"{cliffConstructionElevationLevel} {MapHolder.tiles[column, row].elevation}");
-                if (cliffConstructionElevationLevel != MapHolder.tiles[column, row].elevation)
-                {
-                    return;
-                }
-                if ( MapHolder.tiles[column, row].elevation > 0)
-                {
-                    if (MapHolder.tiles[column, row].type == TileType.CliffDiagonal)
-                    {
-                        ToolModeChange(true, column, row, TileType.Land);
-                        cliffConstructionElevationLevel -= 1;
-                    }
-                    else
-                    {
-                        if (CheckCanCurveCliff(column, row))
-                        {
-                            if (toolMode == ToolMode.None)
-                            {
-                                toolMode = ToolMode.Add;
-                                MapHolder.tiles[column, row].type = TileType.CliffDiagonal;
-                                
-                                CreateTile(column, row, TileType.CliffDiagonal);
-                                MapHolder.tiles[column, row].IgnoreElevation();
-                                //MapHolder.tiles[column, row].colliderObject.layer = ignoreRaycastLayer;
-                                ignoreRaycastTiles.Add(MapHolder.tiles[column, row]);
-                                
-                                cliffConstructionElevationLevel -= 1;
-                            }
-                            else
-                            {
-                                return;
-                            }
-                            changedCoordinates.Add(new Vector2Int(column, row));
-                            ChangeMiniMap?.Invoke(changedCoordinates);
-                            return;
-                        }
-                        else
-                        {
-                            if (!Util.CheckSurroundedBySameElevation(column, row))
-                            {
-                                return;
-                            }
-                            if (MapHolder.tiles[column, row].elevation < MapHolder.maxElevation)
-                            {
-                                ToolModeChange(true, column, row, TileType.Land);
-                                MapHolder.tiles[column, row].elevation += 1;
-                                MapHolder.tiles[column, row].IgnoreElevation();
-                                //MapHolder.tiles[column, row].colliderObject.layer = ignoreRaycastLayer;
-                                ignoreRaycastTiles.Add(MapHolder.tiles[column, row]);
-                            }
-                        }
-                    }
-
-                }
-                else
-                {
-                    ToolModeChange(true, column, row, TileType.Land);
-                    MapHolder.tiles[column, row].elevation += 1;
                     MapHolder.tiles[column, row].IgnoreElevation();
-                    //MapHolder.tiles[column, row].colliderObject.layer = ignoreRaycastLayer;
                     ignoreRaycastTiles.Add(MapHolder.tiles[column, row]);
                 }
-                changedCoordinates.Add(new Vector2Int(column, row));
-                CreateTile(column, row, TileType.Cliff);
+                else
+                {
+                    return;
+                }
                 break;
         }
+        changedCoordinates.Add(new Vector2Int(column, row));
+        CreateTile(column, row, newType, variation);
         ChangeMiniMap?.Invoke(changedCoordinates);
     }
 
-    void RemoveTile(TileType type, int column, int row)
+    
+
+    void RemoveTile(ToolType type, int column, int row)
     {
         changedCoordinates.Clear();
         toolMode = ToolMode.Remove;
-        //int index = row * MapHolder.width + column;
+        
         TileType previousTileType = MapHolder.tiles[column, row].type;
         switch (type)
         {
-            case TileType.Land:
-                //MapHolder.tiles[index] = TileType.Land;
-                break;
-            case TileType.Water:
+            case ToolType.Waterscaping:
                 if (previousTileType == TileType.Water || previousTileType == TileType.WaterDiagonal)
                 {
                     MapHolder.tiles[column, row].type = TileType.Land;
@@ -268,7 +113,7 @@ public class TerrainBuilder : MonoBehaviour
                     changedCoordinates.Add(new Vector2Int(column, row));
                 }
                 break;
-            case TileType.Path:
+            case ToolType.PathPermit:
                 if (previousTileType == TileType.Path || previousTileType == TileType.Path)
                 {
                     MapHolder.tiles[column, row].type = TileType.Land;
@@ -276,7 +121,7 @@ public class TerrainBuilder : MonoBehaviour
                     changedCoordinates.Add(new Vector2Int(column, row));
                 }
                 break;
-            case TileType.Cliff:
+            case ToolType.CliffConstruction:
                 if (cliffConstructionElevationLevel == MapHolder.tiles[column, row].elevation && MapHolder.tiles[column, row].elevation > 0)
                 {
                     MapHolder.tiles[column, row].type = TileType.Land;
@@ -285,8 +130,8 @@ public class TerrainBuilder : MonoBehaviour
                     {
                         RemoveCliff(column, row, TileType.Cliff);
                         CreateTile(column, row, MapHolder.tiles[column, row].type);
+                        
                         MapHolder.tiles[column, row].IgnoreElevation();
-                        //MapHolder.tiles[column, row].colliderObject.layer = ignoreRaycastLayer;
                         ignoreRaycastTiles.Add(MapHolder.tiles[column, row]);
                         changedCoordinates.Add(new Vector2Int(column, row));
                     }
@@ -297,13 +142,29 @@ public class TerrainBuilder : MonoBehaviour
                     }
                 }
                 break;
+            case ToolType.SandPermit:
+                if (MapHolder.tiles[column, row].type == TileType.Sand || MapHolder.tiles[column, row].type == TileType.SeaDiagonal || 
+                    MapHolder.tiles[column,row].type == TileType.Land && MapHolder.tiles[column,row].elevation == 0 && 
+                    Util.CoordinateOnBorderChunks(column,row))
+                {
+                    MapHolder.tiles[column, row].type = TileType.Sea;
+                    CreateTile(column, row, MapHolder.tiles[column, row].type);
+                    changedCoordinates.Add(new Vector2Int(column, row));
+                    
+                }
+                if (MapHolder.tiles[column, row].type == TileType.SandDiagonal)
+                {
+                    MapHolder.tiles[column, row].type = TileType.Sand;
+                    CreateTile(column, row, MapHolder.tiles[column, row].type);
+                    changedCoordinates.Add(new Vector2Int(column, row));
+                }
+                break;
         }
         ChangeMiniMap?.Invoke(changedCoordinates);
     }
 
     void RemoveCliff(int column, int row, TileType type)
     {
-        TileType influencer = type;
         int elevation = MapHolder.tiles[column, row].elevation;
         for (int i = -1; i <= 1; i++)
         {
@@ -313,12 +174,10 @@ public class TerrainBuilder : MonoBehaviour
                 {
                     continue;
                 }
-                if ( column + i >= 0 && column + i < MapHolder.width &&
-                     row + j >= 0 && row + j < MapHolder.height)
+                if (Util.CoordinateExists(column + i,row +j))
                 {
-                    //int influenceeIndex = Util.GetIndex(column + i, row + j);
                     TileType influencee = MapHolder.tiles[column + i, row + j].type;
-                    if (influencer == TileType.CliffDiagonal && CheckCanCurveCliff(column, row))
+                    if (influencee == TileType.CliffDiagonal && !CliffBuilder.CheckCanCurveCliff(column + i, row + j))
                     {
                         MapHolder.tiles[column + i, row + j].type = TileType.Land;
                     }
@@ -332,14 +191,14 @@ public class TerrainBuilder : MonoBehaviour
                             changedCoordinates.Add(new Vector2Int(column + i, row + j));
                         }else
                         {
-                            if (!CheckCanCurveWater(column + i, row + j))
+                            if (!WaterBuilder.CheckCanCurveWater(column + i, row + j))
                             {
                                 MapHolder.tiles[column + i, row + j].type = TileType.Water;
                                 changedCoordinates.Add(new Vector2Int(column + i, row + j));
                             }
                         }
                     }
-                    RedoTile(column + i, row + j, MapHolder.tiles[column + i, row + j].type);
+                    RedoTile(column + i, row + j);
                 }
             }
         }
@@ -355,8 +214,7 @@ public class TerrainBuilder : MonoBehaviour
                     continue;
                 }
 
-                if (column + i >= 0 && column + i < MapHolder.width &&
-                    row + j >= 0 && row + j < MapHolder.height)
+                if (Util.CoordinateExists(column + i,row +j))
                 {
                     //int influenceeIndex = Util.GetIndex(column + i, row + j);
                     TileType influencee = MapHolder.tiles[column + i, row + j].type;
@@ -371,7 +229,7 @@ public class TerrainBuilder : MonoBehaviour
                         }
                         else
                         {
-                            if (!CheckCanCurveWater(column + i, row + j))
+                            if (!WaterBuilder.CheckCanCurveWater(column + i, row + j))
                             {
                                 MapHolder.tiles[column + i, row + j].type = TileType.Water;
                                 changedCoordinates.Add(new Vector2Int(column + i, row + j));
@@ -379,7 +237,7 @@ public class TerrainBuilder : MonoBehaviour
                         }
                     }
 
-                    RedoTile(column + i, row + j, MapHolder.tiles[column + i, row + j].type);
+                    RedoTile(column + i, row + j);
                 }
             }
         }
@@ -388,7 +246,6 @@ public class TerrainBuilder : MonoBehaviour
     void CreateTile(int column, int row, TileType type, int variation = -1)
     {
         MapHolder.tiles[column, row].variation = variation;
-        //Debug.Log(MapHolder.tiles[column, row].elevation);
         RecalculateDiagonals(column, row, type);
 
         switch (type)
@@ -411,127 +268,25 @@ public class TerrainBuilder : MonoBehaviour
                 break;
             case TileType.CliffDiagonal:
                 CliffBuilder.CreateCliffDiagonal(column, row);
-                MapHolder.tiles[column, row].IgnoreElevation();//= ignoreRaycastLayer;
+                MapHolder.tiles[column, row].IgnoreElevation();
+                ignoreRaycastTiles.Add(MapHolder.tiles[column, row]);
+                break;
+            case TileType.Sand:
+                LandBuilder.CreateSandTile(column,row);
+                break;
+            case TileType.SandDiagonal:
+                LandBuilder.CreateDiagonalSand(column,row);
+                break;
+            case TileType.Sea:
+                LandBuilder.CreateSeaTile(column,row);
+                break;
+            case TileType.SeaDiagonal:
+                LandBuilder.CreateDiagonalSea(column,row);
                 break;
         }
     }
+
     
-    bool CheckCanCurvePath(int column,int row, int variation, MapTile tile)
-    {
-        int elevation = MapHolder.tiles[column, row].elevation;
-        //int index = row * MapHolder.width + column;
-        bool[] types = new bool[7];
-
-        if (row + 1 < MapHolder.width && elevation == MapHolder.tiles[column,row + 1].elevation)
-        {
-            types[1] = MapHolder.tiles[column, row + 1].variation == variation;
-        }
-
-        if (column - 1 >= 0 && elevation == MapHolder.tiles[column - 1,row].elevation)
-        {
-            types[2] = MapHolder.tiles[column - 1, row].variation == variation;
-        }
-
-        if (row - 1 >= 0 && elevation == MapHolder.tiles[column,row - 1].elevation )
-        {
-            types[3] = MapHolder.tiles[column, row - 1].variation == variation;
-        }
-
-        if (column + 1 < MapHolder.height && elevation == MapHolder.tiles[column + 1,row].elevation)
-        {
-            types[4] = MapHolder.tiles[column + 1, row].variation == variation;
-        }
-
-        types[5] = types[1];
-        types[6] = types[2];
-        types[0] = types[4];
-        for (int i = 1; i < 5; i++)
-        {
-            if (types[i] && types[i - 1] && !types[i + 1] && !types[i + 2])
-            {
-                if (tile != null) 
-                {
-                    tile.diagonalPathRotation = i - 1;
-                }
-                return true;
-            }
-        }
-
-        return false;
-    }
-    
-    bool CheckCanCurveWater(int column,int row)
-    {
-        int elevation = MapHolder.tiles[column, row].elevation;
-        int index = row * MapHolder.width + column;
-        bool[] types = new bool[7];
-
-        types[1] = row + 1 < MapHolder.width && elevation <= MapHolder.tiles[column,row + 1].elevation && 
-                   (MapHolder.tiles[column, row + 1].type == TileType.Water || MapHolder.tiles[column, row + 1].type == TileType.WaterDiagonal);
-
-        types[2] = column - 1 >= 0 && elevation <= MapHolder.tiles[column - 1,row].elevation && 
-            (MapHolder.tiles[column - 1, row].type == TileType.Water || MapHolder.tiles[column - 1, row].type == TileType.WaterDiagonal);
-
-
-        types[3] = row - 1 >= 0 && elevation <= MapHolder.tiles[column, row - 1].elevation &&
-                   (MapHolder.tiles[column, row - 1].type == TileType.Water || MapHolder.tiles[column, row - 1].type == TileType.WaterDiagonal);
-
-        types[4] = column + 1 < MapHolder.height && elevation <= MapHolder.tiles[column + 1, row].elevation && 
-                   (MapHolder.tiles[column + 1, row].type == TileType.Water || MapHolder.tiles[column + 1, row].type == TileType.WaterDiagonal);
-
-        types[5] = types[1];
-        types[6] = types[2];
-        types[0] = types[4];
-        for (int i = 1; i < 5; i++)
-        {
-            if (types[i] && types[i - 1] && !types[i + 1] && !types[i + 2])
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    
-    bool CheckCanCurveCliff(int column,int row)
-    {
-        int elevation = MapHolder.tiles[column, row].elevation;
-        int[] elevations = new int[7];
-
-        if (row + 1 < MapHolder.width)
-        {
-            elevations[1] = MapHolder.tiles[column, row + 1].elevation;
-        }
-
-        if (column - 1 >= 0)
-        {
-            elevations[2] = MapHolder.tiles[column - 1, row].elevation;
-        }
-
-        if (row - 1 >= 0 )
-        {
-            elevations[3] = MapHolder.tiles[column, row - 1].elevation;
-        }
-
-        if (column + 1 < MapHolder.height)
-        {
-            elevations[4] = MapHolder.tiles[column + 1, row].elevation;
-        }
-
-        elevations[5] = elevations[1];
-        elevations[6] = elevations[2];
-        elevations[0] = elevations[4];
-        for (int i = 1; i < 5; i++)
-        {
-            if ((elevations[i] == elevation && elevations[i - 1] == elevation &&
-               elevations[i + 1] < elevation && elevations[i + 2] < elevation))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     void RecalculateDiagonals(int column,int row, TileType type)
     {
@@ -546,8 +301,7 @@ public class TerrainBuilder : MonoBehaviour
                 {
                     continue;
                 }
-                if ( column + i >= 0 && column + i < MapHolder.width &&
-                    row + j >= 0 && row + j < MapHolder.height)
+                if (Util.CoordinateExists(column + i,row +j))
                 {
                     if (elevation > MapHolder.tiles[column + i,row + j].elevation)
                     {
@@ -565,20 +319,19 @@ public class TerrainBuilder : MonoBehaviour
                     }
                     if (!(i!=0 && j!=0) && influencer != TileType.Null  && 
                         influencer.CanInfluence(MapHolder.tiles[column + i, row + j].type, Util.GetRotation(i,j), 
-                            MapHolder.tiles[column + i, row + j].GetDirectionOfPath(),
-                            MapHolder.tiles[column + i , row + j].GetDirectionOfWater(),
+                            MapHolder.tiles[column + i, row + j].GetDirection(),
                             variation == MapHolder.tiles[column + i,row + j].variation))
                     {
                         SwitchTileType(column + i, row + j);
                         changedCoordinates.Add(new Vector2Int(column+i, row+j));
                     }
-                    RedoTile(column + i, row + j, type);
+                    RedoTile(column + i, row + j);
                 }
             }
         }
     }
 
-    void RedoTile(int column, int row, TileType type)
+    void RedoTile(int column, int row)
     {
         switch (MapHolder.tiles[column, row].type)
         {
@@ -597,6 +350,9 @@ public class TerrainBuilder : MonoBehaviour
             case TileType.CliffDiagonal:
                 //MapHolder.tiles[index] = TileType.Cliff;
                 break;
+            case TileType.Sand:
+                LandBuilder.CreateSandTile(column,row);
+                break;
         }
     }
 
@@ -611,6 +367,12 @@ public class TerrainBuilder : MonoBehaviour
                 MapHolder.tiles[column, row].type = TileType.Path;
                 break;
             case TileType.CliffDiagonal:
+                MapHolder.tiles[column, row].type = TileType.Land;
+                break;
+            case TileType.SandDiagonal:
+                MapHolder.tiles[column, row].type = TileType.Sand;
+                break;
+            case TileType.SeaDiagonal:
                 MapHolder.tiles[column, row].type = TileType.Land;
                 break;
         }

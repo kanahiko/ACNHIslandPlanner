@@ -112,6 +112,7 @@ public class FancyToggleButton : Button
             {
                 if (toggleGroup && !toggleGroup.canTurnOff)
                 {
+                    isOn = true;
                     return;
                 }
                 if (buttonsGroup)
@@ -125,8 +126,8 @@ public class FancyToggleButton : Button
                     childrenToggleGroup.TurnOffToggles();
                     buttonsGroup.enabled = false;
                 }
-                backgroundImage.color = normalColor;
-                graphic.enabled = false;
+                //backgroundImage.color = normalColor;
+                //graphic.enabled = false;
             }
         }
     }

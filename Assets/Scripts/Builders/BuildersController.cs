@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml.Serialization;
 using UnityEngine;
 
 public class BuildersController : MonoBehaviour
@@ -32,25 +34,28 @@ public class BuildersController : MonoBehaviour
         Controller.EndConstructionAction = terrainBuilder.EndConstruction;
     }
 
-    public void ChangeTile(int column, int row, ToolType tool, ToolMode mode , int variation, DecorationType decorationType, bool isHorizontal)
+    public void ChangeTile(int column, int row, ToolType tool, ToolMode mode , int variation, DecorationType decorationType, int rotation)
     {
         switch (tool)
         {
             case ToolType.Waterscaping:
             case ToolType.CliffConstruction:
             case ToolType.PathPermit:
+            case ToolType.SandPermit:
                 terrainBuilder.ChangeTile(tool, mode, column, row, variation);
                 break;
             case ToolType.BridgeMarkUp:
-                break;
             case ToolType.InclineMarkUp:
+                RebuildMap();
+                return;
+                BridgesBuilder.ChangeTile(tool,mode,column,row,variation,rotation);
                 break;
             case ToolType.TreePlanting:
             case ToolType.BushPlanting:
             case ToolType.FlowerPlanting:
             case ToolType.FenceBuilding:
             case ToolType.BuildingsMarkUp:
-                DecorationsBuilder.ChangeTile(column,row,decorationType,mode,variation,isHorizontal);
+                DecorationsBuilder.ChangeTile(column,row,decorationType,mode,variation, (rotation == 0 || rotation == 2));
                 break;
             /*case ToolType.BuildingsMarkUp:
                 BuildingsBuilder.ChangeTile(column, row, mode, decorationType);
@@ -58,6 +63,31 @@ public class BuildersController : MonoBehaviour
             case ToolType.Null:
                 break;
         }
+    }
+
+    public void RebuildMap()
+    {
+        /*File.WriteAllText(@"c:\movie.json", JsonConvert.SerializeObject(MapHolder.tiles));
+
+        // serialize JSON directly to a file
+        using (StreamWriter file = File.CreateText(@"c:\movie.json"))
+        {
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.Serialize(file, movie);
+        }*/
+        string json = JsonUtility.ToJson(MapHolder.tiles[30,30]);
+        
+        File.WriteAllText(@"D:\test.txt",json);
+        
+        XmlSerializer serializer = new XmlSerializer(typeof(MapTile));
+        StreamWriter writer = new StreamWriter(@"D:\hero.xml");
+        serializer.Serialize(writer.BaseStream, MapHolder.tiles[30,30]);
+        writer.Close();
+        
+        serializer = new XmlSerializer(typeof(MapTile));
+        StreamReader reader = new StreamReader(@"D:\hero.xml");
+        MapTile deserialized = (MapTile)serializer.Deserialize(reader.BaseStream);
+        reader.Close();
     }
 
 }

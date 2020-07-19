@@ -27,7 +27,7 @@ public static class MapHolder
     public static MapPrefabs mapPrefab;
 
     public static int[,] treeInfluence;
-    public static int[,] buildingsInfluence;
+    public static BuildingInfluence[,] buildingsInfluence;
 
     public static void StartMapHolder()
     {
@@ -37,7 +37,7 @@ public static class MapHolder
         decorationsTiles = new DecorationTiles[width, height];
         tiles = new MapTile[width, height];
         treeInfluence = new int[width, height];
-        buildingsInfluence = new int[width,height];
+        buildingsInfluence = new BuildingInfluence[width,height];
 
         mapPrefab.StartPrefab();
     }
@@ -55,6 +55,9 @@ public class DecorationTiles : IDisposable
     public MeshRenderer mainTileRenderer;
     public Transform[] quarters;
     public bool[] isLinked;
+
+    public int rotation;
+    public int size;
 
     //to mark which tiles are not empty and where to start to make them empty
     public UniqueBuilding building;

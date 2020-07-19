@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class Controller : MonoBehaviour
 {
+    public BuildersController buildersController;
     public UIController controller;
     
     public Vector2 playerFieldSizeMin = new Vector2(0, 0);
@@ -16,6 +17,8 @@ public class Controller : MonoBehaviour
     public Vector3 scrollOffset = new Vector3(0, 0, 0);
 
     public Vector2 scrollMinMax = new Vector2(-1, 20);
+    [Range(-30,10)]
+    public float defaultScroll = 0;
     [Range(1,20)]
     public float speedMultiplier = 1;
     [Range(1,20)]
@@ -24,6 +27,7 @@ public class Controller : MonoBehaviour
     public Camera mainCamera;
     public Transform playerCamera;
     public Transform playerZoomCamera;
+
     
     [Range(0, 10)]
     public float speed;
@@ -32,11 +36,11 @@ public class Controller : MonoBehaviour
 
     public ToolType currentTool = ToolType.Null;
 
-    public GameObject selectionCube;
+    public TilePreview cursor;
     
     public Text coordinateText;
 
-    public float timeBetweenClicks = 0.1f;
+    //public float timeBetweenClicks = 0.1f;
 
     //checks how much zoomed in or out
     float currentScroll = 0;
@@ -55,7 +59,7 @@ public class Controller : MonoBehaviour
     //tools
     ToolMode construct = ToolMode.None;
     DecorationType currentDecorationTool;
-    bool isHorizontal = true;
+    int rotation = 0;
     int variation = 0;
     int currentBlockX = -1;
     int currentBlockY = -1;
@@ -63,19 +67,18 @@ public class Controller : MonoBehaviour
     int prevBlockX = -1;
     int prevBlockY = -1;
 
-    public static Action<int, int, ToolType, ToolMode, int, DecorationType, bool> ChangeTile;
+    public static Action<int, int, ToolType, ToolMode, int, DecorationType, int> ChangeTile;
     public static Action<int, int> StartConstructionAction;
     public static Action EndConstructionAction;
 
     public Action<DecorationType, int> ChangeCursor;
-    public Action<bool> ChangeRotationCursor;
+    public Action<int, DecorationType> ChangeRotationCursor;
     public Action<Vector3> ChangeCursorPosition;
-
-    public TilePreview cursor;
+    public Action<Vector2, float> ChangeCameraPosition;
 
     Controls controls;
 
-    private float timeElapsedSinceClick;
+    //private float timeElapsedSinceClick;
 
 
     private void Awake()
@@ -130,7 +133,10 @@ public class Controller : MonoBehaviour
         
         construct = ToolMode.None;
 
+        currentScroll = defaultScroll;
+        CalculateScroll();
     }
+    
 
     void SetToolButton(ToolType type)
     {
@@ -145,6 +151,8 @@ public class Controller : MonoBehaviour
         currentPosition = playerZoomCamera.localPosition;
         cameraDegrees = playerZoomCamera.localRotation.eulerAngles.x;
 
+        ChangeCameraPosition = MiniMap.ChangeCameraPosition;
+        UpdateCameraPositionOnTheMap();
     }
     
     void Update()
@@ -175,8 +183,28 @@ public class Controller : MonoBehaviour
     {
         if (currentTool == ToolType.FenceBuilding)
         {
-            isHorizontal = !isHorizontal;
-            ChangeRotationCursor?.Invoke(isHorizontal);
+            rotation = rotation == 0 ? 1 : 0;
+            ChangeRotationCursor?.Invoke(rotation, DecorationType.Fence);
+        }
+
+        if (currentTool == ToolType.InclineMarkUp)
+        {
+            rotation++;
+            if (rotation > 3)
+            {
+                rotation = 0;
+            }
+            ChangeRotationCursor?.Invoke(rotation, DecorationType.Incline);
+        }
+        
+        if (currentTool == ToolType.BridgeMarkUp)
+        {
+            rotation++;
+            if (rotation > 3)
+            {
+                rotation = 0;
+            }
+            ChangeRotationCursor?.Invoke(rotation, DecorationType.Bridge);
         }
     }
 
@@ -191,12 +219,14 @@ public class Controller : MonoBehaviour
 
     void HandleInput(Vector2 move)
     {
+        bool cameraChangedHere = false;
         Vector3 currentPosition = playerCamera.localPosition;
         if (Mathf.Abs(move.x) >= 0.1f)
         {
             currentPosition.x += move.x * (speed * currentSpeedMultiplier) *Time.deltaTime;
             currentPosition.x = Mathf.Clamp(currentPosition.x, playerFieldSizeMin.x + MapHolder.offset.x, playerFieldSizeMax.x + MapHolder.offset.x);
             cameraChanged = true;
+            cameraChangedHere = true;
         }
 
         if (Mathf.Abs(move.y) >= 0.1f)
@@ -204,9 +234,23 @@ public class Controller : MonoBehaviour
             currentPosition.z += move.y * (speed * currentSpeedMultiplier) *Time.deltaTime;
             currentPosition.z = Mathf.Clamp(currentPosition.z, playerFieldSizeMin.y + MapHolder.offset.z, playerFieldSizeMax.y + MapHolder.offset.z);
             cameraChanged = true;
+            cameraChangedHere = true;
         }
 
         playerCamera.localPosition = currentPosition;
+        
+        if (cameraChangedHere)
+        {
+            UpdateCameraPositionOnTheMap();
+        }
+
+    }
+
+    void UpdateCameraPositionOnTheMap()
+    {
+        Vector3 position = playerCamera.position - buildersController.offsetTerrain;
+        
+        ChangeCameraPosition?.Invoke(new Vector2(position.x,Mathf.Abs(position.z)), Mathf.Abs((currentScroll - scrollMinMax.y)/scrollMinMax.y));
     }
 
     void HandleTilt()
@@ -229,9 +273,7 @@ public class Controller : MonoBehaviour
         cameraChanged = true;
         isCameraParallelToGround = !isCameraParallelToGround;
 
-        var normal = playerZoomCamera.forward;
-        scrollOffset = normal * currentScroll;
-        playerZoomCamera.localPosition = currentPosition +scrollOffset;
+        CalculateScroll();
     }
 
     void HandleScrolling(float scroll)
@@ -241,11 +283,17 @@ public class Controller : MonoBehaviour
             currentScroll += scroll * scrollSpeed * currentSpeedMultiplier *Time.deltaTime;
             currentScroll = Mathf.Clamp(currentScroll, scrollMinMax.x, scrollMinMax.y);
 
-            var normal = playerZoomCamera.forward;
-            scrollOffset = normal * currentScroll;
-            playerZoomCamera.localPosition = currentPosition +scrollOffset;
+            CalculateScroll();
             cameraChanged = true;
+            UpdateCameraPositionOnTheMap();
         }
+    }
+
+    void CalculateScroll()
+    {
+        var normal = playerZoomCamera.forward;
+        scrollOffset = normal * currentScroll;
+        playerZoomCamera.localPosition = currentPosition +scrollOffset;
     }
 
     void TrackMousePositionOnGrid()
@@ -255,19 +303,15 @@ public class Controller : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(mainCamera.ScreenPointToRay(mousePos), out hit, 50,256))
             {
-                //Vector3 newPos = mousePosition;
-                //selectionCube.transform.localPosition = hit.collider.transform.position;
                 ChangeCursorPosition.Invoke(hit.collider.transform.position);
                 currentBlockX = (int) (hit.collider.transform.position.x - MapHolder.offset.x);
                 currentBlockY = (int) (hit.collider.transform.position.z - MapHolder.offset.z);
 
-                //mousePos.position = mousePoint;
                 coordinateText.text = $"{currentBlockX} {-currentBlockY}";
             }
             else
             {
                 ChangeCursorPosition.Invoke(new Vector3(20, 0, 20));
-                //selectionCube.transform.localPosition = new Vector3(20,0,20);
                 currentBlockX = -1;
                 currentBlockY = -1;
             }
@@ -275,7 +319,6 @@ public class Controller : MonoBehaviour
         else
         {
             ChangeCursorPosition.Invoke(new Vector3(20, 0, 20));
-            //selectionCube.transform.localPosition = new Vector3(20,0,20);
             currentBlockX = -1;
             currentBlockY = -1;
         }
@@ -286,7 +329,6 @@ public class Controller : MonoBehaviour
         if (construct == ToolMode.None && currentBlockX != -1)
         {
             StartConstructionAction?.Invoke(currentBlockX, Mathf.Abs(currentBlockY));
-            //TerrainBuilder.StartConstruction(MapHolder.tiles[].elevation);
         }
     }
 
@@ -294,8 +336,8 @@ public class Controller : MonoBehaviour
     {
         construct = ToolMode.None;
         EndConstructionAction?.Invoke();
-       // TerrainBuilder.EndConstruction();
     }
+    
     void ChangeItem(ToolMode mode)
     {
         if (currentTool != ToolType.Null && currentBlockX != -1)
@@ -312,7 +354,7 @@ public class Controller : MonoBehaviour
                 }
             }
 
-            ChangeTile?.Invoke(currentBlockX, Mathf.Abs(currentBlockY), currentTool, construct, variation, currentDecorationTool, isHorizontal);
+            ChangeTile?.Invoke(currentBlockX, Mathf.Abs(currentBlockY), currentTool, construct, variation, currentDecorationTool, rotation);
 
             prevBlockX = currentBlockX;
             prevBlockY = currentBlockY;
@@ -352,8 +394,9 @@ public class Controller : MonoBehaviour
     {
         if (currentTool != ToolType.Waterscaping)
         {
+            variation = -1;
+            rotation = 0;
             ChangeCursor.Invoke(DecorationType.Null, -1);
-            //ChangeCursor.?Invoke();
             currentDecorationTool = DecorationType.Null;
             ToolChange(ToolType.Waterscaping);
         }
@@ -363,9 +406,22 @@ public class Controller : MonoBehaviour
     {
         if (currentTool != ToolType.CliffConstruction)
         {
+            variation = -1;
+            rotation = 0;
             ChangeCursor.Invoke(DecorationType.Null, -1);
             currentDecorationTool = DecorationType.Null;
             ToolChange(ToolType.CliffConstruction);
+        }
+    }
+    public void SandPermitButtonClick()
+    {
+        if (currentTool != ToolType.SandPermit)
+        {
+            variation = -1;
+            rotation = 0;
+            ChangeCursor.Invoke(DecorationType.Null, -1);
+            currentDecorationTool = DecorationType.Null;
+            ToolChange(ToolType.SandPermit);
         }
     }
 
@@ -373,6 +429,7 @@ public class Controller : MonoBehaviour
     {
         if (currentTool != ToolType.PathPermit)
         {
+            rotation = 0;
             ChangeCursor.Invoke(DecorationType.Null, -1);
             currentDecorationTool = DecorationType.Null;
             ToolChange(ToolType.PathPermit);
@@ -381,22 +438,18 @@ public class Controller : MonoBehaviour
 
     public void FencePermitButtonClick()
     {
-        //ChangeCursor.Invoke(DecorationType.Fence, 0);
-        //variation = 0;
         if (currentTool != ToolType.FenceBuilding)
         {
-            isHorizontal = true;
+            rotation = 0;
             currentDecorationTool = DecorationType.Fence;
             ToolChange(ToolType.FenceBuilding);
         }
     }
     public void BushPermitButtonClick()
     {
-        //ChangeCursor.Invoke(DecorationType.Flora, 0);
-        //variation = 0;
         if (currentTool != ToolType.BushPlanting)
         {
-            isHorizontal = true;
+            rotation = 0;
             currentDecorationTool = DecorationType.Flora;
             ToolChange(ToolType.BushPlanting);
         }
@@ -404,36 +457,52 @@ public class Controller : MonoBehaviour
     
     public void TreePermitButtonClick()
     {
-        //ChangeCursor.Invoke(DecorationType.Tree, 0);
-        //variation = 0;
         if (currentTool != ToolType.TreePlanting)
         {
-            isHorizontal = true;
+            rotation = 0;
             currentDecorationTool = DecorationType.Tree;
             ToolChange(ToolType.TreePlanting);
         }
     }
     public void BuildingsPermitButtonClick()
     {
-        //ChangeCursor.Invoke(DecorationType.House, 0);
-        //variation = 0;
         if (currentTool != ToolType.BuildingsMarkUp)
         {
-            isHorizontal = true;
+            rotation = 0;
             currentDecorationTool = DecorationType.House;
             ToolChange(ToolType.BuildingsMarkUp);
+        }
+    }
+    
+    public void InclinePermitButtonClick()
+    {
+        if (currentTool != ToolType.InclineMarkUp)
+        {
+            rotation = 0;
+            currentDecorationTool = DecorationType.Incline;
+            ToolChange(ToolType.InclineMarkUp);
+        }
+    }
+    public void BridgePermitButtonClick()
+    {
+        if (currentTool != ToolType.BridgeMarkUp)
+        {
+            rotation = 0;
+            currentDecorationTool = DecorationType.Bridge;
+            ToolChange(ToolType.BridgeMarkUp);
         }
     }
 
     public void ChooseVariation(int variation)
     {
-        //Debug.Log($"test {variation}");
         this.variation = variation;
         switch (currentTool)
         {
             case ToolType.BridgeMarkUp:
+                ChangeCursor.Invoke(DecorationType.Bridge,variation);
                 break;
             case ToolType.InclineMarkUp:
+                ChangeCursor.Invoke(DecorationType.Incline,variation);
                 break;
             case ToolType.TreePlanting:
                 ChangeCursor.Invoke(DecorationType.Tree, variation);

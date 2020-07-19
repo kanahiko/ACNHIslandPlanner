@@ -34,8 +34,10 @@ public class ButtonToggleGroup:MonoBehaviour
             }
             activeToggles.Clear();
         }
-
-        activeToggles.Add(toggle);
+        if (!(canTurnOff && toggle.isOn))
+        {
+            activeToggles.Add(toggle);
+        }
         buttonWasClicked?.Invoke(toggle);
     }
 

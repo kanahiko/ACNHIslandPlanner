@@ -8,7 +8,7 @@ using UnityEngine;
 public enum TileType
 {
     Null = 0, Land, Water, WaterDiagonal,
-    Path, PathCurve, Cliff, CliffDiagonal, Sea, Sand
+    Path, PathCurve, Cliff, CliffDiagonal, Sea, Sand, SandDiagonal, SeaDiagonal
 }
 
 public enum TilePrefabType
@@ -29,8 +29,8 @@ public enum TilePrefabType
     PathCurved,
     PathFull,
     CliffDiagonal,
-    Sand,
-    Sea
+    Sand, SandDiagonal, SandDiagonalLand,
+    Sea, SeaDiagonal
 }
 
 public enum ToolType
@@ -45,7 +45,8 @@ public enum ToolType
     FlowerPlanting =7,
     FenceBuilding = 8,
     BuildingsMarkUp = 9,
-    Null
+    Null = 10,
+    SandPermit = 11
 }
 
 public enum ToolMode
@@ -66,6 +67,11 @@ public enum FenceType
 public enum Direction
 {
     up = 0, right = 1, down = 2, left = 3
+}
+
+public enum BuildingInfluence
+{
+    noInfluence = 0, pathsOnly = 1, fullInfluence =2
 }
 
 [Serializable]
@@ -118,6 +124,26 @@ public static  class Util
     public static List<Vector2Int> indexOffsetDiagonal = new List<Vector2Int>
     {
         new Vector2Int(-1 , -1), new Vector2Int (-1,1), new Vector2Int(1,1),new Vector2Int(1,-1)
+    };
+    
+    public static Vector2Int[] oppositeCorner = new Vector2Int[]
+    {
+        new Vector2Int(0,0), new Vector2Int(0,2), new Vector2Int(2,2), new Vector2Int(2,0)  
+    };
+    
+    public static Vector2Int[] oppositeCornerForSand = new Vector2Int[]
+    {
+        new Vector2Int(-1 , -1), new Vector2Int (1,-1), new Vector2Int(1,1),new Vector2Int(-1,1) 
+    };
+    
+    public static Vector2Int[] inclineRotationsOffset = new Vector2Int[]
+    {
+        new Vector2Int(0,0), new Vector2Int(0,2), new Vector2Int(2,1), new Vector2Int(1,0),    
+    };
+
+    public static Vector2[] bridgeRotationsOffset = new Vector2[]
+    {
+        new Vector2(0,0), new Vector2(-2.409f,3.411f), new Vector2(0,4), new Vector2(0.58f,0.596f),    
     };
     
     public static T[,] RotateMatrix<T>(T[,] corners)
@@ -208,6 +234,27 @@ public static  class Util
 
         return corners;
     }
+    
+    public static bool[,] CreateSandMatrix(int column, int row)
+    {
+        bool[,] corners = new bool[3,3];
+
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j=0;j<3;j++)
+            {
+                if ((column + j >= 0 && column + j < MapHolder.width &&
+                     row + i >= 0 && row + i < MapHolder.height))
+                {
+                    corners[j,i] = MapHolder.tiles[column + j, row + i] != null &&
+                                 MapHolder.tiles[column + j, row + i].type == TileType.Sand &&
+                                 MapHolder.tiles[column + j, row + i].elevation == 0;
+                }
+            }
+        }
+
+        return corners;
+    }
     /// <summary>
     /// returns true if different orientation
     /// false if still the same orientation or inconclusive
@@ -264,8 +311,61 @@ public static  class Util
         }
     }
 
-    public static bool CanInfluence(this TileType influencer, TileType influencee, int direction, Vector2Int directionOfPath, Vector2Int directionOfWater, bool isSameVariation)
+    public static bool CanInfluence(this TileType influencer, TileType influencee, int direction, 
+        Vector2Int directionInfluencee, bool isSameVariation)
     {
+        if (influencee == TileType.SeaDiagonal)
+        {
+            if (influencer == TileType.SeaDiagonal)
+            {
+                int oppositeDirection = Util.SubstractRotation(direction, 2);
+                if (oppositeDirection == directionInfluencee.x || oppositeDirection == directionInfluencee.y)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (influencer == TileType.Sand || influencer == TileType.Sea)
+                {
+                    return true;
+                }
+                if (influencer == TileType.Land  || influencer == TileType.Sand)
+                {
+                    int oppositeDirection = Util.SubstractRotation(direction, 2);
+                    if (direction == directionInfluencee.x || direction == directionInfluencee.y)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        if (influencee == TileType.SandDiagonal)
+        {
+            if (influencer == TileType.SandDiagonal)
+            {
+                if (direction == directionInfluencee.x || direction == directionInfluencee.y)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (influencer == TileType.Sand)
+                {
+                    return true;
+                }
+                if (influencer == TileType.Land  || influencer == TileType.Sand)
+                {
+                    int oppositeDirection = Util.SubstractRotation(direction, 2);
+                    if (direction == directionInfluencee.x || direction == directionInfluencee.y)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        
         //Debug.Log($"{influencee} {influencer} {direction} dp={directionOfPath} dw={directionOfWater}");
         if ((influencee == TileType.CliffDiagonal) &&
             (influencer == TileType.Cliff || influencer == TileType.CliffDiagonal) )
@@ -273,12 +373,12 @@ public static  class Util
             return true; 
         }
 
-        if (isSameVariation && influencee == TileType.PathCurve && (direction == directionOfPath.x || direction == directionOfPath.y))
+        if (isSameVariation && influencee == TileType.PathCurve && (direction == directionInfluencee.x || direction == directionInfluencee.y))
         {
             return influencer == TileType.Path || influencer == TileType.PathCurve;
         }
 
-        return (influencee == TileType.WaterDiagonal && (influencer == TileType.Water ||  (direction == directionOfWater.x || direction == directionOfWater.y)));
+        return (influencee == TileType.WaterDiagonal && (influencer == TileType.Water ||  (direction == directionInfluencee.x || direction == directionInfluencee.y)));
     }
 
     public static bool CheckSurroundedBySameElevation(int column, int row)
@@ -356,7 +456,11 @@ public static  class Util
     {
         return MapHolder.tiles[column, row].type != TileType.CliffDiagonal &&
                     MapHolder.tiles[column, row].type != TileType.Water &&
-                    MapHolder.tiles[column, row].type != TileType.WaterDiagonal;
+                    MapHolder.tiles[column, row].type != TileType.WaterDiagonal &&
+                    MapHolder.tiles[column, row].type != TileType.Sand &&
+                    MapHolder.tiles[column, row].type != TileType.SandDiagonal &&
+                    MapHolder.tiles[column, row].type != TileType.Sea &&
+                    MapHolder.tiles[column, row].type != TileType.SeaDiagonal;
     }
 
     public static bool CheckHalfSurroundedBySameElevation(int column, int row)
@@ -469,6 +573,58 @@ public static  class Util
             }
         }
         return true;
+    }
+    
+    public static bool ToolModeChange(bool isAdd, int column, int row, TileType type,ref ToolMode toolMode)
+    {
+        //Debug.Log($"{toolMode} {isAdd} {index} {type}  willdo?");
+        if (toolMode == ToolMode.None)
+        {
+            toolMode = isAdd? ToolMode.Add : ToolMode.Remove;
+            MapHolder.tiles[column, row].type = type;
+            return true;
+        }
+        else
+        {
+            if ((toolMode == ToolMode.Add && isAdd) || (toolMode == ToolMode.Remove && !isAdd))
+            {
+                MapHolder.tiles[column, row].type = type;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static bool CoordinateExists(int column, int row)
+    {
+        return column >= 0 && column < MapHolder.width &&
+               row >= 0 && row < MapHolder.height;
+    }
+
+    public static bool CoordinateOnBorderChunks(int column, int row)
+    {
+        return (column <= 16 || column > MapHolder.width - 16) || (row <= 16 || row > MapHolder.height - 16);
+    }
+
+    public static bool IsOnLandSandBorder(int column, int row)
+    {
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (CoordinateExists(column + j, row + i))
+                {
+                    if (MapHolder.tiles[column + j, row + i].type != TileType.Sand &&
+                        MapHolder.tiles[column + j, row + i].type != TileType.SandDiagonal &&
+                        MapHolder.tiles[column + j, row + i].type != TileType.Sea)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
 }

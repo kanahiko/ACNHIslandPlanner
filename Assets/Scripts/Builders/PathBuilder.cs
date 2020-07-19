@@ -6,6 +6,92 @@ using UnityEngine.Serialization;
 
 public class PathBuilder
 {
+    public static bool CheckPath(int column, int row, TileType previousTileType,ref ToolMode toolMode, int variation)
+    {
+        if (previousTileType == TileType.CliffDiagonal || previousTileType == TileType.Sand || previousTileType == TileType.Sea)
+        {
+            return false;
+        }
+        if (previousTileType == TileType.Path)
+        {
+            if (MapHolder.tiles[column,row].variation == variation &&
+                CheckCanCurvePath(column, row, variation, MapHolder.tiles[column,row]))
+            {
+                if (toolMode == ToolMode.None)
+                {
+                    toolMode = ToolMode.Add;
+                    MapHolder.tiles[column, row].type = TileType.PathCurve;
+                    return true;
+                }
+                else
+                {
+                    return Util.ToolModeChange(true, column, row, TileType.Path, ref toolMode);
+                }
+            }
+            else
+            {
+                return  Util.ToolModeChange(false, column, row, TileType.Land,ref toolMode);
+            }
+        }
+        else
+        {
+            if (previousTileType == TileType.PathCurve)
+            {
+                return Util.ToolModeChange(false, column, row, TileType.Land,ref toolMode);
+            }
+            else
+            {
+                return Util.ToolModeChange(true, column, row, TileType.Path,ref toolMode);
+            }
+        }
+
+        return false;
+    }
+    
+    static bool CheckCanCurvePath(int column,int row, int variation, MapTile tile)
+    {
+        int elevation = MapHolder.tiles[column, row].elevation;
+        //int index = row * MapHolder.width + column;
+        bool[] types = new bool[7];
+
+        if (row + 1 < MapHolder.width && elevation == MapHolder.tiles[column,row + 1].elevation)
+        {
+            types[1] = MapHolder.tiles[column, row + 1].variation == variation;
+        }
+
+        if (column - 1 >= 0 && elevation == MapHolder.tiles[column - 1,row].elevation)
+        {
+            types[2] = MapHolder.tiles[column - 1, row].variation == variation;
+        }
+
+        if (row - 1 >= 0 && elevation == MapHolder.tiles[column,row - 1].elevation )
+        {
+            types[3] = MapHolder.tiles[column, row - 1].variation == variation;
+        }
+
+        if (column + 1 < MapHolder.height && elevation == MapHolder.tiles[column + 1,row].elevation)
+        {
+            types[4] = MapHolder.tiles[column + 1, row].variation == variation;
+        }
+
+        types[5] = types[1];
+        types[6] = types[2];
+        types[0] = types[4];
+        for (int i = 1; i < 5; i++)
+        {
+            if (types[i] && types[i - 1] && !types[i + 1] && !types[i + 2])
+            {
+                if (tile != null) 
+                {
+                    tile.diagonalRotation = i - 1;
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
     public static void CreatePath(int column, int row, int elevationLevel, int variation)
     {
         if (MapHolder.tiles[column,row] != null)
@@ -25,7 +111,6 @@ public class PathBuilder
             MapHolder.tiles[column, row].backgroundType = TilePrefabType.Land;
             MapHolder.tiles[column,row].SetPosition(new Vector3(column, 0, -row));
         }
-        MapHolder.tiles[column, row].diagonaWaterRotation = -1;
 
         TileType[,] corners = Util.CreateMatrix(column, row, variation);
 
@@ -40,7 +125,7 @@ public class PathBuilder
                 FindCornerPath(corners, k, column, row,variation);
                 corners = Util.RotateMatrix(corners);
             }
-            MapHolder.tiles[column, row].diagonalPathRotation = -1;
+            MapHolder.tiles[column, row].diagonalRotation = -1;
         }
         if (elevationLevel > 0)
         {
@@ -115,7 +200,7 @@ public class PathBuilder
     public static void CreateCurvedPath(TileType[,] corners, int column, int row, int variation)
     {
         
-        int rotation = MapHolder.tiles[column, row].diagonalPathRotation;
+        int rotation = MapHolder.tiles[column, row].diagonalRotation;
 
         int oppositeRotation = Util.SubstractRotation(rotation, 2);
 
@@ -169,7 +254,7 @@ public class PathBuilder
         
         MapHolder.tiles[column, row].quarters[rotation] = tile;
         MapHolder.tiles[column, row].prefabType[rotation] = TilePrefabType.PathCurved;
-        MapHolder.tiles[column, row].diagonalPathRotation = rotation;
+        //MapHolder.tiles[column, row].diagonalRotation = rotation;
         
         
         if (variation >= 0)

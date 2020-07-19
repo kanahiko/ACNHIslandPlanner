@@ -22,9 +22,12 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 85986eb5c2123fa4a9e18eb1c8f4914f, type: 2}
   - {fileID: 2100000, guid: 93c4fc2d66db6e54390b2c6125bf3b06, type: 2}
   - {fileID: 2100000, guid: 68078f02f8f8fef42b8ff8587f7d22bc, type: 2}
+  - {fileID: 2100000, guid: 8992898ca248c244dae6086cde4658ab, type: 2}
+  - {fileID: 2100000, guid: 259617b40142fc94294ab8a1063a9d91, type: 2}
   elevationMaterials:
   - {fileID: 2100000, guid: 85986eb5c2123fa4a9e18eb1c8f4914f, type: 2}
   - {fileID: 2100000, guid: 6af877b08975cd2478629c727c21eb32, type: 2}
+  - {fileID: 2100000, guid: 259617b40142fc94294ab8a1063a9d91, type: 2}
   colliderPrefab: {fileID: 3632935404513256885, guid: 01c6444c1d224994b8ea2d74596554fd, type: 3}
   specialCurvedPath:
   - {fileID: 3758542555312703372, guid: 5906856e61a75ee4894e65a7db88e50d, type: 3}
@@ -60,10 +63,10 @@ MonoBehaviour:
       elementIcon: {fileID: 0}
     reqReferences: {fileID: 0}
     isExpanded: 0
-    _keyValues: 000000000100000008000000020000000300000004000000050000000600000007000000090000000a0000000b0000000c0000000d0000000e0000000f00000010000000
-    _keys: 000000000100000008000000020000000300000004000000050000000600000007000000090000000a0000000b0000000c0000000d0000000e0000000f00000010000000
+    _keyValues: 000000000100000008000000020000000300000004000000050000000600000007000000090000000a0000000b0000000c0000000d0000000e0000000f00000010000000110000001200000014000000
+    _keys: 000000000100000008000000020000000300000004000000050000000600000007000000090000000a0000000b0000000c0000000d0000000e0000000f00000010000000110000001200000014000000
     _values:
-    - {fileID: 780577728891321065, guid: 25f612a0649dc7d4e88309c33559aba6, type: 3}
+    - {fileID: 0}
     - {fileID: 6204120525491208915, guid: 07c16055e2f3e754eb2fa10a4557c5c5, type: 3}
     - {fileID: 4190279070646632014, guid: e4e73b1d900e5e24cb07e37a65994f96, type: 3}
     - {fileID: 9082948597709160632, guid: 43e35f2259a5fff46ae6de5ebc3d2ea0, type: 3}
@@ -80,6 +83,9 @@ MonoBehaviour:
     - {fileID: 2127154423232691640, guid: d1eeee75a7d9c32408332b75263e78c8, type: 3}
     - {fileID: 780577728891321065, guid: 25f612a0649dc7d4e88309c33559aba6, type: 3}
     - {fileID: 6204120525491208915, guid: 4011b57ebb537be45881247304d23f1d, type: 3}
+    - {fileID: 6306349433796913780, guid: 03f6281e21f071e4fa02bcb58e2e8db0, type: 3}
+    - {fileID: 7481657990002357650, guid: 112d258f3ee5bdf438c72f16a576a76b, type: 3}
+    - {fileID: 6306349433796913780, guid: 3cdf879904f08594faa2f8091969f8dc, type: 3}
   pathVariationMaterial:
   - {fileID: 2100000, guid: 68078f02f8f8fef42b8ff8587f7d22bc, type: 2}
   - {fileID: 2100000, guid: 273e3c75297db394ab62fd5110c5baf2, type: 2}
@@ -138,7 +144,7 @@ MonoBehaviour:
       draggable: 1
       expandable: 1
       multipleSelection: 1
-      isExpanded: 0
+      isExpanded: 1
       label:
         m_Text: Keys
         m_Image: {fileID: 0}
@@ -153,7 +159,7 @@ MonoBehaviour:
       elementNameOverride: 
       elementIcon: {fileID: 0}
     reqReferences: {fileID: 0}
-    isExpanded: 0
+    isExpanded: 1
     _keyValues: 010000000200000003000000040000000500000006000000090000000700000008000000
     _keys: 010000000200000003000000040000000500000006000000090000000700000008000000
     _values:
@@ -164,35 +170,9 @@ MonoBehaviour:
     - {x: 5, y: 4, z: 1}
     - {x: 4, y: 4, z: 1}
     - {x: 4, y: 5, z: 1}
-    - {x: 4, y: 2, z: 0}
-    - {x: 4, y: 2, z: 0}
+    - {x: 2, y: 4, z: 0}
+    - {x: 4, y: 5, z: 0}
   maxCount:
-    reorderableList:
-      canAdd: 1
-      canRemove: 1
-      draggable: 1
-      expandable: 1
-      multipleSelection: 1
-      isExpanded: 0
-      label:
-        m_Text: Keys
-        m_Image: {fileID: 0}
-        m_Tooltip: 
-      headerHeight: 18
-      footerHeight: 13
-      slideEasing: 0.15
-      verticalSpacing: 2
-      showDefaultBackground: 1
-      elementDisplayType: 0
-      elementNameProperty: 
-      elementNameOverride: 
-      elementIcon: {fileID: 0}
-    reqReferences: {fileID: 0}
-    isExpanded: 0
-    _keyValues: 010000000200000003000000040000000500000006000000070000000800000009000000
-    _keys: 010000000200000003000000040000000500000006000000070000000800000009000000
-    _values: 010000000100000001000000010000000100000008000000080000000800000001000000
-  tileTypeColorDictionary:
     reorderableList:
       canAdd: 1
       canRemove: 1
@@ -215,14 +195,49 @@ MonoBehaviour:
       elementIcon: {fileID: 0}
     reqReferences: {fileID: 0}
     isExpanded: 1
-    _keyValues: 040000000500000002000000030000000900000008000000
-    _keys: 040000000500000002000000030000000900000008000000
+    _keyValues: 010000000200000003000000040000000500000006000000070000000800000009000000
+    _keys: 010000000200000003000000040000000500000006000000070000000800000009000000
+    _values: 010000000100000001000000010000000100000008000000080000000800000001000000
+  inclinePrefabDictionary:
+  - {fileID: 4134733373708255601, guid: 8b5a110a3fe8a6640be41c00f20a4a0c, type: 3}
+  bridgePrefabDictionary:
+  - bridgePrefabs:
+    - {fileID: 919132149155446097, guid: 6b412bb6f40e1ec44839ab9cc361a9ab, type: 3}
+    - {fileID: 919132149155446097, guid: 884a52bbb6d184042a425d24fdb96e69, type: 3}
+    - {fileID: 919132149155446097, guid: 5f44fafa307c0044291e55f711c8a801, type: 3}
+  tileTypeColorDictionary:
+    reorderableList:
+      canAdd: 1
+      canRemove: 1
+      draggable: 1
+      expandable: 1
+      multipleSelection: 1
+      isExpanded: 0
+      label:
+        m_Text: Keys
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+      headerHeight: 18
+      footerHeight: 13
+      slideEasing: 0.15
+      verticalSpacing: 2
+      showDefaultBackground: 1
+      elementDisplayType: 0
+      elementNameProperty: 
+      elementNameOverride: 
+      elementIcon: {fileID: 0}
+    reqReferences: {fileID: 0}
+    isExpanded: 0
+    _keyValues: 04000000050000000200000003000000090000000a000000080000000b000000
+    _keys: 04000000050000000200000003000000090000000a000000080000000b000000
     _values:
     - {r: 0.70980394, g: 0.654902, b: 0.4627451, a: 1}
     - {r: 0.70980394, g: 0.654902, b: 0.4627451, a: 1}
     - {r: 0.5529412, g: 0.81960785, b: 0.76862746, a: 1}
     - {r: 0.5529412, g: 0.81960785, b: 0.76862746, a: 1}
     - {r: 0.9333334, g: 0.91372555, b: 0.6627451, a: 1}
+    - {r: 0.9333334, g: 0.91372555, b: 0.6627451, a: 1}
+    - {r: 0.5529412, g: 0.8196079, b: 0.7686275, a: 1}
     - {r: 0.5529412, g: 0.8196079, b: 0.7686275, a: 1}
   elevationColors:
   - {r: 0.30980393, g: 0.45882353, b: 0.27450982, a: 1}

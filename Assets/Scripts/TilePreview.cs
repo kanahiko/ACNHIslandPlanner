@@ -12,6 +12,8 @@ public class TilePreview : MonoBehaviour
     public List<Transform> previewFlora;
     public List<Transform> previewTree;
     public List<Transform> previewFence;
+    public List<Transform> previewIncline;
+    public List<BridgeSizeList> previewBridge;
 
     public Transform nullPreview;
 
@@ -56,14 +58,34 @@ public class TilePreview : MonoBehaviour
                     preview = previewTree[variation];
                 }
                 break;
+            
+            case DecorationType.Incline:
+                
+                if (previewIncline.Count < variation + 1)
+                {
+                    preview = nullPreview;
+                }
+                else
+                {
+                    preview = previewIncline[variation];
+                }
+                break;
+            case DecorationType.Bridge:
+                if (previewBridge.Count < variation + 1)
+                {
+                    preview = nullPreview;
+                }
+                else
+                {
+                    preview = previewBridge[variation].bridgePrefabs[0].transform;
+                }
+                break;
             case DecorationType.Plaza:
             case DecorationType.NookShop:
             case DecorationType.Tailors:
             case DecorationType.Museum:
             case DecorationType.PlayerHouse:
             case DecorationType.House:
-            case DecorationType.Incline:
-            case DecorationType.Bridge:
             case DecorationType.Camp:
             case DecorationType.Building:
                 if (!previewBuilding.ContainsKey(type))
@@ -79,7 +101,7 @@ public class TilePreview : MonoBehaviour
         if (currentPreview != null)
         {
             currentPreview.position = Util.cullingPosition;
-            if (currentType == DecorationType.Fence)
+            if (currentType == DecorationType.Fence || currentType == DecorationType.Incline || currentType == DecorationType.Bridge)
             {
                 currentPreview.GetChild(0).localRotation = Quaternion.identity;
             }
@@ -90,9 +112,39 @@ public class TilePreview : MonoBehaviour
         currentType = type;
     }
     
-    public void ChangeTileRotation(bool isRotated)
+    public void ChangeTileRotation(int rotation, DecorationType type)
     {
-        currentPreview.GetChild(0).localRotation = isRotated ? Quaternion.identity : Quaternion.Euler(0, 90, 0);
+        if (type == DecorationType.Fence)
+        {
+            currentPreview.GetChild(0).localRotation = rotation == 0 ? Quaternion.identity : Quaternion.Euler(0, 90, 0);
+        }
+        
+        if (type == DecorationType.Incline)
+        {
+            currentPreview.localPosition = new Vector3(Util.inclineRotationsOffset[rotation].x,0,Util.inclineRotationsOffset[rotation].y);
+            currentPreview.GetChild(0).localRotation = Quaternion.Euler(0, 90 * rotation, 0);
+        }
+        
+        if (type == DecorationType.Bridge)
+        {
+            Quaternion rotate = Quaternion.identity;
+            if (rotation == 2)
+            {
+                rotate = Quaternion.Euler(0,90,0);
+            }
+
+            if (rotation == 1)
+            {
+                rotate = Quaternion.Euler(0,45,0);
+            }
+
+            if (rotation == 3)
+            {
+                rotate = Quaternion.Euler(0,-45,0); 
+            }
+            currentPreview.localPosition = new Vector3(Util.bridgeRotationsOffset[rotation].x,0,Util.bridgeRotationsOffset[rotation].y);
+            currentPreview.GetChild(0).localRotation = rotate;
+        }
     }
 
     public void FollowMousePosition(Vector3 position)

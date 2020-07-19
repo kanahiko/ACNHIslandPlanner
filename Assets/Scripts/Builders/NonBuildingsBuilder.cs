@@ -30,7 +30,10 @@ public class NonBuildingsBuilder
 
     static void AddDecoration(DecorationType type,int column, int row, int variation)
     {
-        if (MapHolder.tiles[column,row].type != TileType.Land || MapHolder.decorationsTiles[column, row] != null  &&
+        
+        if (MapHolder.tiles[column,row].type != TileType.Land && MapHolder.tiles[column,row].type != TileType.Sand ||
+            MapHolder.tiles[column,row].type == TileType.Sand && (type != DecorationType.Flora || Util.IsOnLandSandBorder(column, row)) ||
+            MapHolder.decorationsTiles[column, row] != null  &&
             (MapHolder.decorationsTiles[column,row].type != DecorationType.Flora && MapHolder.decorationsTiles[column, row].type != DecorationType.Tree))
         {
             return;
@@ -73,8 +76,7 @@ public class NonBuildingsBuilder
         {
             for (int j = -1; j <= 1; j++)
             {
-                if (column + j >= 0 && column +j < MapHolder.width &&
-                    row+i>=0 && row + i <= MapHolder.height)
+                if (Util.CoordinateExists(column+j,row + i))
                 {
                     MapHolder.treeInfluence[column+j, row+i] += add ? 1 : -1;
                 }

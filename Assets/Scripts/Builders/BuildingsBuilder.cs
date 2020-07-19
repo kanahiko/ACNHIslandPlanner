@@ -71,7 +71,7 @@ public class BuildingsBuilder
 
     static void RemoveTile(int column, int row)
     {
-        if (MapHolder.decorationsTiles[column,row].type != DecorationType.Building)
+        if (MapHolder.decorationsTiles[column,row] == null || MapHolder.decorationsTiles[column,row].type != DecorationType.Building)
         {
             return;
         }
@@ -111,30 +111,35 @@ public class BuildingsBuilder
             for(int j = 0; j < size.x; j++)
             {
                 MapHolder.decorationsTiles[column+j, row-i] = tile;
-                MapHolder.buildingsInfluence[column + j, row - i] = tile != null ? (i < size.z ? 1 : 2) : 0;
+                MapHolder.buildingsInfluence[column + j, row - i] = tile != null ? (i < size.z ? BuildingInfluence.pathsOnly : BuildingInfluence.fullInfluence) : BuildingInfluence.noInfluence;
 
                 if (MapHolder.tiles[column+j,row-i].type == TileType.Path || MapHolder.tiles[column + j, row - i].type == TileType.PathCurve)
                 {
-                    if (j == 0 || j == size.x - 1)
+                    //for adding path tiles outside of building size
+                    if (j == 0 || j + 1 == size.x)
                     {
                         int newColumn = column + j + (j == 0 ? -1: 1);
-                        pathTiles.Add(new Vector2Int(newColumn, row - i - 1));
+                        if (i == 0 || i + 1 == size.y)
+                        {
+                            int newRow = row - i + (i == 0 ? 1 : -1);
+                            pathTiles.Add(new Vector2Int(newColumn, newRow));
+                        }
                         pathTiles.Add(new Vector2Int(newColumn, row - i));
-                        pathTiles.Add(new Vector2Int(newColumn, row - i + 1));
                     }
 
-                    if (i==0 || i == size.y - 1)
+                    if (i == 0 || i + 1 == size.y)
                     {
-                        int newRow = row - 1 + (i == 0 ? 1 : -1);
+                        int newRow = row - i + (i == 0 ? 1 : -1);
                         pathTiles.Add(new Vector2Int(column + j, newRow));
                     }
 
-                    if (MapHolder.buildingsInfluence[column + j, row - i] == 2)
+                    if (MapHolder.buildingsInfluence[column + j, row - i] == BuildingInfluence.fullInfluence)
                     {
                         MapHolder.tiles[column + j, row - i].type = TileType.Land;
                         LandBuilder.CreateLandTile(column + j, row - i, MapHolder.tiles[column + j, row - i].elevation);
-                        changedTiles.Add(new Vector2Int(column + j, row - i));
                     }
+                    pathTiles.Add(new Vector2Int(column + j, row - i));
+                    changedTiles.Add(new Vector2Int(column + j, row - i));
                 }
             }
         }

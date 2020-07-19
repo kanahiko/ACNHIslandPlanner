@@ -27,7 +27,9 @@ public class FenceBuilder : MonoBehaviour
     /// </summary>
     static void AddFence(int column, int row, int variation, bool isHorizontal)
     {
-        if (MapHolder.tiles[column, row].type != TileType.Land || MapHolder.decorationsTiles[column, row] != null && MapHolder.decorationsTiles[column, row].type != DecorationType.Fence)
+        if (MapHolder.tiles[column, row].type != TileType.Land && MapHolder.tiles[column, row].type != TileType.Sand || 
+            MapHolder.decorationsTiles[column, row] != null && MapHolder.decorationsTiles[column, row].type != DecorationType.Fence ||
+            MapHolder.tiles[column,row].type == TileType.Sand && Util.IsOnLandSandBorder(column,row))
         {
             return;
         }
@@ -88,8 +90,7 @@ public class FenceBuilder : MonoBehaviour
     {
         for (int i = 0; i < 4; i++)
         {
-            if (!(column + Util.indexOffsetCross[i].y >= 0 && column + Util.indexOffsetCross[i].y < MapHolder.width &&
-                 row + Util.indexOffsetCross[i].x >= 0 && row + Util.indexOffsetCross[i].x < MapHolder.height))
+            if (!Util.CoordinateExists(column + Util.indexOffsetCross[i].y,row + Util.indexOffsetCross[i].x))
             {
                 continue;
             }
@@ -203,8 +204,6 @@ public class FenceBuilder : MonoBehaviour
         {
             fenceTilesLimbo.Add(tile);
             tile.GoToLimbo();
-            //tile.decorationBackground.SetActive(false);
-            //tile.decorationBackground.parent = MapHolder.limboDecorationsParent;
             AddToFencePartsLimbo(tile);
         }
         else
@@ -219,14 +218,11 @@ public class FenceBuilder : MonoBehaviour
     {
         CheckForFenceParts(tile.variation);
 
-        //Debug.Log($"before limbo contains unlinked={fencePartsLimbo[0][0].Count} linked={fencePartsLimbo[0][1].Count}");
         for (int i = 0; i < 4; i++)
         {
             AddToFencePartLimbo(tile.quarters[i], tile.variation, tile.isLinked[i]);
             tile.quarters[i] = null;
         }
-
-        //Debug.Log($"after limbo contains unlinked={fencePartsLimbo[0][0].Count} linked={fencePartsLimbo[0][1].Count}");
     }
 
     static void AddToFencePartsLimbo(Transform part, int variation, bool isLinked)
@@ -235,6 +231,7 @@ public class FenceBuilder : MonoBehaviour
 
         AddToFencePartLimbo(part, variation, isLinked);
     }
+    
     static void CheckForFenceParts(int variation)
     {
         if (fencePartsLimbo == null)
