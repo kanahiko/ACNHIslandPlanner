@@ -5,51 +5,33 @@ using UnityEngine;
 [Serializable]
 public class MapTile
 {
-    [XmlElement("Type")]
     public TileType type;
     
-    [XmlIgnore]
     public GameObject colliderObject;
-    [XmlIgnore]
     public GameObject backgroundTile;
     
-    [XmlIgnore]
     public GameObject[] quarters;
-    [XmlIgnore]
     public GameObject[] cliffSides;
     /// <summary>
     /// false means regular side
     /// true = water side
     /// </summary>
     
-    [XmlArray("CliffSidesType"), XmlArrayItem("side")]
-    public int[] cliffSidesType;
+    public byte[] cliffSidesType;
 
-    [XmlElement("BackgroundType")]
     public TilePrefabType backgroundType;
 
-    [XmlArray("QuarterPrefabType"), XmlArrayItem("quarter")]
     public TilePrefabType[] prefabType;
 
-    [XmlElement("DiagonalRotation")]
-    public int diagonalRotation = -1;
+    public byte diagonalRotation = 255;
 
-    /*public int diagonalRotation
-    {
-        get { return _diagonalRotation; }
-        set { Debug.Log($"{colliderObject.gameObject.name}   {value}");_diagonalRotation = value; }
-    }*/
-    
-    
-    [XmlIgnore]
     private BoxCollider collider;
 
-    [XmlElement("Variation")]
-    public int variation;
+    public byte variation;
 
-    [XmlElement("Elevation")]
-    public int elevation;
-    
+    public byte elevation = 0;
+
+    public byte curvedTileVariation = 255;
 
     public MapTile()
     {
@@ -58,7 +40,7 @@ public class MapTile
         quarters = new GameObject[4];
         prefabType = new TilePrefabType[4];
         cliffSides = new GameObject[4];
-        cliffSidesType = new int[4] { -1, -1, -1, -1 };
+        cliffSidesType = new byte[4] { 255, 255, 255, 255 };
     }
     
     public MapTile(GameObject tile)
@@ -70,7 +52,7 @@ public class MapTile
         quarters = new GameObject[4];
         prefabType = new TilePrefabType[4];
         cliffSides = new GameObject[4];
-        cliffSidesType = new int[4] { -1, -1, -1, -1 };
+        cliffSidesType = new byte[4] { 255, 255, 255, 255 };
     }
 
     public void SetCreatedElevation(Transform elevation)
@@ -115,7 +97,8 @@ public class MapTile
     }
     public void HardErase()
     {
-        diagonalRotation = -1;
+        diagonalRotation = 255;
+        curvedTileVariation = 255;
         GameObject.Destroy(backgroundTile);
         backgroundTile = null;
         for(int i=0;i<4;i++)
@@ -125,6 +108,19 @@ public class MapTile
                 GameObject.Destroy(quarters[i]);
                 quarters[i] = null;
                 prefabType[i] = TilePrefabType.Null;
+            }
+        }
+    }
+    public void SoftErase()
+    {
+        GameObject.Destroy(backgroundTile);
+        backgroundTile = null;
+        for (int i = 0; i < 4; i++)
+        {
+            if (quarters[i] != null)
+            {
+                GameObject.Destroy(quarters[i]);
+                quarters[i] = null;
             }
         }
     }
@@ -174,25 +170,47 @@ public class MapTile
             {
                 GameObject.Destroy(cliffSides[i]);
                 cliffSides[i] = null;
-                cliffSidesType[i] = -1;
+                cliffSidesType[i] = 255;
             }
         }
 
     }
-    
+    public void RemoveCliff()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (cliffSides[i] != null)
+            {
+                GameObject.Destroy(cliffSides[i]);
+                cliffSides[i] = null;
+            }
+        }
+    }
+
     public void RemoveCliff(int cliff)
     {
         if (cliffSides[cliff] != null)
         {
             GameObject.Destroy(cliffSides[cliff]);
             cliffSides[cliff] = null;
-            cliffSidesType[cliff] = -1;
+            cliffSidesType[cliff] = 255;
         }
     }
 
     public void SetPosition(Vector3 position)
     {
         colliderObject.transform.localPosition = position;
+        if (backgroundTile)
+        {
+            backgroundTile.transform.localPosition = Vector3.zero;
+            backgroundTile.transform.SetParent(colliderObject.transform, false);
+        }
+    }
+    public void SetPosition()
+    {
+        Vector3 pos = colliderObject.transform.localPosition;
+        pos.y = 0;
+        colliderObject.transform.localPosition = pos;
         if (backgroundTile)
         {
             backgroundTile.transform.localPosition = Vector3.zero;

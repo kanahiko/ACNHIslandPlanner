@@ -32,9 +32,10 @@ public class BuildersController : MonoBehaviour
         Controller.ChangeTile = ChangeTile;
         Controller.StartConstructionAction = terrainBuilder.StartConstruction;
         Controller.EndConstructionAction = terrainBuilder.EndConstruction;
+        Controller.RebuildMap = RebuildMap;
     }
 
-    public void ChangeTile(int column, int row, ToolType tool, ToolMode mode , int variation, DecorationType decorationType, int rotation)
+    public void ChangeTile(int column, int row, ToolType tool, ToolMode mode , byte variation, DecorationType decorationType, byte rotation)
     {
         switch (tool)
         {
@@ -46,16 +47,12 @@ public class BuildersController : MonoBehaviour
                 break;
             case ToolType.BridgeMarkUp:
             case ToolType.InclineMarkUp:
-                RebuildMap();
-                return;
-                BridgesBuilder.ChangeTile(tool,mode,column,row,variation,rotation);
-                break;
             case ToolType.TreePlanting:
             case ToolType.BushPlanting:
             case ToolType.FlowerPlanting:
             case ToolType.FenceBuilding:
             case ToolType.BuildingsMarkUp:
-                DecorationsBuilder.ChangeTile(column,row,decorationType,mode,variation, (rotation == 0 || rotation == 2));
+                DecorationsBuilder.ChangeTile(column,row,decorationType,tool,mode,rotation, variation);
                 break;
             /*case ToolType.BuildingsMarkUp:
                 BuildingsBuilder.ChangeTile(column, row, mode, decorationType);
@@ -63,31 +60,68 @@ public class BuildersController : MonoBehaviour
             case ToolType.Null:
                 break;
         }
+
     }
 
-    public void RebuildMap()
+    public void RebuildMap(Dictionary<Vector2Int, List<Vector2Int>> buildings, List<PreDecorationTile> preDecorationTiles)
     {
-        /*File.WriteAllText(@"c:\movie.json", JsonConvert.SerializeObject(MapHolder.tiles));
-
-        // serialize JSON directly to a file
-        using (StreamWriter file = File.CreateText(@"c:\movie.json"))
+        for (int i = 0; i < MapHolder.height; i++)
         {
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.Serialize(file, movie);
-        }*/
-        string json = JsonUtility.ToJson(MapHolder.tiles[30,30]);
-        
-        File.WriteAllText(@"D:\test.txt",json);
-        
-        XmlSerializer serializer = new XmlSerializer(typeof(MapTile));
-        StreamWriter writer = new StreamWriter(@"D:\hero.xml");
-        serializer.Serialize(writer.BaseStream, MapHolder.tiles[30,30]);
-        writer.Close();
-        
-        serializer = new XmlSerializer(typeof(MapTile));
-        StreamReader reader = new StreamReader(@"D:\hero.xml");
-        MapTile deserialized = (MapTile)serializer.Deserialize(reader.BaseStream);
-        reader.Close();
+            for (int j = 0; j < MapHolder.width; j++)
+            {
+                terrainBuilder.RebuildTile(MapHolder.tiles[j,i]);
+            }
+        }
+
+        DecorationsBuilder.RebuildTile(buildings, preDecorationTiles);
+
+        MiniMap.RebuildMap();
     }
 
+}
+[XmlRoot("main")]
+public class SaveMap
+{
+    [XmlIgnore]
+    public MapTile[,] tiles;
+
+    [XmlArray("Tiles"), XmlArrayItem("tile")]
+    public MapTile[] tilesForSave
+    {
+        get => Flatten(tiles);
+        set
+        {
+            Expand(value, 96);
+        }
+    }
+
+    public static T[] Flatten<T>(T[,] arr)
+    {
+        int rows0 = arr.GetLength(0);
+        int rows1 = arr.GetLength(1);
+        T[] arrFlattened = new T[rows0 * rows1];
+        for (int j = 0; j < rows1; j++)
+        {
+            for (int i = 0; i < rows0; i++)
+            {
+                var test = arr[i, j];
+                arrFlattened[i + j * rows0] = arr[i, j];
+            }
+        }
+        return arrFlattened;
+    }
+    public static T[,] Expand<T>(T[] arr, int rows0)
+    {
+        int length = arr.GetLength(0);
+        int rows1 = length / rows0;
+        T[,] arrExpanded = new T[rows0, rows1];
+        for (int j = 0; j < rows1; j++)
+        {
+            for (int i = 0; i < rows0; i++)
+            {
+                arrExpanded[i, j] = arr[i + j * rows0];
+            }
+        }
+        return arrExpanded;
+    }
 }

@@ -56,7 +56,7 @@ public enum ToolMode
 
 public enum DecorationType
 {
-   Null = -1, Fence = 0, Plaza = 1, NookShop = 2, Tailors = 3, Museum = 4, PlayerHouse = 5, House =6, Incline =7, Bridge = 8, Camp =9, Flora = 10, Tree = 11, Building = 12
+   Null = 13, Fence = 0, Plaza = 1, NookShop = 2, Tailors = 3, Museum = 4, PlayerHouse = 5, House =6, Incline =7, Bridge = 8, Camp =9, Flora = 10, Tree = 11, Building = 12
 }
 
 public enum FenceType
@@ -72,6 +72,11 @@ public enum Direction
 public enum BuildingInfluence
 {
     noInfluence = 0, pathsOnly = 1, fullInfluence =2
+}
+
+public enum FenceLinked
+{
+    noFence = 0, noLink = 1, isLinked = 2
 }
 
 [Serializable]
@@ -165,10 +170,10 @@ public static  class Util
         return newMatrix;
     }
 
-    public static int SubstractRotation(int rotation, int subtrahend)
+    public static byte SubstractRotation(int rotation, int subtrahend)
     {
         int result = rotation + subtrahend;
-        return result > 3 ? result - 4 : result;
+        return (byte) (result > 3 ? result - 4 : result);
     }
 
     public static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
@@ -180,7 +185,7 @@ public static  class Util
     }
 
 
-    public static TileType[,] CreateMatrix(int column, int row, int variation = -1)
+    public static TileType[,] CreateMatrix(int column, int row, byte variation = 0)
     {
         int elevation = MapHolder.tiles[column, row].elevation;
         TileType[,] corners = new TileType[3, 3];

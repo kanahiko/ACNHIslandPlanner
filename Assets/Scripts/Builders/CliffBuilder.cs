@@ -120,39 +120,37 @@ public class CliffBuilder
         return false;
     }
     
-    public static void CreateCliffDiagonal(int column, int row)
+    public static void CreateCliffDiagonal(MapTile tile)
     {
-        if (MapHolder.tiles[column, row].backgroundType == TilePrefabType.CliffDiagonal)
+        if (tile.backgroundType == TilePrefabType.CliffDiagonal)
         {
-                return;
+            tile.backgroundTile.transform.GetChild(0).localRotation = Quaternion.Euler(0, 90 * tile.diagonalRotation, 0);
+            return;
         }
-        //int[,] corners = Util.GetElevationCorners(column, row);
-        int rotation = MapHolder.tiles[column, row].diagonalRotation;
-        /*for (int i = 0; i < 4; i++)
-        {
-                rotation = i;
-                if (corners[0, 1] == MapHolder.tiles[column, row].elevation && corners[1, 0] == MapHolder.tiles[column, row].elevation)
-                {
-                        break;
-                }
-                corners = Util.RotateMatrix(corners);
+        byte rotation = tile.diagonalRotation;
 
-        } */
-
-        MapHolder.tiles[column, row].HardErase();
-        MapHolder.tiles[column, row].RemoveCliffs();
-        MapHolder.tiles[column, row].backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.CliffDiagonal],MapHolder.tiles[column,row].colliderObject.transform);//, MapHolder.elevationLevels[MapHolder.tiles[column, row].elevation]);
-        MapHolder.tiles[column, row].backgroundTile.transform.localPosition = Vector3.zero;//new Vector3(column, 0, -row);
-        MapHolder.tiles[column, row].backgroundTile.transform.GetChild(0).localRotation = Quaternion.Euler(0,90*rotation,0);
-        MapHolder.tiles[column, row].backgroundType = TilePrefabType.CliffDiagonal;
+        tile.HardErase();
+        tile.RemoveCliffs();
+        tile.backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.CliffDiagonal], tile.colliderObject.transform);
+        tile.backgroundTile.transform.localPosition = Vector3.zero;
+        tile.backgroundTile.transform.GetChild(0).localRotation = Quaternion.Euler(0,90*rotation,0);
+        tile.backgroundType = TilePrefabType.CliffDiagonal;
+        tile.diagonalRotation = rotation;
     }
-    
-    public static void CreateCliffSides(int column, int row)
+    public static void RebuildCliffDiagonal(MapTile tile)
     {
-        //MapHolder.tiles[column, row].diagonalRotation = -1;
-        //Debug.Log($"!!!!!");
-        int elevation = MapHolder.tiles[column, row].elevation;
-        bool isWater = MapHolder.tiles[column, row].backgroundType == TilePrefabType.Water;
+        byte rotation = tile.diagonalRotation;
+
+        tile.SoftErase();
+        tile.backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.CliffDiagonal], tile.colliderObject.transform);
+        tile.backgroundTile.transform.localPosition = Vector3.zero;
+        tile.backgroundTile.transform.GetChild(0).localRotation = Quaternion.Euler(0, 90 * rotation, 0);
+        tile.backgroundType = TilePrefabType.CliffDiagonal;
+    }
+    public static void CreateCliffSides(int column, int row, MapTile tile)
+    {
+        int elevation = tile.elevation;
+        bool isWater = tile.backgroundType == TilePrefabType.Water;
         
         //checks all 4 sides using cross offset coordinates
         for (int i = 0; i < 4; i++)
@@ -169,7 +167,6 @@ public class CliffBuilder
                 int cliffIndex = 4;
                 if (isWater)
                 {
-                    //Debug.Log($"start {column} {row} {cliffIndex} { Util.indexOffsetCross[i]}");
                     cliffIndex = 0;
                     
                     //uses offset cross coordinates in reverse (x -> y & y - >x) to check side tiles
@@ -193,24 +190,43 @@ public class CliffBuilder
                     }
                 }
 
-                if (MapHolder.tiles[column, row].cliffSides[i] == null || MapHolder.tiles[column, row].cliffSidesType[i] != cliffIndex)
+                if (tile.cliffSides[i] == null || tile.cliffSidesType[i] != cliffIndex)
                 {
-                    MapHolder.tiles[column, row].RemoveCliff(i);
-                    MapHolder.tiles[column, row].cliffSidesType[i] = cliffIndex;
-                    MapHolder.tiles[column, row].cliffSides[i] = GameObject.Instantiate(MapHolder.mapPrefab.cliffSidePrefabs[cliffIndex], MapHolder.tiles[column, row].backgroundTile.transform);
+                    tile.RemoveCliff(i);
+                    tile.cliffSidesType[i] = (byte)cliffIndex;
+                    tile.cliffSides[i] = GameObject.Instantiate(MapHolder.mapPrefab.cliffSidePrefabs[cliffIndex], MapHolder.tiles[column, row].backgroundTile.transform);
                 }
-                MapHolder.tiles[column, row].cliffSides[i].transform.localPosition = Util.halfOffset;
-                MapHolder.tiles[column, row].cliffSides[i].transform.localRotation = Quaternion.Euler(0, 90 * i, 0);
+                tile.cliffSides[i].transform.localPosition = Util.halfOffset;
+                tile.cliffSides[i].transform.localRotation = Quaternion.Euler(0, 90 * i, 0);
             }
             else
             {
-                if (MapHolder.tiles[column, row].cliffSides[i] != null)
+                if (tile.cliffSides[i] != null)
                 {
-                    MapHolder.tiles[column, row].RemoveCliff(i);
+                    tile.RemoveCliff(i);
                 }
             }
         }
     }
 
+    public static void CreateCliffSides(MapTile tile)
+    {
+        tile.RemoveCliff();
+        for (int i = 0; i < 4; i++)
+        {
+            if (tile.cliffSidesType[i] != 255) 
+            {
+                tile.cliffSides[i] = GameObject.Instantiate(MapHolder.mapPrefab.cliffSidePrefabs[tile.cliffSidesType[i]], tile.backgroundTile.transform);
+                tile.cliffSides[i].transform.localPosition = Util.halfOffset;
+                tile.cliffSides[i].transform.localRotation = Quaternion.Euler(0, 90 * i, 0);
+            }
+        }
+    }
+
+    public static void ChangeElevation(MapTile tile)
+    {
+        tile.SetElevation(MapHolder.elevationLevels[tile.elevation]);
+        tile.SetPosition();
+    }
 }
  

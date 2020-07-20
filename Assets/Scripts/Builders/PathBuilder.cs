@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 public class PathBuilder
 {
-    public static bool CheckPath(int column, int row, TileType previousTileType,ref ToolMode toolMode, int variation)
+    public static bool CheckPath(int column, int row, TileType previousTileType,ref ToolMode toolMode, byte variation)
     {
         if (previousTileType == TileType.CliffDiagonal || previousTileType == TileType.Sand || previousTileType == TileType.Sea)
         {
@@ -56,22 +56,26 @@ public class PathBuilder
 
         if (row + 1 < MapHolder.width && elevation == MapHolder.tiles[column,row + 1].elevation)
         {
-            types[1] = MapHolder.tiles[column, row + 1].variation == variation;
+            types[1] =( MapHolder.tiles[column, row + 1].type == TileType.Path || MapHolder.tiles[column, row + 1].type == TileType.PathCurve) && 
+                MapHolder.tiles[column, row + 1].variation == variation;
         }
 
         if (column - 1 >= 0 && elevation == MapHolder.tiles[column - 1,row].elevation)
         {
-            types[2] = MapHolder.tiles[column - 1, row].variation == variation;
+            types[2] = (MapHolder.tiles[column - 1, row].type == TileType.Path || MapHolder.tiles[column - 1, row].type == TileType.PathCurve) && 
+                MapHolder.tiles[column - 1, row].variation == variation;
         }
 
         if (row - 1 >= 0 && elevation == MapHolder.tiles[column,row - 1].elevation )
         {
-            types[3] = MapHolder.tiles[column, row - 1].variation == variation;
+            types[3] = (MapHolder.tiles[column, row - 1].type == TileType.Path || MapHolder.tiles[column, row - 1].type == TileType.PathCurve) && 
+                MapHolder.tiles[column, row - 1].variation == variation;
         }
 
         if (column + 1 < MapHolder.height && elevation == MapHolder.tiles[column + 1,row].elevation)
         {
-            types[4] = MapHolder.tiles[column + 1, row].variation == variation;
+            types[4] = (MapHolder.tiles[column + 1, row].type == TileType.Path || MapHolder.tiles[column + 1, row].type == TileType.PathCurve) && 
+                MapHolder.tiles[column + 1, row].variation == variation;
         }
 
         types[5] = types[1];
@@ -83,16 +87,16 @@ public class PathBuilder
             {
                 if (tile != null) 
                 {
-                    tile.diagonalRotation = i - 1;
+                    tile.diagonalRotation = (byte)(i - 1);
                 }
                 return true;
             }
         }
-
+        
         return false;
     }
     
-    public static void CreatePath(int column, int row, int elevationLevel, int variation)
+    public static void CreatePath(int column, int row, int elevationLevel, byte variation)
     {
         if (MapHolder.tiles[column,row] != null)
         {
@@ -125,15 +129,15 @@ public class PathBuilder
                 FindCornerPath(corners, k, column, row,variation);
                 corners = Util.RotateMatrix(corners);
             }
-            MapHolder.tiles[column, row].diagonalRotation = -1;
+            MapHolder.tiles[column, row].diagonalRotation = 255;
         }
         if (elevationLevel > 0)
         {
-            CliffBuilder.CreateCliffSides(column, row);
+            CliffBuilder.CreateCliffSides(column, row, MapHolder.tiles[column, row]);
         }
     }
 
-    public static void FindCornerPath(TileType[,] corners, int rotation, int column, int row, int variation)
+    public static void FindCornerPath(TileType[,] corners, int rotation, int column, int row, byte variation)
     {
         TilePrefabType type = TilePrefabType.PathFull;
         if (corners[0, 1] == TileType.Land)
@@ -197,9 +201,72 @@ public class PathBuilder
         }
     }
 
-    public static void CreateCurvedPath(TileType[,] corners, int column, int row, int variation)
+    public static void RebuildPathCorner(MapTile tile)
     {
-        
+        tile.SoftErase();
+        tile.backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Land], tile.colliderObject.transform);
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject prefab = MapHolder.mapPrefab.prefabDictionary[tile.prefabType[i]];
+
+            Quaternion rotate = Quaternion.Euler(0, 90 * i, 0);
+            if (tile.prefabType[i] == TilePrefabType.PathSideRotated)
+            {
+                rotate *= Quaternion.Euler(0, -90, 0);
+            }
+            if (prefab != null)
+            {
+                GameObject quarter = GameObject.Instantiate(prefab, tile.backgroundTile.transform);
+                quarter.transform.localPosition = Util.offset[i];
+                quarter.transform.localRotation = rotate;
+
+                tile.quarters[i] = quarter; 
+                if (tile.variation >= 0)
+                {
+                    quarter.GetComponentInChildren<MeshRenderer>().material = MapHolder.mapPrefab.pathVariationMaterial[tile.variation];
+                }
+            }
+        }
+    }
+
+    public static void RebuildPathDiagonal(MapTile tile)
+    {
+        tile.SoftErase();
+        tile.backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Land], tile.colliderObject.transform);
+
+        int rotation = tile.diagonalRotation;
+        int oppositeRotation = Util.SubstractRotation(rotation, 2);
+
+
+        if (tile.prefabType[oppositeRotation] != TilePrefabType.Null)
+        {
+            var oppositePrefab = MapHolder.mapPrefab.prefabDictionary[tile.prefabType[oppositeRotation]];
+
+            GameObject oppositeTile = GameObject.Instantiate(oppositePrefab, tile.backgroundTile.transform);
+            oppositeTile.transform.localPosition = Util.offset[oppositeRotation];
+            oppositeTile.transform.localRotation = Quaternion.Euler(0, oppositeRotation * 90, 0);
+            tile.quarters[oppositeRotation] = oppositeTile;
+
+            if (tile.variation >= 0)
+            {
+                oppositeTile.GetComponentInChildren<MeshRenderer>().material = MapHolder.mapPrefab.pathVariationMaterial[tile.variation];
+            }
+        }
+
+        //creates curved corner and adds its reference to MapHolder
+        GameObject quarter = GameObject.Instantiate(MapHolder.mapPrefab.specialCurvedPath[tile.curvedTileVariation], tile.backgroundTile.transform);
+        quarter.transform.localPosition = Util.halfOffset;
+        quarter.transform.localRotation = Quaternion.Euler(0, rotation * 90, 0);
+        tile.quarters[rotation] = quarter;
+
+        if (tile.variation >= 0)
+        {
+            quarter.GetComponentInChildren<MeshRenderer>().material = MapHolder.mapPrefab.pathVariationMaterial[tile.variation];
+        }
+    }
+
+    public static void CreateCurvedPath(TileType[,] corners, int column, int row, byte variation)
+    {        
         int rotation = MapHolder.tiles[column, row].diagonalRotation;
 
         int oppositeRotation = Util.SubstractRotation(rotation, 2);
@@ -211,7 +278,7 @@ public class PathBuilder
         }
 
         //check which curved path needs to be in place
-        int curvedTile = 0; //1  = only down| 2 = only right | 3 = both sides dont extend anwhere
+        byte curvedTile = 0; //1  = only down| 2 = only right | 3 = both sides dont extend anwhere
 
         if (corners[1, 2] != TileType.Path && corners[1, 2] != TileType.PathCurve)
         {
@@ -221,7 +288,8 @@ public class PathBuilder
         {
             curvedTile += 2;
         }
-        
+        MapHolder.tiles[column, row].curvedTileVariation = curvedTile;
+
         //useless to do it another way
         //TODO:add better prefab type check
         MapHolder.tiles[column, row].RemoveQuarters();

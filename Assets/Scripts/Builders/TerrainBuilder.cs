@@ -25,7 +25,7 @@ public class TerrainBuilder : MonoBehaviour
     }
     
 
-    public void ChangeTile(ToolType type, ToolMode mode, int column, int row, int variation)
+    public void ChangeTile(ToolType type, ToolMode mode, int column, int row, byte variation)
     {
         //TODO building influence enum, switch to bool variables
         if ((MapHolder.buildingsInfluence[column, row] == BuildingInfluence.fullInfluence ||
@@ -48,7 +48,59 @@ public class TerrainBuilder : MonoBehaviour
         }
     }
 
-    void ChangeTile(ToolType type, int column, int row, int variation)
+    public void RebuildTile(MapTile tile)
+    {
+        bool yes = false;
+        if (tile.elevation != 0)
+        {
+            yes = true;
+            Debug.Log(tile.elevation);
+        }
+        switch (tile.type)
+        {
+            case TileType.Land:
+                LandBuilder.RebuildLandTile(tile);
+                break;
+            case TileType.Water:
+                WaterBuilder.RebuildWaterCorner(tile);
+                break;
+            case TileType.WaterDiagonal:
+                WaterBuilder.RebuildDiagonalWater(tile);
+                break;
+            case TileType.Path:
+                PathBuilder.RebuildPathCorner(tile);
+                break;
+            case TileType.PathCurve:
+                PathBuilder.RebuildPathDiagonal(tile);
+                break;
+            case TileType.CliffDiagonal:
+                CliffBuilder.RebuildCliffDiagonal(tile);
+                break;
+            case TileType.Sea:
+                LandBuilder.RebuildSeaTile(tile);
+                break;
+            case TileType.SeaDiagonal:
+                LandBuilder.RebuildSeaDiagonal(tile);
+                break;
+            case TileType.Sand:
+                LandBuilder.RebuildSandTile(tile);
+                break;
+            case TileType.SandDiagonal:
+                LandBuilder.RebuildSandDiagonal(tile);
+                break;
+        }
+        if (yes)
+        {
+            Debug.Log("aaas " +tile.elevation);
+        }
+        if (tile.elevation > 0)
+        {
+            CliffBuilder.ChangeElevation(tile);
+            CliffBuilder.CreateCliffSides(tile);
+        }
+    }
+
+    void ChangeTile(ToolType type, int column, int row, byte variation)
     {
         changedCoordinates.Clear();
         TileType previousTileType = MapHolder.tiles[column,row].type;
@@ -114,7 +166,7 @@ public class TerrainBuilder : MonoBehaviour
                 }
                 break;
             case ToolType.PathPermit:
-                if (previousTileType == TileType.Path || previousTileType == TileType.Path)
+                if (previousTileType == TileType.Path || previousTileType == TileType.PathCurve)
                 {
                     MapHolder.tiles[column, row].type = TileType.Land;
                     CreateTile(column, row, MapHolder.tiles[column, row].type);
@@ -243,9 +295,10 @@ public class TerrainBuilder : MonoBehaviour
         }
     }
 
-    void CreateTile(int column, int row, TileType type, int variation = -1)
+    void CreateTile(int column, int row, TileType type, byte variation = 0)
     {
         MapHolder.tiles[column, row].variation = variation;
+        MapHolder.tiles[column, row].curvedTileVariation = 255;
         RecalculateDiagonals(column, row, type);
 
         switch (type)
@@ -267,7 +320,7 @@ public class TerrainBuilder : MonoBehaviour
                 LandBuilder.CreateLandTile(column, row, MapHolder.tiles[column, row].elevation);
                 break;
             case TileType.CliffDiagonal:
-                CliffBuilder.CreateCliffDiagonal(column, row);
+                CliffBuilder.CreateCliffDiagonal(MapHolder.tiles[column, row]);
                 MapHolder.tiles[column, row].IgnoreElevation();
                 ignoreRaycastTiles.Add(MapHolder.tiles[column, row]);
                 break;

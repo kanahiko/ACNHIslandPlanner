@@ -39,6 +39,37 @@ public class BuildingsBuilder
         }
     }
 
+    public static DecorationTiles RebuildTile(PreDecorationTile tile)
+    {
+        UniqueBuilding building = FindAvailiableBuilding(tile.buildingType);
+
+        //can place
+        building.tile.decorationBackground.parent = MapHolder.decorationsParent;
+        building.tile.decorationBackground.localPosition = new Vector3(tile.startingCoords.x, Util.GetHeight(tile.startingCoords.x, tile.startingCoords.y), -tile.startingCoords.y);
+        building.startingColumn = tile.startingCoords.x;
+        building.startingRow = tile.startingCoords.y;
+        building.tile.ReturnFromLimbo();
+
+        //RedoTilesOfPath          
+
+        /*MarkTile(newColumn, row, building.size, building.tile);
+        MiniMap.CreateBuilding(newColumn, row - MapHolder.mapPrefab.decorationsSizeDictionary[type].z,
+            building.size.x, building.size.y - MapHolder.mapPrefab.decorationsSizeDictionary[type].z, building.type);*/
+
+        return building.tile;
+    }
+
+    public static void RebuildBuildingInfluence(int column, int row, Vector3Int size, DecorationTiles tile)
+    {
+        for (int i = 0; i < size.y; i++)
+        {
+            for (int j = 0; j < size.x; j++)
+            {
+                MapHolder.buildingsInfluence[column + j, row - i] = tile != null ? (i < size.z ? BuildingInfluence.pathsOnly : BuildingInfluence.fullInfluence) : BuildingInfluence.noInfluence;
+            }
+        }
+    }
+
     static void AddTile(int column, int row, DecorationType type)
     {
         //all buildings DecorationTiles are going to have type building

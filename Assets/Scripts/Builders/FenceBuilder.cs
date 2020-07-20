@@ -9,7 +9,7 @@ public class FenceBuilder : MonoBehaviour
     static int maxFencePartsLimboCount = 20;
     static List<DecorationTiles> fenceTilesLimbo;
     static List<List<List<Transform>>> fencePartsLimbo;
-    public static void ChangeTile(int column, int row, ToolMode mode, int variation, bool isHorizontal)
+    public static void ChangeTile(int column, int row, ToolMode mode, byte variation, bool isHorizontal)
     {
         if (mode == ToolMode.Add)
         {
@@ -21,11 +21,34 @@ public class FenceBuilder : MonoBehaviour
         }
     }
 
+
+    public static void RebuildTile(int column, int row, PreDecorationTile tile)
+    {
+        DecorationTiles newTile = GetTileFromFenceLimbo();
+        MapHolder.decorationsTiles[column, row] = newTile;
+
+        MapHolder.decorationsTiles[column, row].decorationBackground.transform.parent = MapHolder.decorationsParent;
+        MapHolder.decorationsTiles[column, row].decorationBackground.transform.localPosition = new Vector3(column, Util.GetHeight(column, row), -row);
+
+        newTile.rotation = tile.rotation;
+        newTile.size = tile.size;
+        newTile.variation = tile.variation;
+        for (int i = 0; i < 4; i++)
+        {
+            newTile.isLinked[i] = tile.isLinked[i];
+
+            if (newTile.isLinked[i] != FenceLinked.noFence)
+            {
+                CreateQuarter(column, row, newTile.variation, newTile.isLinked[i], Util.sortedDirectionalIndexes[i]);
+            }
+        }
+    }
+
     //-----------------Adding fence
     /// <summary>
     /// Different methods because they are interconnected
     /// </summary>
-    static void AddFence(int column, int row, int variation, bool isHorizontal)
+    static void AddFence(int column, int row, byte variation, bool isHorizontal)
     {
         if (MapHolder.tiles[column, row].type != TileType.Land && MapHolder.tiles[column, row].type != TileType.Sand || 
             MapHolder.decorationsTiles[column, row] != null && MapHolder.decorationsTiles[column, row].type != DecorationType.Fence ||
@@ -66,7 +89,7 @@ public class FenceBuilder : MonoBehaviour
 
         MapHolder.decorationsTiles[column, row].type = DecorationType.Fence;
         MapHolder.decorationsTiles[column, row].variation = variation;
-        MapHolder.decorationsTiles[column, row].isHorizontal = Util.CheckIfChangeOrientation(column, row, isHorizontal) ? !isHorizontal : isHorizontal;
+        MapHolder.decorationsTiles[column, row].rotation = (Util.CheckIfChangeOrientation(column, row, isHorizontal) ? !isHorizontal : isHorizontal) ? 0 : 1;
 
         RedoSurroundingFences(column, row);
     }
@@ -101,14 +124,15 @@ public class FenceBuilder : MonoBehaviour
 
                 CheckQuarters(column + Util.indexOffsetCross[i].y, row + Util.indexOffsetCross[i].x,
                     tile.variation,
-                    tile.isHorizontal);
+                    tile.rotation == 0 || tile.rotation == 2);
 
-                tile.isHorizontal = Util.CheckIfChangeOrientation(column + Util.indexOffsetCross[i].y, row + Util.indexOffsetCross[i].x, tile.isHorizontal) ? !tile.isHorizontal : tile.isHorizontal;
+                tile.rotation = Util.CheckIfChangeOrientation(column + Util.indexOffsetCross[i].y, row + Util.indexOffsetCross[i].x, tile.rotation == 0 || tile.rotation == 2) ? 
+                    (tile.rotation == 0 ? 1 : 0) : tile.rotation;
             }
         }
     }
 
-    static void CheckQuarters(int column, int row, int variation, bool isHorizontal)
+    static void CheckQuarters(int column, int row, byte variation, bool isHorizontal)
     {
 
         bool[] corners = Util.CreateFenceMatrix(column, row);
@@ -122,17 +146,18 @@ public class FenceBuilder : MonoBehaviour
                 if (corners[Util.sortedDirectionalIndexes[i]])
                 {
                     //linked
-                    CreateQuarter(column, row, variation, true, Util.sortedDirectionalIndexes[i]);
+                    CreateQuarter(column, row, variation, FenceLinked.isLinked, Util.sortedDirectionalIndexes[i]);
                 }
                 else
                 {
                     if (Util.NoneOrOne(corners))
                     {
                         //unlinked
-                        CreateQuarter(column, row, variation, false, Util.sortedDirectionalIndexes[i]);
+                        CreateQuarter(column, row, variation, FenceLinked.noLink, Util.sortedDirectionalIndexes[i]);
                     }
                     else
                     {
+                        MapHolder.decorationsTiles[column, row].isLinked[i] = FenceLinked.noFence;
                         RemoveQuarter(column, row, Util.sortedDirectionalIndexes[i]);
                     }
 
@@ -144,17 +169,18 @@ public class FenceBuilder : MonoBehaviour
                 if (corners[Util.sortedDirectionalIndexes[i]])
                 {
                     //linked
-                    CreateQuarter(column, row, variation, true, Util.sortedDirectionalIndexes[i]);
+                    CreateQuarter(column, row, variation, FenceLinked.isLinked, Util.sortedDirectionalIndexes[i]);
                 }
                 else
                 {
+                    MapHolder.decorationsTiles[column, row].isLinked[i] = FenceLinked.noFence;
                     RemoveQuarter(column, row, Util.sortedDirectionalIndexes[i]);
                 }
             }
         }
     }
 
-    static void CreateQuarter(int column, int row, int variation, bool isLinked, int rotation)
+    static void CreateQuarter(int column, int row, byte variation, FenceLinked isLinked, int rotation)
     {
         if (MapHolder.decorationsTiles[column, row].quarters[rotation] != null)
         {
@@ -165,10 +191,10 @@ public class FenceBuilder : MonoBehaviour
             }
             AddToFencePartsLimbo(MapHolder.decorationsTiles[column, row].quarters[rotation],
                 MapHolder.decorationsTiles[column, row].variation,
-                MapHolder.decorationsTiles[column, row].isLinked[rotation]);
+                MapHolder.decorationsTiles[column, row].isLinked[rotation] == FenceLinked.isLinked);
         }
         //Debug.Log($"!!---- {column} {row}");
-        MapHolder.decorationsTiles[column, row].quarters[rotation] = GetTileFromFencePartLimbo(variation, isLinked);
+        MapHolder.decorationsTiles[column, row].quarters[rotation] = GetTileFromFencePartLimbo(variation, isLinked == FenceLinked.isLinked);
 
         MapHolder.decorationsTiles[column, row].quarters[rotation].transform.parent = MapHolder.decorationsTiles[column, row].decorationBackground.transform;
         MapHolder.decorationsTiles[column, row].quarters[rotation].transform.localPosition = Util.halfOffset;
@@ -184,16 +210,14 @@ public class FenceBuilder : MonoBehaviour
         {
             AddToFencePartsLimbo(MapHolder.decorationsTiles[column, row].quarters[rotation],
                 MapHolder.decorationsTiles[column, row].variation,
-                MapHolder.decorationsTiles[column, row].isLinked[rotation]);
+                MapHolder.decorationsTiles[column, row].isLinked[rotation] == FenceLinked.isLinked);
 
             MapHolder.decorationsTiles[column, row].quarters[rotation] = null;
         }
     }
 
-
-
     //-----------------Fence limbo
-    static void AddToFenceLimbo(DecorationTiles tile)
+    public static void AddToFenceLimbo(DecorationTiles tile)
     {
         if (fenceTilesLimbo == null)
         {
@@ -220,19 +244,19 @@ public class FenceBuilder : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
         {
-            AddToFencePartLimbo(tile.quarters[i], tile.variation, tile.isLinked[i]);
+            AddToFencePartLimbo(tile.quarters[i], tile.variation, tile.isLinked[i] == FenceLinked.isLinked);
             tile.quarters[i] = null;
         }
     }
 
-    static void AddToFencePartsLimbo(Transform part, int variation, bool isLinked)
+    static void AddToFencePartsLimbo(Transform part, byte variation, bool isLinked)
     {
         CheckForFenceParts(variation);
 
         AddToFencePartLimbo(part, variation, isLinked);
     }
     
-    static void CheckForFenceParts(int variation)
+    static void CheckForFenceParts(byte variation)
     {
         if (fencePartsLimbo == null)
         {
@@ -247,7 +271,7 @@ public class FenceBuilder : MonoBehaviour
             }
         }
     }
-        static void AddToFencePartLimbo(Transform part, int variation, bool isLinked)
+        static void AddToFencePartLimbo(Transform part, byte variation, bool isLinked)
     {
         if (part == null)
         {
@@ -257,10 +281,7 @@ public class FenceBuilder : MonoBehaviour
         {
             part.parent = MapHolder.limboDecorationsParent;
             part.position = Util.cullingPosition;
-            //part.SetActive(false);
             fencePartsLimbo[variation][(isLinked ? 1 : 0)].Add(part);
-
-            //Debug.Log($"!!---- {column} {fencePartsLimbo[variation][(isLinked ? 1 : 0)].Count}");
         }
         else
         {
@@ -275,25 +296,18 @@ public class FenceBuilder : MonoBehaviour
             return new DecorationTiles(DecorationType.Fence);
         }
         DecorationTiles tile = fenceTilesLimbo[fenceTilesLimbo.Count - 1];
-        //Debug.Log($"{fenceTilesLimbo.Count}");
         fenceTilesLimbo.RemoveAt(fenceTilesLimbo.Count - 1);
-        //Debug.Log($"{fenceTilesLimbo.Count}");
-
-        //tile.decorationBackground.SetActive(true);
         return tile;
     }
 
-    static Transform GetTileFromFencePartLimbo(int variation, bool isLinked)
+    static Transform GetTileFromFencePartLimbo(byte variation, bool isLinked)
     {
         if (fencePartsLimbo == null || fencePartsLimbo.Count <= variation || fencePartsLimbo[variation][(isLinked ? 1 : 0)].Count == 0)
         {
             return GameObject.Instantiate(MapHolder.mapPrefab.fencePrefabDictionary[variation].variationPrefabs[isLinked ? 1 : 0]).transform;
         }
         Transform tile = fencePartsLimbo[variation][isLinked ? 1 : 0][fencePartsLimbo[variation][isLinked ? 1 : 0].Count - 1];
-        //Debug.Log($"{isLinked} {fencePartsLimbo[variation][isLinked ? 1 : 0].Count}");
         fencePartsLimbo[variation][isLinked ? 1 : 0].RemoveAt(fencePartsLimbo[variation][isLinked ? 1 : 0].Count - 1);
-        //Debug.Log($"{isLinked} {fencePartsLimbo[variation][isLinked ? 1 : 0].Count}");
-        //tile.SetActive(true);
         return tile;
     }
 }

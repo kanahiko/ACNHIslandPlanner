@@ -20,7 +20,7 @@ public class TilePreview : MonoBehaviour
     private DecorationType currentType;
     Transform currentPreview;
 
-    public void ChangeTile(DecorationType type = DecorationType.Null, int variation = -1)
+    public void ChangeTile(DecorationType type = DecorationType.Null, byte variation = 0)
     {
         Transform preview = null;
         switch (type)

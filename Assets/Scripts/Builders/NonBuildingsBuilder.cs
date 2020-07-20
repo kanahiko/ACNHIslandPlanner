@@ -9,7 +9,7 @@ public class NonBuildingsBuilder
     static Dictionary<DecorationType, List<List<DecorationTiles>>> decorationTilesLimbo;
     //for non unique structures like fence, flowers, bushes, trees
 
-    public static void ChangeTile(int column, int row,DecorationType type, ToolMode mode, int variation, bool isHorizontal = false)
+    public static void ChangeTile(int column, int row,DecorationType type, ToolMode mode, byte variation)
     {
         switch (type)
         {
@@ -28,7 +28,22 @@ public class NonBuildingsBuilder
         }
     }
 
-    static void AddDecoration(DecorationType type,int column, int row, int variation)
+    public static void RebuildTile(int column, int row, PreDecorationTile tile)
+    {
+        MapHolder.decorationsTiles[column, row] = GetTileFromDecorationLimbo(tile.type, tile.variation);
+        MapHolder.decorationsTiles[column, row].decorationBackground.parent = MapHolder.decorationsParent;
+        MapHolder.decorationsTiles[column, row].decorationBackground.localPosition = new Vector3(column, Util.GetHeight(column, row), -row);
+
+        MapHolder.decorationsTiles[column, row].type = tile.type;
+        MapHolder.decorationsTiles[column, row].variation = tile.variation;
+
+        if (tile.type == DecorationType.Tree)
+        {
+            AddTreeInfluence(column, row, true);
+        }
+    }
+
+    static void AddDecoration(DecorationType type,int column, int row, byte variation)
     {
         
         if (MapHolder.tiles[column,row].type != TileType.Land && MapHolder.tiles[column,row].type != TileType.Sand ||
@@ -45,9 +60,9 @@ public class NonBuildingsBuilder
 
         if (MapHolder.decorationsTiles[column, row] != null)
         {
-
+               
             if (MapHolder.decorationsTiles[column, row].variation != variation)
-            {
+            { 
                 AddToDecorationLimbo(MapHolder.decorationsTiles[column, row]);
                 MapHolder.decorationsTiles[column, row] = GetTileFromDecorationLimbo(type, variation);
             }
@@ -103,7 +118,7 @@ public class NonBuildingsBuilder
         }
     }
 
-    static void AddToDecorationLimbo(DecorationTiles tile)
+    public static void AddToDecorationLimbo(DecorationTiles tile)
     {
         if (decorationTilesLimbo == null)
         {
@@ -132,7 +147,7 @@ public class NonBuildingsBuilder
             tile.Dispose();
         }
     }
-    static DecorationTiles GetTileFromDecorationLimbo(DecorationType type, int variation)
+    static DecorationTiles GetTileFromDecorationLimbo(DecorationType type, byte variation)
     {
         if (decorationTilesLimbo == null || decorationTilesLimbo.Count == 0 ||
             !decorationTilesLimbo.ContainsKey(type) || decorationTilesLimbo[type].Count < variation + 1 ||

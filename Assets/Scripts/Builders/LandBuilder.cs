@@ -78,7 +78,7 @@ public class LandBuilder : MonoBehaviour
             }
         }
     }
-    public static void CreateLandTile(int column, int row, int elevation = 0)
+    public static void CreateLandTile(int column, int row, byte elevation = 0)
     {
         //creates tile and adds its reference to MapHolder
         if (MapHolder.tiles[column, row] != null)
@@ -108,15 +108,21 @@ public class LandBuilder : MonoBehaviour
         }
 
         MapHolder.tiles[column, row].elevation = elevation;
-        MapHolder.tiles[column, row].diagonalRotation = -1;
+        MapHolder.tiles[column, row].diagonalRotation = 255;
         MapHolder.tiles[column, row].type = TileType.Land;
 
         if (elevation > 0)
         {
-            CliffBuilder.CreateCliffSides(column, row);
+            CliffBuilder.CreateCliffSides(column, row, MapHolder.tiles[column,row]);
         }
         
-        MapHolder.tiles[column, row].variation = -1;
+        MapHolder.tiles[column, row].variation = 0;
+    }
+
+    public static void RebuildLandTile(MapTile tile)
+    {
+        tile.SoftErase();
+        tile.backgroundTile = Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Land], tile.colliderObject.transform);
     }
 
     public static void CreateSandTile(int column, int row)
@@ -149,12 +155,43 @@ public class LandBuilder : MonoBehaviour
         }
 
         MapHolder.tiles[column, row].elevation = 0;
-        MapHolder.tiles[column, row].diagonalRotation = -1;
+        MapHolder.tiles[column, row].diagonalRotation = 255;
         MapHolder.tiles[column, row].type = TileType.Sand;
         
-        MapHolder.tiles[column, row].variation = -1;
+        MapHolder.tiles[column, row].variation = 0;
     }
-    
+    public static void RebuildSandTile(MapTile tile)
+    {
+        tile.SoftErase();
+        tile.backgroundTile = Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Sand], tile.colliderObject.transform);
+    }
+    public static void RebuildSandDiagonal(MapTile tile)
+    {
+        tile.SoftErase(); 
+        byte rotation = tile.diagonalRotation;
+        int oppositeRotation = Util.SubstractRotation(rotation, 2);
+
+
+        tile.backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[tile.backgroundType], tile.colliderObject.transform);
+        tile.backgroundTile.transform.localPosition = Util.halfOffset;
+        tile.backgroundTile.transform.GetChild(0).localRotation = Quaternion.Euler(0, 90 * rotation, 0);
+        tile.diagonalRotation = rotation;
+    }
+    public static void RebuildSeaTile(MapTile tile)
+    {
+        tile.SoftErase();
+    }
+    public static void RebuildSeaDiagonal(MapTile tile)
+    {
+        tile.SoftErase();
+
+        byte rotation = tile.diagonalRotation;
+
+        tile.backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[tile.backgroundType],tile.colliderObject.transform);
+        tile.backgroundTile.transform.localPosition = Util.halfOffset;
+        tile.backgroundTile.transform.GetChild(0).localRotation = Quaternion.Euler(0, 90 * rotation, 0);
+        tile.diagonalRotation = rotation;
+    }
     public static void CreateSeaTile(int column, int row)
     {
         if (MapHolder.tiles[column, row] != null)
@@ -181,10 +218,10 @@ public class LandBuilder : MonoBehaviour
         }
 
         MapHolder.tiles[column, row].elevation = 0;
-        MapHolder.tiles[column, row].diagonalRotation = -1;
+        MapHolder.tiles[column, row].diagonalRotation = 255;
         MapHolder.tiles[column, row].type = TileType.Sea;
         
-        MapHolder.tiles[column, row].variation = -1;
+        MapHolder.tiles[column, row].variation = 0;
     }
 
     public static bool CheckSandTile(int column, int row, TileType previousTileType, ref ToolMode toolMode)
@@ -270,7 +307,7 @@ public class LandBuilder : MonoBehaviour
             {
                 if (tile != null)
                 {
-                    tile.diagonalRotation = i - 1;
+                    tile.diagonalRotation = (byte)(i - 1);
                 }
                 return true;
             }
@@ -300,7 +337,7 @@ public class LandBuilder : MonoBehaviour
             {
                 if (tile != null)
                 {
-                    tile.diagonalRotation = i - 1;
+                    tile.diagonalRotation = (byte)(i - 1);
                 }
                 return true;
             }
@@ -335,7 +372,7 @@ public class LandBuilder : MonoBehaviour
     
     public static void CreateDiagonalSand(int column, int row)
     {
-        int rotation = MapHolder.tiles[column,row].diagonalRotation;
+        byte rotation = MapHolder.tiles[column,row].diagonalRotation;
         int oppositeRotation = Util.SubstractRotation(rotation, 2);
 
         TilePrefabType type = TilePrefabType.SandDiagonal;
@@ -359,14 +396,11 @@ public class LandBuilder : MonoBehaviour
     
     public static void CreateDiagonalSea(int column, int row)
     {
-        int rotation = MapHolder.tiles[column,row].diagonalRotation;
-        int oppositeRotation = Util.SubstractRotation(rotation, 2);
-
-        TilePrefabType type = TilePrefabType.SeaDiagonal;
+        byte rotation = MapHolder.tiles[column,row].diagonalRotation;
 
         MapHolder.tiles[column, row].HardErase();
         MapHolder.tiles[column, row].RemoveCliffs();
-        MapHolder.tiles[column, row].backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[type],
+        MapHolder.tiles[column, row].backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.SeaDiagonal],
             MapHolder.tiles[column,row].colliderObject.transform);
         MapHolder.tiles[column, row].backgroundTile.transform.localPosition = Util.halfOffset;
         MapHolder.tiles[column, row].backgroundTile.transform.GetChild(0).localRotation = Quaternion.Euler(0,90*rotation,0);

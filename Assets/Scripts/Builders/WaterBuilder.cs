@@ -129,7 +129,7 @@ public class WaterBuilder
         }
         else
         {
-            MapHolder.tiles[column, row].diagonalRotation = -1;
+            MapHolder.tiles[column, row].diagonalRotation = 255;
             int[,] elevationCorners = Util.GetElevationCorners(column, row);
             for (int k = 0; k < 4; k++)
             {
@@ -141,7 +141,7 @@ public class WaterBuilder
 
         if (elevationLevel >0)
         {
-            CliffBuilder.CreateCliffSides(column, row);
+            CliffBuilder.CreateCliffSides(column, row, MapHolder.tiles[column,row]);
         }
 
     }
@@ -271,5 +271,58 @@ public class WaterBuilder
             MapHolder.tiles[column, row].quarters[oppositeRotation].transform.localPosition = Util.halfOffset;
             MapHolder.tiles[column, row].quarters[oppositeRotation].transform.localRotation = rotate;
         }
+    }
+
+    public static void RebuildWaterCorner(MapTile tile)
+    {
+        tile.SoftErase();
+        tile.backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Water], tile.colliderObject.transform);
+
+        for (int i = 0; i < 4; i++) 
+        {
+            Quaternion rotate = Quaternion.Euler(0, 90 * i, 0);
+            if (tile.prefabType[i] == TilePrefabType.WaterSideRotated)
+            {
+                rotate *= Quaternion.Euler(0, -90, 0);
+            }
+
+            GameObject prefab = MapHolder.mapPrefab.prefabDictionary[tile.prefabType[i]];
+
+            if (prefab != null)
+            {
+                GameObject quarter = GameObject.Instantiate(prefab, tile.backgroundTile.transform);
+                quarter.transform.localPosition = Util.offset[i];
+                quarter.transform.localRotation = rotate;
+                tile.quarters[i] = quarter;
+            }
+        }
+    }
+
+    public static void RebuildDiagonalWater(MapTile tile)
+    {
+        tile.SoftErase();
+        tile.backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Water], tile.colliderObject.transform);
+
+        int rotation = tile.diagonalRotation;
+        int oppositeRotation = Util.SubstractRotation(rotation, 2);
+        Quaternion rotate = Quaternion.Euler(0, rotation * 90, 0);
+
+
+        if (tile.prefabType[rotation] == TilePrefabType.WaterDiagonalQuarter)
+        {
+            GameObject corner = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.WaterDiagonalQuarter], tile.backgroundTile.transform);
+
+            corner.transform.localPosition = Util.offset[rotation];
+            corner.transform.localRotation = rotate;
+
+            tile.quarters[rotation] = corner;
+        }
+
+
+        GameObject diagonal = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.WaterDiagonal], tile.backgroundTile.transform);
+        diagonal.transform.localPosition = Util.halfOffset;
+        diagonal.transform.localRotation = rotate;
+        tile.quarters[oppositeRotation] = diagonal;
+        tile.prefabType[oppositeRotation] = TilePrefabType.WaterDiagonal;
     }
 }

@@ -13,7 +13,7 @@ public class BridgesBuilder : MonoBehaviour
     private static int inclinesPlaced = 0;
 
 
-    public static void ChangeTile(ToolType tool, ToolMode mode,int column, int row, int variation, int rotation)
+    public static void ChangeTile(ToolType tool, ToolMode mode,int column, int row, byte variation, int rotation)
     {
         Debug.Log(rotation);
         if (tool == ToolType.BridgeMarkUp)
@@ -40,7 +40,7 @@ public class BridgesBuilder : MonoBehaviour
         }
     }
     
-    public static void AddBridges(int column, int row, int variation, int rotation)
+    public static void AddBridges(int column, int row, byte variation, int rotation)
     {
         int size = -1;
         if (CheckCanPlaceBridgeDiagonal(column, row, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge], rotation, out size))
@@ -303,7 +303,7 @@ public class BridgesBuilder : MonoBehaviour
         }
     }
     
-    static DecorationTiles GetFromBridgeLimbo(int variation, int size)
+    static DecorationTiles GetFromBridgeLimbo(byte variation, int size)
     {
         if (bridgesLimbo == null || bridgesLimbo.Count < variation + 1 || bridgesLimbo[variation][size].Count == 0)
         {
@@ -319,7 +319,7 @@ public class BridgesBuilder : MonoBehaviour
         return tile;
     }
 
-    static void AddInclines(int column, int row, int variation, int rotation)
+    static void AddInclines(int column, int row, byte variation, int rotation)
     {
         if (inclinesPlaced < MapHolder.mapPrefab.maxCount[DecorationType.Incline] &&
             CheckCanPlaceIncline(column, row, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline], rotation))
@@ -507,7 +507,7 @@ public class BridgesBuilder : MonoBehaviour
         }
     }
 
-    static DecorationTiles GetFromInclineLimbo(int variation)
+    static DecorationTiles GetFromInclineLimbo(byte variation)
     {
         if (inclinesLimbo == null || inclinesLimbo.Count < variation + 1 || inclinesLimbo[variation].Count == 0)
         {

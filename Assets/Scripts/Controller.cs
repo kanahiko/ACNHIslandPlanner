@@ -59,24 +59,25 @@ public class Controller : MonoBehaviour
     //tools
     ToolMode construct = ToolMode.None;
     DecorationType currentDecorationTool;
-    int rotation = 0;
-    int variation = 0;
+    byte rotation = 0;
+    byte variation = 0;
     int currentBlockX = -1;
     int currentBlockY = -1;
 
     int prevBlockX = -1;
     int prevBlockY = -1;
 
-    public static Action<int, int, ToolType, ToolMode, int, DecorationType, int> ChangeTile;
+    public static Action<int, int, ToolType, ToolMode, byte, DecorationType, byte> ChangeTile;
     public static Action<int, int> StartConstructionAction;
     public static Action EndConstructionAction;
 
-    public Action<DecorationType, int> ChangeCursor;
+    public Action<DecorationType, byte> ChangeCursor;
     public Action<int, DecorationType> ChangeRotationCursor;
     public Action<Vector3> ChangeCursorPosition;
     public Action<Vector2, float> ChangeCameraPosition;
 
     Controls controls;
+    public static Action<Dictionary<Vector2Int, List<Vector2Int>>, List<PreDecorationTile>> RebuildMap;
 
     //private float timeElapsedSinceClick;
 
@@ -87,7 +88,7 @@ public class Controller : MonoBehaviour
         ChangeCursorPosition = cursor.FollowMousePosition;
         ChangeRotationCursor = cursor.ChangeTileRotation;
 
-        ChangeCursor.Invoke(DecorationType.Null, -1);
+        ChangeCursor.Invoke(DecorationType.Null, 0);
 
         //Application.targetFrameRate = 60;
         controls = new Controls();
@@ -183,7 +184,7 @@ public class Controller : MonoBehaviour
     {
         if (currentTool == ToolType.FenceBuilding)
         {
-            rotation = rotation == 0 ? 1 : 0;
+            rotation = (byte)(rotation == 0 ? 1 : 0);
             ChangeRotationCursor?.Invoke(rotation, DecorationType.Fence);
         }
 
@@ -394,9 +395,9 @@ public class Controller : MonoBehaviour
     {
         if (currentTool != ToolType.Waterscaping)
         {
-            variation = -1;
+            variation = 0;
             rotation = 0;
-            ChangeCursor.Invoke(DecorationType.Null, -1);
+            ChangeCursor.Invoke(DecorationType.Null, 0);
             currentDecorationTool = DecorationType.Null;
             ToolChange(ToolType.Waterscaping);
         }
@@ -406,9 +407,9 @@ public class Controller : MonoBehaviour
     {
         if (currentTool != ToolType.CliffConstruction)
         {
-            variation = -1;
+            variation = 0;
             rotation = 0;
-            ChangeCursor.Invoke(DecorationType.Null, -1);
+            ChangeCursor.Invoke(DecorationType.Null, 0);
             currentDecorationTool = DecorationType.Null;
             ToolChange(ToolType.CliffConstruction);
         }
@@ -417,9 +418,9 @@ public class Controller : MonoBehaviour
     {
         if (currentTool != ToolType.SandPermit)
         {
-            variation = -1;
+            variation = 0;
             rotation = 0;
-            ChangeCursor.Invoke(DecorationType.Null, -1);
+            ChangeCursor.Invoke(DecorationType.Null, 0);
             currentDecorationTool = DecorationType.Null;
             ToolChange(ToolType.SandPermit);
         }
@@ -430,7 +431,7 @@ public class Controller : MonoBehaviour
         if (currentTool != ToolType.PathPermit)
         {
             rotation = 0;
-            ChangeCursor.Invoke(DecorationType.Null, -1);
+            ChangeCursor.Invoke(DecorationType.Null, 0);
             currentDecorationTool = DecorationType.Null;
             ToolChange(ToolType.PathPermit);
         }
@@ -493,7 +494,7 @@ public class Controller : MonoBehaviour
         }
     }
 
-    public void ChooseVariation(int variation)
+    public void ChooseVariation(byte variation)
     {
         this.variation = variation;
         switch (currentTool)
@@ -514,7 +515,7 @@ public class Controller : MonoBehaviour
                 ChangeCursor.Invoke(DecorationType.Fence, variation);
                 break;
             case ToolType.BuildingsMarkUp:
-                ChangeCursor.Invoke((DecorationType)variation, -1);
+                ChangeCursor.Invoke((DecorationType)variation, 0);
                 break;
         }
     }
@@ -546,4 +547,14 @@ public class Controller : MonoBehaviour
         MapHolder.mapPrefab.ResetShaders();
     }
 
+
+    public void TestSaveButton()
+    {
+        MapHolder.Save();
+    }
+
+    public void TestLoadButton()
+    {
+        MapHolder.Load();
+    }
 }
