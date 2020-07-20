@@ -54,34 +54,14 @@ public class DecorationsBuilder : MonoBehaviour
 
     public static void RebuildTile(Dictionary<Vector2Int, List<Vector2Int>> buildings, List<PreDecorationTile> preDecorationTiles)
     {
+        ResetDecorations();
         Dictionary<Vector2Int, DecorationTiles> buildingDictionary = new Dictionary<Vector2Int, DecorationTiles>();
 
         for (int i = 0; i < preDecorationTiles.Count; i++)
         {
             int column = preDecorationTiles[i].coordinates.x;
             int row = preDecorationTiles[i].coordinates.y;
-            if (MapHolder.decorationsTiles[column, row] != null)
-            {
-                switch (MapHolder.decorationsTiles[column, row].type)
-                {
-                    case DecorationType.Fence:
-                        FenceBuilder.AddToFenceLimbo(MapHolder.decorationsTiles[column, row]);
-                        break;
-                    case DecorationType.Incline:
-                        break;
-                    case DecorationType.Bridge:
-                        break;
-                    case DecorationType.Flora:
-                    case DecorationType.Tree:
-                        NonBuildingsBuilder.AddToDecorationLimbo(MapHolder.decorationsTiles[column, row]);
-                        break;
-                    case DecorationType.Building:
-                        MiniMap.PutPin(MapHolder.decorationsTiles[column, row].building.startingColumn, MapHolder.decorationsTiles[column, row].building.startingRow,
-                            MapHolder.decorationsTiles[column, row].building.size.x, 0, MapHolder.decorationsTiles[column, row].building.type, false);
-                        MapHolder.decorationsTiles[column, row].GoToLimbo();
-                        break;
-                }
-            }
+            
 
             switch (preDecorationTiles[i].type)
             {
@@ -102,17 +82,20 @@ public class DecorationsBuilder : MonoBehaviour
                         DecorationTiles buildingTile = BuildingsBuilder.RebuildTile(preDecorationTiles[i]);
                         buildingDictionary.Add(preDecorationTiles[i].startingCoords, buildingTile);
                     }
+                    MapHolder.decorationsTiles[column, row] = buildingDictionary[preDecorationTiles[i].startingCoords];
+                    
+                    Debug.Log($"{column} {row} {preDecorationTiles[i].startingCoords}");
                     buildings[preDecorationTiles[i].startingCoords].Remove(preDecorationTiles[i].coordinates);
 
                     if (buildings[preDecorationTiles[i].startingCoords].Count == 0)
                     {
-                        BuildingsBuilder.RebuildBuildingInfluence(column, row, MapHolder.mapPrefab.decorationsSizeDictionary[preDecorationTiles[i].buildingType], 
+                        BuildingsBuilder.RebuildBuildingInfluence(preDecorationTiles[i].startingCoords.x, preDecorationTiles[i].startingCoords.y, MapHolder.mapPrefab.decorationsSizeDictionary[preDecorationTiles[i].buildingType], 
                             buildingDictionary[preDecorationTiles[i].startingCoords]);
 
                        MiniMap.PutPin(preDecorationTiles[i].startingCoords.x, 
-                           preDecorationTiles[i].startingCoords.y, 
+                           preDecorationTiles[i].startingCoords.y - MapHolder.mapPrefab.decorationsSizeDictionary[preDecorationTiles[i].buildingType].z, 
                            MapHolder.mapPrefab.decorationsSizeDictionary[preDecorationTiles[i].buildingType].x,
-                           MapHolder.mapPrefab.decorationsSizeDictionary[preDecorationTiles[i].buildingType].y, 
+                           MapHolder.mapPrefab.decorationsSizeDictionary[preDecorationTiles[i].buildingType].y - MapHolder.mapPrefab.decorationsSizeDictionary[preDecorationTiles[i].buildingType].z, 
                            preDecorationTiles[i].buildingType, true);
                     }
 
@@ -124,5 +107,38 @@ public class DecorationsBuilder : MonoBehaviour
             }
         }
 
+    }
+
+
+    static void ResetDecorations()
+    {
+        for (int i = 0; i < MapHolder.height; i++)
+        {
+            for (int j = 0; j < MapHolder.width; j++)
+            {
+                if (MapHolder.decorationsTiles[j, i] != null)
+                {
+                    switch (MapHolder.decorationsTiles[j, i].type)
+                    {
+                        case DecorationType.Fence:
+                            FenceBuilder.AddToFenceLimbo(MapHolder.decorationsTiles[j, i]);
+                            break;
+                        case DecorationType.Incline:
+                            break;
+                        case DecorationType.Bridge:
+                            break;
+                        case DecorationType.Flora:
+                        case DecorationType.Tree:
+                            NonBuildingsBuilder.AddToDecorationLimbo(MapHolder.decorationsTiles[j, i]);
+                            break;
+                        case DecorationType.Building:
+                            MiniMap.PutPin(MapHolder.decorationsTiles[j, i].building.startingColumn, MapHolder.decorationsTiles[j, i].building.startingRow,
+                                MapHolder.decorationsTiles[j, i].building.size.x, 0, MapHolder.decorationsTiles[j, i].building.type, false);
+                            MapHolder.decorationsTiles[j, i].GoToLimbo();
+                            break;
+                    }
+                }
+            }
+        }
     }
 }

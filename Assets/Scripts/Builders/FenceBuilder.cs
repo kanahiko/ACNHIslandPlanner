@@ -39,7 +39,7 @@ public class FenceBuilder : MonoBehaviour
 
             if (newTile.isLinked[i] != FenceLinked.noFence)
             {
-                CreateQuarter(column, row, newTile.variation, newTile.isLinked[i], Util.sortedDirectionalIndexes[i]);
+                CreateQuarter(column, row, newTile.variation, newTile.isLinked[i], i);
             }
         }
     }
@@ -157,7 +157,7 @@ public class FenceBuilder : MonoBehaviour
                     }
                     else
                     {
-                        MapHolder.decorationsTiles[column, row].isLinked[i] = FenceLinked.noFence;
+                        MapHolder.decorationsTiles[column, row].isLinked[Util.sortedDirectionalIndexes[i]] = FenceLinked.noFence;
                         RemoveQuarter(column, row, Util.sortedDirectionalIndexes[i]);
                     }
 
@@ -173,7 +173,7 @@ public class FenceBuilder : MonoBehaviour
                 }
                 else
                 {
-                    MapHolder.decorationsTiles[column, row].isLinked[i] = FenceLinked.noFence;
+                    MapHolder.decorationsTiles[column, row].isLinked[Util.sortedDirectionalIndexes[i]] = FenceLinked.noFence;
                     RemoveQuarter(column, row, Util.sortedDirectionalIndexes[i]);
                 }
             }

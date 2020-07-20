@@ -309,6 +309,8 @@ public static class MiniMap
 
                 int newColumn = sizeX / 2;
                 newColumn += column + (sizeX % 2 == 0 ? -1 : 0);
+                
+                Debug.Log($"{column} {newColumn} {row}");
 
                 Vector2 position = new Vector2();
                 position.x = (newColumn * pixelSize + MapHolder.mapPrefab.miniMapOffset.x + pixelSize * 0.5f) * ratio.x;
@@ -321,7 +323,8 @@ public static class MiniMap
         }
         else
         {
-            Image pin = minimapActivePins[column +  row *MapHolder.width];
+            Debug.Log($"{column} {row}");
+            Image pin = minimapActivePins[column +  row * MapHolder.width];
             
             pin.transform.localPosition = hidePosition;
 

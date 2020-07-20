@@ -494,25 +494,25 @@ public class Controller : MonoBehaviour
         }
     }
 
-    public void ChooseVariation(byte variation)
+    public void ChooseVariation(int variation)
     {
-        this.variation = variation;
+        this.variation = (byte)variation;
         switch (currentTool)
         {
             case ToolType.BridgeMarkUp:
-                ChangeCursor.Invoke(DecorationType.Bridge,variation);
+                ChangeCursor.Invoke(DecorationType.Bridge,this.variation);
                 break;
             case ToolType.InclineMarkUp:
-                ChangeCursor.Invoke(DecorationType.Incline,variation);
+                ChangeCursor.Invoke(DecorationType.Incline,this.variation);
                 break;
             case ToolType.TreePlanting:
-                ChangeCursor.Invoke(DecorationType.Tree, variation);
+                ChangeCursor.Invoke(DecorationType.Tree, this.variation);
                 break;
             case ToolType.BushPlanting:
-                ChangeCursor.Invoke(DecorationType.Flora, variation);
+                ChangeCursor.Invoke(DecorationType.Flora, this.variation);
                 break;
             case ToolType.FenceBuilding:
-                ChangeCursor.Invoke(DecorationType.Fence, variation);
+                ChangeCursor.Invoke(DecorationType.Fence, this.variation);
                 break;
             case ToolType.BuildingsMarkUp:
                 ChangeCursor.Invoke((DecorationType)variation, 0);
