@@ -1,5 +1,4 @@
 ﻿using RotaryHeart.Lib.SerializableDictionary;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -41,10 +40,15 @@ public static class MapHolder
         mapPrefab.StartPrefab();
     }
 
-    public static void Save()
+    public static void Save(CameraInfo cameraInfo)
     {
         using (BinaryWriter writer = new BinaryWriter(File.Open(@"D:\test.testSave", FileMode.Create)))
         {
+            writer.Write(cameraInfo.position.x);
+            writer.Write(cameraInfo.position.y);
+            writer.Write(cameraInfo.position.z);
+            writer.Write(cameraInfo.currentScroll);
+            writer.Write(cameraInfo.isTilted);
             //writer.Write(width);
             //writer.Write(height);
             for (int i = 0; i < height; i++)
@@ -91,12 +95,13 @@ public static class MapHolder
                 writer.Write((byte)decorationTilesSave[i].type);
                 //will check with type
                 //writer.Write(tile.building != null);
+                writer.Write(decorationTilesSave[i].startingColumn);
+                writer.Write(decorationTilesSave[i].startingRow);
                 if (decorationTilesSave[i].building != null)
                 {
                     writer.Write((byte)decorationTilesSave[i].building.type);
-                    writer.Write(decorationTilesSave[i].building.startingColumn);
-                    writer.Write(decorationTilesSave[i].building.startingRow);
                 }
+
                 for (int j = 0; j < 4; j++)
                 {
                     writer.Write((byte)decorationTilesSave[i].isLinked[j]);
@@ -107,26 +112,23 @@ public static class MapHolder
             }
         }
     }
-    public static void ResetInfluence()
-    {
-        for (int i = 0; i < height; i++)
-        {
-            for (int j = 0; j < width; j++)
-            {
-                treeInfluence[j, i] = 0;
-                buildingsInfluence[j, i] = BuildingInfluence.noInfluence;
-            }
-        }
-    }
-    public static void Load()
+    public static CameraInfo Load()
     {
         Dictionary<Vector2Int, List<Vector2Int>> buildings = new Dictionary<Vector2Int, List<Vector2Int>>();
         List<PreDecorationTile> preDecorationTiles = new List<PreDecorationTile>();
+
+        CameraInfo cameraInfo = new CameraInfo();
+        cameraInfo.position = new Vector3();
 
         using (BinaryReader reader = new BinaryReader(File.Open(@"D:\test.testSave", FileMode.Open)))
         {
             //width = reader.ReadInt32();
             //height = reader.ReadInt32();
+            cameraInfo.position.x = reader.ReadSingle();
+            cameraInfo.position.y = reader.ReadSingle();
+            cameraInfo.position.z = reader.ReadSingle();
+            cameraInfo.currentScroll = reader.ReadSingle();
+            cameraInfo.isTilted = reader.ReadBoolean();
 
             for (int i = 0; i< height; i++)
             {
@@ -158,10 +160,10 @@ public static class MapHolder
 
                 tile.type = (DecorationType)reader.ReadByte();
 
+                tile.startingCoords = new Vector2Int(reader.ReadInt32(), reader.ReadInt32());
                 if (tile.type == DecorationType.Building)
                 {
                     tile.buildingType = (DecorationType)reader.ReadByte();
-                    tile.startingCoords = new Vector2Int(reader.ReadInt32(), reader.ReadInt32());
 
                     if (!buildings.ContainsKey(tile.startingCoords))
                     {
@@ -183,12 +185,19 @@ public static class MapHolder
             }
         }
 
-        ResetInfluence();
         Controller.RebuildMap?.Invoke(buildings, preDecorationTiles);
-        MiniMap.RebuildMap();
         //Rebuild entire map
         //goes to building controller
+
+        return cameraInfo;
     }
+}
+
+public class CameraInfo
+{
+    public Vector3 position;
+    public bool isTilted;
+    public float currentScroll;
 }
 
 public class PreDecorationTile
@@ -208,112 +217,3 @@ public class PreDecorationTile
 [System.Serializable]
 public class MinimapDecorationsDictionary : SerializableDictionaryBase<DecorationType, Image> { }
 
-public class DecorationTiles : IDisposable
-{
-    public Transform decorationBackground;
-    public DecorationType type;
-
-    //TODO:change
-    //public bool isHorizontal;
-    public GameObject mainTile;
-    public MeshRenderer mainTileRenderer;
-    public Transform[] quarters;
-    public FenceLinked[] isLinked;
-
-    public int rotation;
-    public int size;
-
-    //to mark which tiles are not empty and where to start to make them empty
-    public UniqueBuilding building;
-
-    public byte variation;
-
-    public DecorationTiles()
-    {
-        quarters = new Transform[4];
-        isLinked = new FenceLinked[4];
-        decorationBackground = new GameObject("DecorationBase").transform;
-        decorationBackground.parent = MapHolder.decorationsParent;
-    }
-    public DecorationTiles(DecorationType type)
-    {
-        this.type = type;
-        quarters = new Transform[4];
-        isLinked = new FenceLinked[4];
-        decorationBackground = new GameObject("DecorationBase").transform;
-        decorationBackground.transform.parent = MapHolder.decorationsParent;
-    }
-
-    public void AddMainTile(GameObject mainTile)
-    {
-        this.mainTile = mainTile;
-        mainTile.transform.localPosition = Vector3.zero;
-        mainTile.transform.localRotation = Quaternion.identity;
-        mainTileRenderer = this.mainTile.GetComponent<MeshRenderer>();
-    }
-
-    public void Dispose()
-    {
-    }
-
-    public void GoToLimbo()
-    {
-        decorationBackground.parent = MapHolder.limboDecorationsParent;
-        decorationBackground.position = Util.cullingPosition;
-        if (mainTile)
-        {
-            mainTileRenderer.enabled = false;
-            //mainTile.SetActive(false);
-        }
-
-        if (building != null)
-        {
-            building.GoToLimbo();
-        }
-        /*for (int i = 0; i < 4; i++)
-        {
-            quarters[i] = null;
-        }*/
-    }
-    public void ReturnFromLimbo()
-    {
-        //decorationBackground.parent = MapHolder.decorationsParent;
-        if (mainTile)
-        {
-            mainTileRenderer.enabled = true;
-            //mainTile.SetActive(true);
-        }
-    }
-}
-
-public class UniqueBuilding
-{
-    public DecorationType type;
-    public DecorationTiles tile;
-
-    public int startingColumn = -1;
-    public int startingRow = -1;
-
-
-    public Vector3Int size;
-    public GameObject model;
-
-    public UniqueBuilding(GameObject model, DecorationType type, Vector3Int size)
-    {
-        this.model = model;
-        this.type = type;
-        this.size = size;
-
-        tile = new DecorationTiles(DecorationType.Building);
-        tile.AddMainTile(model);
-        tile.building = this;
-        tile.GoToLimbo();
-        model.transform.SetParent(tile.decorationBackground,false);
-    }
-
-    public void GoToLimbo()
-    {
-        startingColumn = -1;
-        startingRow = -1;
-    }
-}

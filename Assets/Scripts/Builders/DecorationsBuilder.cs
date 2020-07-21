@@ -84,7 +84,6 @@ public class DecorationsBuilder : MonoBehaviour
                     }
                     MapHolder.decorationsTiles[column, row] = buildingDictionary[preDecorationTiles[i].startingCoords];
                     
-                    Debug.Log($"{column} {row} {preDecorationTiles[i].startingCoords}");
                     buildings[preDecorationTiles[i].startingCoords].Remove(preDecorationTiles[i].coordinates);
 
                     if (buildings[preDecorationTiles[i].startingCoords].Count == 0)
@@ -124,6 +123,7 @@ public class DecorationsBuilder : MonoBehaviour
                             FenceBuilder.AddToFenceLimbo(MapHolder.decorationsTiles[j, i]);
                             break;
                         case DecorationType.Incline:
+                            BridgesBuilder.RemoveInclines(MapHolder.decorationsTiles[j, i].startingColumn, MapHolder.decorationsTiles[j, i].startingRow);
                             break;
                         case DecorationType.Bridge:
                             break;
@@ -132,11 +132,17 @@ public class DecorationsBuilder : MonoBehaviour
                             NonBuildingsBuilder.AddToDecorationLimbo(MapHolder.decorationsTiles[j, i]);
                             break;
                         case DecorationType.Building:
-                            MiniMap.PutPin(MapHolder.decorationsTiles[j, i].building.startingColumn, MapHolder.decorationsTiles[j, i].building.startingRow,
+                            if (j == MapHolder.decorationsTiles[j, i].startingColumn &&
+                                i == MapHolder.decorationsTiles[j, i].startingRow)
+                            {
+                                MiniMap.PutPin(MapHolder.decorationsTiles[j, i].startingColumn,
+                                MapHolder.decorationsTiles[j, i].startingRow - MapHolder.decorationsTiles[j, i].building.size.z,
                                 MapHolder.decorationsTiles[j, i].building.size.x, 0, MapHolder.decorationsTiles[j, i].building.type, false);
-                            MapHolder.decorationsTiles[j, i].GoToLimbo();
+                                MapHolder.decorationsTiles[j, i].GoToLimbo();
+                            }
                             break;
                     }
+                    MapHolder.decorationsTiles[j, i] = null;
                 }
             }
         }

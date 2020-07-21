@@ -46,8 +46,8 @@ public class BuildingsBuilder
         //can place
         building.tile.decorationBackground.parent = MapHolder.decorationsParent;
         building.tile.decorationBackground.localPosition = new Vector3(tile.startingCoords.x, Util.GetHeight(tile.startingCoords.x, tile.startingCoords.y), -tile.startingCoords.y);
-        building.startingColumn = tile.startingCoords.x;
-        building.startingRow = tile.startingCoords.y;
+        building.tile.startingColumn = tile.startingCoords.x;
+        building.tile.startingRow = tile.startingCoords.y;
         building.tile.ReturnFromLimbo();
 
         //RedoTilesOfPath          
@@ -88,8 +88,8 @@ public class BuildingsBuilder
             //can place
             building.tile.decorationBackground.parent = MapHolder.decorationsParent;
             building.tile.decorationBackground.localPosition = new Vector3(newColumn, Util.GetHeight(newColumn, row), -row);
-            building.startingColumn = newColumn;
-            building.startingRow = row;
+            building.tile.startingColumn = newColumn;
+            building.tile.startingRow = row;
             building.tile.ReturnFromLimbo();
 
             //RedoTilesOfPath          
@@ -109,10 +109,10 @@ public class BuildingsBuilder
 
         UniqueBuilding building = MapHolder.decorationsTiles[column, row].building;
 
-        int startingColumn = building.startingColumn;
-        int startingRow = building.startingRow;
+        int startingColumn = building.tile.startingColumn;
+        int startingRow = building.tile.startingRow;
         
-        MarkTile(building.startingColumn, building.startingRow, building.size, null);
+        MarkTile(building.tile.startingColumn, building.tile.startingRow, building.size, null);
         building.tile.GoToLimbo();
 
         MiniMap.CreateBuilding(startingColumn, startingRow - MapHolder.mapPrefab.decorationsSizeDictionary[building.type].z, 
@@ -186,7 +186,7 @@ public class BuildingsBuilder
         {
             foreach(var building in uniqueBuildings[type])
             {
-                if (building.startingColumn == -1)
+                if (building.tile.startingColumn == -1)
                 {
                     return building;
                 }

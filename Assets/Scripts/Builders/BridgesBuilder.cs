@@ -163,6 +163,7 @@ public class BridgesBuilder : MonoBehaviour
         
         sizeBridge = -1;
         int elevation = MapHolder.tiles[column, row].elevation;
+        bool diagonalStart = diagonalStart = MapHolder.tiles[column, row].type == TileType.WaterDiagonal;
         if (rotation == 1 || rotation == 3)
         {
             int columnIndexEnd = rotation == 0 ? size.x : (size.y + 2);
@@ -172,7 +173,8 @@ public class BridgesBuilder : MonoBehaviour
 
             if (Util.CoordinateExists(column - 3, row - 3))
             {
-                if (MapHolder.tiles[column - 3, row - 3].type == TileType.Water)
+                if (diagonalStart && MapHolder.tiles[column - 3, row - 3].type == TileType.WaterDiagonal||
+                    !diagonalStart && MapHolder.tiles[column - 3, row - 3].type == TileType.Water)
                 {
                     bridgeSize = 4;
                 }
@@ -200,7 +202,8 @@ public class BridgesBuilder : MonoBehaviour
                 {
                     int newColumn = column + j + (-1 * i);
                     int newRow = row - j + (-1 * i);
-                    int newRow2 = row - 1 - j + (-1 * i);
+                    int newColumn2 = column + (diagonalStart ? 1 : 0) + j + (-1 * i);
+                    int newRow2 = row - (diagonalStart ? 0: 1) - j + (-1 * i);
 
                     if (!Util.CoordinateExists(newColumn, newRow) ||
                         !Util.CoordinateExists(newColumn, newRow2))
@@ -210,7 +213,9 @@ public class BridgesBuilder : MonoBehaviour
                     
                     if (i == 0)
                     {
-                        if (MapHolder.tiles[newColumn, newRow].type != TileType.Land)
+                        if (diagonalStart && (MapHolder.tiles[newColumn, newRow].type != TileType.Land &&
+                                    MapHolder.tiles[newColumn, newRow].type != TileType.WaterDiagonal) ||
+                            !diagonalStart && MapHolder.tiles[newColumn, newRow].type != TileType.Land)
                         {
                             return false;
                         }
@@ -228,8 +233,8 @@ public class BridgesBuilder : MonoBehaviour
                         {
                             if (j == 0 || j + 1 == size.x)
                             {
-                                if (MapHolder.tiles[newColumn, newRow].type != TileType.Land &&
-                                    MapHolder.tiles[newColumn, newRow].type != TileType.WaterDiagonal)
+                                if (!diagonalStart && (MapHolder.tiles[newColumn, newRow].type != TileType.Land && MapHolder.tiles[newColumn, newRow].type != TileType.WaterDiagonal) ||
+                                    diagonalStart && MapHolder.tiles[newColumn, newRow].type != TileType.Land)
                                 {
                                     return false;
                                 } 
@@ -241,23 +246,26 @@ public class BridgesBuilder : MonoBehaviour
                     {
                         if (i == 0)
                         {
-                            if (MapHolder.tiles[newColumn, newRow2].type != TileType.WaterDiagonal)
+                            if (!diagonalStart && MapHolder.tiles[newColumn2, newRow2].type != TileType.WaterDiagonal ||
+                                diagonalStart && MapHolder.tiles[newColumn2, newRow2].type != TileType.Land)
                             {
                                 return false;
                             }
                         }
                         else
                         {
-                            if (i + 1 != bridgeSize + 1)
+                            if (bridgeSize == 3 && i + 1 != bridgeSize + 1 ||
+                                bridgeSize == 4 && i + 1 != bridgeSize)
                             {
-                                if (MapHolder.tiles[newColumn, newRow2].type != TileType.Water)
+                                if (MapHolder.tiles[newColumn2, newRow2].type != TileType.Water)
                                 {
                                     return false;
                                 }
                             }
                             else
                             {
-                                if (MapHolder.tiles[newColumn, newRow2].type != TileType.Land)
+                                if (diagonalStart && MapHolder.tiles[newColumn2, newRow2].type != TileType.WaterDiagonal ||
+                                    !diagonalStart && MapHolder.tiles[newColumn2, newRow2].type != TileType.Land)
                                 {
                                     return false;
                                 }
@@ -333,25 +341,28 @@ public class BridgesBuilder : MonoBehaviour
             tile.decorationBackground.localRotation = Quaternion.Euler(0,90*rotation,0);
             tile.type = DecorationType.Incline;
             tile.rotation = rotation;
-            
+
+            tile.startingColumn = column;
+            tile.startingRow = row;
+
             MarkTiles(column,row,MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline],rotation,tile);
             inclinesPlaced += 1;
         }
     }
     
-    static void RemoveInclines(int column, int row)
+    public static void RemoveInclines(int column, int row)
     {
         if (MapHolder.decorationsTiles[column, row]  == null ||
             (MapHolder.decorationsTiles[column, row].type != DecorationType.Incline))
         {
             return;
         }
-
+        int newColumn = MapHolder.decorationsTiles[column, row].startingColumn;
+        int newRow = MapHolder.decorationsTiles[column, row].startingRow;
         int rotation = MapHolder.decorationsTiles[column, row].rotation;
-        
+
         GoToInclineLimbo(MapHolder.decorationsTiles[column, row]);
-        MapHolder.decorationsTiles[column, row] = null;
-        MarkTiles(column, row, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline], rotation,null);
+        MarkTiles(newColumn, newRow, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline], rotation,null);
         inclinesPlaced -= 1;
     }
 
@@ -374,7 +385,7 @@ public class BridgesBuilder : MonoBehaviour
             {
                 MapHolder.decorationsTiles[column + j * columnIndexMult, row - i * rowIndexMult] = tile;
                 
-                if (MapHolder.tiles[column+j * columnIndexMult,row-i * rowIndexMult].type == TileType.Path || 
+                if (tile != null && MapHolder.tiles[column+j * columnIndexMult,row-i * rowIndexMult].type == TileType.Path || 
                     MapHolder.tiles[column + j* columnIndexMult, row - i * rowIndexMult].type == TileType.PathCurve)
                 {
                     //for adding path tiles outside of incline size

@@ -63,8 +63,21 @@ public class BuildersController : MonoBehaviour
 
     }
 
+    public static void ResetInfluence()
+    {
+        for (int i = 0; i < MapHolder.height; i++)
+        {
+            for (int j = 0; j < MapHolder.width; j++)
+            {
+                MapHolder.treeInfluence[j, i] = 0;
+                MapHolder.buildingsInfluence[j, i] = BuildingInfluence.noInfluence;
+            }
+        }
+    }
     public void RebuildMap(Dictionary<Vector2Int, List<Vector2Int>> buildings, List<PreDecorationTile> preDecorationTiles)
     {
+        ResetInfluence();
+
         for (int i = 0; i < MapHolder.height; i++)
         {
             for (int j = 0; j < MapHolder.width; j++)
@@ -78,50 +91,47 @@ public class BuildersController : MonoBehaviour
         MiniMap.RebuildMap();
     }
 
-}
-[XmlRoot("main")]
-public class SaveMap
-{
-    [XmlIgnore]
-    public MapTile[,] tiles;
 
-    [XmlArray("Tiles"), XmlArrayItem("tile")]
-    public MapTile[] tilesForSave
+    public static int CheckBridgeSize(int column, int row)
     {
-        get => Flatten(tiles);
-        set
+        //Debug.Log($"{column}, {row}");
+        if (MapHolder.tiles[column,row].backgroundType == TilePrefabType.Land)
         {
-            Expand(value, 96);
-        }
-    }
-
-    public static T[] Flatten<T>(T[,] arr)
-    {
-        int rows0 = arr.GetLength(0);
-        int rows1 = arr.GetLength(1);
-        T[] arrFlattened = new T[rows0 * rows1];
-        for (int j = 0; j < rows1; j++)
-        {
-            for (int i = 0; i < rows0; i++)
+            int size = 0;
+            for (int i = 1; i < 7; i++)
             {
-                var test = arr[i, j];
-                arrFlattened[i + j * rows0] = arr[i, j];
+                if (Util.CoordinateExists(column, row -i ))
+                {
+                    if (MapHolder.tiles[column, row - i].type == TileType.Water)
+                    {
+                        size++;
+                    }
+                    else
+                    {
+                        if (MapHolder.tiles[column, row - i].backgroundType == TilePrefabType.Land)
+                        {
+                            if (size < 3)
+                            {
+                                return 3;
+                            }
+
+                            return size;
+                        }
+
+                        return 3;
+                    }
+                }
+                else
+                {
+                    if (size == 0)
+                    {
+                        return 3;
+                    }
+                    return size;
+                }
             }
         }
-        return arrFlattened;
-    }
-    public static T[,] Expand<T>(T[] arr, int rows0)
-    {
-        int length = arr.GetLength(0);
-        int rows1 = length / rows0;
-        T[,] arrExpanded = new T[rows0, rows1];
-        for (int j = 0; j < rows1; j++)
-        {
-            for (int i = 0; i < rows0; i++)
-            {
-                arrExpanded[i, j] = arr[i + j * rows0];
-            }
-        }
-        return arrExpanded;
+
+        return 3;
     }
 }

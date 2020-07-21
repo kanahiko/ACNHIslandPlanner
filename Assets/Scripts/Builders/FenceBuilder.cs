@@ -27,8 +27,8 @@ public class FenceBuilder : MonoBehaviour
         DecorationTiles newTile = GetTileFromFenceLimbo();
         MapHolder.decorationsTiles[column, row] = newTile;
 
-        MapHolder.decorationsTiles[column, row].decorationBackground.transform.parent = MapHolder.decorationsParent;
-        MapHolder.decorationsTiles[column, row].decorationBackground.transform.localPosition = new Vector3(column, Util.GetHeight(column, row), -row);
+        newTile.decorationBackground.transform.parent = MapHolder.decorationsParent;
+        newTile.decorationBackground.transform.localPosition = new Vector3(column, Util.GetHeight(column, row), -row);
 
         newTile.rotation = tile.rotation;
         newTile.size = tile.size;

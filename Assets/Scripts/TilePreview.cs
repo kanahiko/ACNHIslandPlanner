@@ -1,4 +1,5 @@
 ﻿using RotaryHeart.Lib.SerializableDictionary;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,8 @@ public class TilePreview : MonoBehaviour
 
     private DecorationType currentType;
     Transform currentPreview;
+
+    int currentRotation = 0;
 
     public void ChangeTile(DecorationType type = DecorationType.Null, byte variation = 0)
     {
@@ -106,7 +109,7 @@ public class TilePreview : MonoBehaviour
                 currentPreview.GetChild(0).localRotation = Quaternion.identity;
             }
         }
-
+        currentRotation = 0;
         preview.localPosition = Vector3.zero;
         currentPreview = preview;
         currentType = type;
@@ -117,6 +120,7 @@ public class TilePreview : MonoBehaviour
         if (type == DecorationType.Fence)
         {
             currentPreview.GetChild(0).localRotation = rotation == 0 ? Quaternion.identity : Quaternion.Euler(0, 90, 0);
+
         }
         
         if (type == DecorationType.Incline)
@@ -145,11 +149,33 @@ public class TilePreview : MonoBehaviour
             currentPreview.localPosition = new Vector3(Util.bridgeRotationsOffset[rotation].x,0,Util.bridgeRotationsOffset[rotation].y);
             currentPreview.GetChild(0).localRotation = rotate;
         }
+        currentRotation = rotation;
     }
 
-    public void FollowMousePosition(Vector3 position)
+    public void FollowMousePosition(Vector3 position, int column, int row)
     {
         previewCursor.position = position;
+
+        if (currentType == DecorationType.Bridge && currentRotation != 1 && currentRotation != 3 && column != -1)
+        {
+            //diagonal water offset 0.4,0,-0.4 for rotation 3
+            //diagonal water offset -0.4,0,-0.4 for rotation 1
+            int size = BuildersController.CheckBridgeSize(column, row);
+            Quaternion rotation = Quaternion.identity;
+            Vector3 rotatedPosition = Vector3.zero;
+            if (currentPreview != null)
+            {
+                rotatedPosition = currentPreview.localPosition;
+                rotation = currentPreview.GetChild(0).localRotation;
+
+                currentPreview.position = Util.cullingPosition;
+                currentPreview.GetChild(0).localRotation = Quaternion.identity;
+            }
+            var preview = previewBridge[0].bridgePrefabs[size - 3].transform;
+            preview.localPosition = rotatedPosition;
+            preview.localRotation = rotation;
+            currentPreview = preview;
+        }
     }
 }
 

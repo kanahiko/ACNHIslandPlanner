@@ -73,7 +73,7 @@ public class Controller : MonoBehaviour
 
     public Action<DecorationType, byte> ChangeCursor;
     public Action<int, DecorationType> ChangeRotationCursor;
-    public Action<Vector3> ChangeCursorPosition;
+    public Action<Vector3, int ,int> ChangeCursorPosition;
     public Action<Vector2, float> ChangeCameraPosition;
 
     Controls controls;
@@ -134,8 +134,6 @@ public class Controller : MonoBehaviour
         
         construct = ToolMode.None;
 
-        currentScroll = defaultScroll;
-        CalculateScroll();
     }
     
 
@@ -149,8 +147,10 @@ public class Controller : MonoBehaviour
         playerFieldSizeMin.y = playerFieldSizeMax.y - MapHolder.height;
         playerFieldSizeMax.x = MapHolder.width;
 
+        currentScroll = defaultScroll;
         currentPosition = playerZoomCamera.localPosition;
         cameraDegrees = playerZoomCamera.localRotation.eulerAngles.x;
+        CalculateScroll();
 
         ChangeCameraPosition = MiniMap.ChangeCameraPosition;
         UpdateCameraPositionOnTheMap();
@@ -286,15 +286,23 @@ public class Controller : MonoBehaviour
 
             CalculateScroll();
             cameraChanged = true;
-            UpdateCameraPositionOnTheMap();
         }
     }
-
     void CalculateScroll()
     {
         var normal = playerZoomCamera.forward;
         scrollOffset = normal * currentScroll;
         playerZoomCamera.localPosition = currentPosition +scrollOffset;
+    }
+
+    void LoadMap(CameraInfo loadedCamera)
+    {
+        cameraChanged = true;
+        isCameraParallelToGround = !loadedCamera.isTilted;
+        currentScroll = loadedCamera.currentScroll;
+        HandleTilt();
+        playerCamera.localPosition = loadedCamera.position;
+        UpdateCameraPositionOnTheMap();
     }
 
     void TrackMousePositionOnGrid()
@@ -304,22 +312,22 @@ public class Controller : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(mainCamera.ScreenPointToRay(mousePos), out hit, 50,256))
             {
-                ChangeCursorPosition.Invoke(hit.collider.transform.position);
-                currentBlockX = (int) (hit.collider.transform.position.x - MapHolder.offset.x);
-                currentBlockY = (int) (hit.collider.transform.position.z - MapHolder.offset.z);
+                currentBlockX = (int)(hit.collider.transform.position.x - MapHolder.offset.x);
+                currentBlockY = (int)(hit.collider.transform.position.z - MapHolder.offset.z);
+                ChangeCursorPosition.Invoke(hit.collider.transform.position, currentBlockX, Mathf.Abs(currentBlockY));
 
                 coordinateText.text = $"{currentBlockX} {-currentBlockY}";
             }
             else
             {
-                ChangeCursorPosition.Invoke(new Vector3(20, 0, 20));
+                ChangeCursorPosition.Invoke(new Vector3(20, 0, 20),-1,-1);
                 currentBlockX = -1;
                 currentBlockY = -1;
             }
         }
         else
         {
-            ChangeCursorPosition.Invoke(new Vector3(20, 0, 20));
+            ChangeCursorPosition.Invoke(new Vector3(20, 0, 20), -1, -1);
             currentBlockX = -1;
             currentBlockY = -1;
         }
@@ -550,11 +558,16 @@ public class Controller : MonoBehaviour
 
     public void TestSaveButton()
     {
-        MapHolder.Save();
+        CameraInfo cameraInfo = new CameraInfo();
+        cameraInfo.position = playerCamera.localPosition;
+        cameraInfo.currentScroll = currentScroll;
+        cameraInfo.isTilted = isCameraParallelToGround;
+        MapHolder.Save(cameraInfo);
     }
 
     public void TestLoadButton()
     {
-        MapHolder.Load();
+       CameraInfo info = MapHolder.Load();
+       LoadMap(info);
     }
 }
