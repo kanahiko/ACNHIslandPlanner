@@ -92,23 +92,25 @@ public class BuildersController : MonoBehaviour
     }
 
 
-    public static int CheckBridgeSize(int column, int row)
+    public static int CheckBridgeSize(int column, int row, int rotation)
     {
         //Debug.Log($"{column}, {row}");
         if (MapHolder.tiles[column,row].backgroundType == TilePrefabType.Land)
         {
+            int columnIncrement = rotation == 0 ? 0 : 1;
+            int rowIncrement = rotation == 0 ? 1 : 0;
             int size = 0;
             for (int i = 1; i < 7; i++)
             {
-                if (Util.CoordinateExists(column, row -i ))
+                if (Util.CoordinateExists(column + i * columnIncrement, row - i * rowIncrement))
                 {
-                    if (MapHolder.tiles[column, row - i].type == TileType.Water)
+                    if (MapHolder.tiles[column + i * columnIncrement, row - i * rowIncrement].type == TileType.Water)
                     {
                         size++;
                     }
                     else
                     {
-                        if (MapHolder.tiles[column, row - i].backgroundType == TilePrefabType.Land)
+                        if (MapHolder.tiles[column + i * columnIncrement, row - i * rowIncrement].backgroundType == TilePrefabType.Land)
                         {
                             if (size < 3)
                             {

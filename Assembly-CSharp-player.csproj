@@ -59,6 +59,7 @@
     <Compile Include="Assets\Rotary Heart\SerializableDictionaryLite\Example\DataBaseExample.cs" />
     <Compile Include="Assets\Scripts\Controls.cs" />
     <Compile Include="Assets\Scripts\Builders\TerrainBuilder.cs" />
+    <Compile Include="Assets\Scripts\DottedLineCreator.cs" />
     <Compile Include="Assets\Scripts\UI\Test.cs" />
     <Compile Include="Assets\Scripts\Builders\BuildersController.cs" />
     <Compile Include="Assets\Scripts\Builders\BridgesBuilder.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Assets\Scripts\Builders\DecorationsBuilder.cs" />
     <Compile Include="Assets\Scripts\UIController.cs" />
     <Compile Include="Assets\Rotary Heart\SerializableDictionaryLite\ReorderableList\ReorderableList.cs" />
+    <Compile Include="Assets\Scripts\DecorationTiles.cs" />
     <Compile Include="Assets\Scripts\Builders\CliffBuilder.cs" />
     <Compile Include="Assets\Scripts\UIOnHover.cs" />
     <Compile Include="Assets\Scripts\TilePreview.cs" />

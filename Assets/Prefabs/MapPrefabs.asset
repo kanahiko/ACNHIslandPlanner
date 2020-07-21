@@ -202,9 +202,9 @@ MonoBehaviour:
   - {fileID: 4134733373708255601, guid: 8b5a110a3fe8a6640be41c00f20a4a0c, type: 3}
   bridgePrefabDictionary:
   - bridgePrefabs:
-    - {fileID: 919132149155446097, guid: 6b412bb6f40e1ec44839ab9cc361a9ab, type: 3}
-    - {fileID: 919132149155446097, guid: 884a52bbb6d184042a425d24fdb96e69, type: 3}
-    - {fileID: 919132149155446097, guid: 5f44fafa307c0044291e55f711c8a801, type: 3}
+    - {fileID: 5105638685043627507, guid: a3b5cc09f47a4324bb6477d8b7c8abf9, type: 3}
+    - {fileID: 482296877811542094, guid: b5c1bf9dd0e90c4429fec5fb73312329, type: 3}
+    - {fileID: 528135663882218634, guid: 2bd5f583fd2acaa4d91c2cfac2919c53, type: 3}
   tileTypeColorDictionary:
     reorderableList:
       canAdd: 1

@@ -58,6 +58,8 @@ public class MapPrefabs : ScriptableObject
     public Vector2Int miniMapOffset = new Vector2Int(5,5);
     public Color plazaColor;
 
+    public Color[] inclineColors =new Color[2];
+    public Color bridgeColor =new Color();
 
     private int showGridId; 
     private int showElevationId;

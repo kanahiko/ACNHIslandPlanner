@@ -15,7 +15,6 @@ public class BridgesBuilder : MonoBehaviour
 
     public static void ChangeTile(ToolType tool, ToolMode mode,int column, int row, byte variation, int rotation)
     {
-        Debug.Log(rotation);
         if (tool == ToolType.BridgeMarkUp)
         {
             if (mode == ToolMode.Add)
@@ -24,7 +23,7 @@ public class BridgesBuilder : MonoBehaviour
             }
             else
             {
-                //RemoveInclines(column,row);
+                RemoveBridges(column,row);
             }
         }
         else
@@ -54,17 +53,43 @@ public class BridgesBuilder : MonoBehaviour
             DecorationTiles tile = GetFromBridgeLimbo(variation,size);
             
             tile.decorationBackground.parent = MapHolder.decorationsParent;
-            tile.decorationBackground.localPosition = new Vector3(column + Util.inclineRotationsOffset[rotation].x, 
-                Util.GetHeight(column, row), 
-                -row + Util.inclineRotationsOffset[rotation].y);
-            tile.decorationBackground.localRotation = Quaternion.Euler(0,90*rotation,0);
+            tile.decorationBackground.localPosition = new Vector3(column + Util.bridgeRotationsOffset[rotation].x, 
+                Util.GetHeight(column, row),  
+                -row + Util.bridgeRotationsOffset[rotation].y);
+            tile.decorationBackground.localRotation = Quaternion.Euler(0,rotation==0?0:90,0);
             tile.type = DecorationType.Bridge;
             tile.rotation = rotation;
             tile.size = size;
+            tile.startingColumn = column;
+            tile.startingRow = row;
             
-            MarkTiles(column,row,MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge],rotation,tile);
+            Vector3Int sizeBridge = MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge];
+            int sizeX = (rotation == 0 ) ? sizeBridge.x : size+2;
+            int sizeY = (rotation == 0) ? size+2 : sizeBridge.x;
+            
+            MarkTiles(column,row,sizeX,sizeY,sizeBridge.z,DecorationType.Bridge,rotation,tile);
             bridgesPlaced += 1;
         }
+    }
+    
+    public static void RemoveBridges(int column, int row)
+    {
+        if (MapHolder.decorationsTiles[column, row]  == null ||
+            (MapHolder.decorationsTiles[column, row].type != DecorationType.Bridge))
+        {
+            return;
+        }
+        int newColumn = MapHolder.decorationsTiles[column, row].startingColumn;
+        int newRow = MapHolder.decorationsTiles[column, row].startingRow;
+        int rotation = MapHolder.decorationsTiles[column, row].rotation;
+        
+        Vector3Int size = MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge];
+        int sizeX = rotation == 0 ? size.x : MapHolder.decorationsTiles[column, row].size + 2;
+        int sizeY = rotation == 0 ? MapHolder.decorationsTiles[column, row].size + 2 : size.x;
+        
+        GoToBridgeLimbo(MapHolder.decorationsTiles[column, row]);
+        MarkTiles(newColumn, newRow, sizeX,sizeY,size.z,DecorationType.Bridge, rotation,null);
+        bridgesPlaced -= 1;
     }
 
     public static bool CheckCanPlaceBridge(int column, int row, Vector3Int size, int rotation, out int sizeBridge)
@@ -135,7 +160,8 @@ public class BridgesBuilder : MonoBehaviour
                             //if there's water when bridge size is written then it's obviously cant function
                             if (MapHolder.tiles[column + j, row - i].backgroundType == TilePrefabType.Water)
                             {
-                                if (bridgeSize != -1)
+                                if (rotation == 2 && bridgeSize != -1 && j - 1 > bridgeSize ||
+                                    rotation == 0 && bridgeSize != -1)
                                 {
                                     return false;
                                 }
@@ -173,14 +199,13 @@ public class BridgesBuilder : MonoBehaviour
 
             if (Util.CoordinateExists(column - 3, row - 3))
             {
-                if (diagonalStart && MapHolder.tiles[column - 3, row - 3].type == TileType.WaterDiagonal||
-                    !diagonalStart && MapHolder.tiles[column - 3, row - 3].type == TileType.Water)
+                if (MapHolder.tiles[column - 3, row - 3].type == TileType.Water)
                 {
                     bridgeSize = 4;
                 }
                 else
                 {
-                    if (MapHolder.tiles[column - 3, row - 3].type == TileType.Land ||
+                    if (MapHolder.tiles[column - 3, row - 3].backgroundType == TilePrefabType.Land ||
                         MapHolder.tiles[column - 3, row - 3].type == TileType.WaterDiagonal)
                     {
                         bridgeSize = 3;
@@ -195,6 +220,7 @@ public class BridgesBuilder : MonoBehaviour
             {
                 return false;
             }
+            Debug.Log(bridgeSize);
 
             for (int j = 0; j < size.x; j++)
             {
@@ -213,9 +239,9 @@ public class BridgesBuilder : MonoBehaviour
                     
                     if (i == 0)
                     {
-                        if (diagonalStart && (MapHolder.tiles[newColumn, newRow].type != TileType.Land &&
+                        if (diagonalStart && (MapHolder.tiles[newColumn, newRow].backgroundType != TilePrefabType.Land &&
                                     MapHolder.tiles[newColumn, newRow].type != TileType.WaterDiagonal) ||
-                            !diagonalStart && MapHolder.tiles[newColumn, newRow].type != TileType.Land)
+                            !diagonalStart && MapHolder.tiles[newColumn, newRow].backgroundType != TilePrefabType.Land)
                         {
                             return false;
                         }
@@ -233,7 +259,8 @@ public class BridgesBuilder : MonoBehaviour
                         {
                             if (j == 0 || j + 1 == size.x)
                             {
-                                if (!diagonalStart && (MapHolder.tiles[newColumn, newRow].type != TileType.Land && MapHolder.tiles[newColumn, newRow].type != TileType.WaterDiagonal) ||
+                                if (!diagonalStart && (MapHolder.tiles[newColumn, newRow].backgroundType != TilePrefabType.Land && 
+                                                       MapHolder.tiles[newColumn, newRow].type != TileType.WaterDiagonal) ||
                                     diagonalStart && MapHolder.tiles[newColumn, newRow].type != TileType.Land)
                                 {
                                     return false;
@@ -247,15 +274,14 @@ public class BridgesBuilder : MonoBehaviour
                         if (i == 0)
                         {
                             if (!diagonalStart && MapHolder.tiles[newColumn2, newRow2].type != TileType.WaterDiagonal ||
-                                diagonalStart && MapHolder.tiles[newColumn2, newRow2].type != TileType.Land)
+                                diagonalStart && MapHolder.tiles[newColumn2, newRow2].backgroundType != TilePrefabType.Land)
                             {
                                 return false;
                             }
                         }
                         else
                         {
-                            if (bridgeSize == 3 && i + 1 != bridgeSize + 1 ||
-                                bridgeSize == 4 && i + 1 != bridgeSize)
+                            if ( i + 1 != bridgeSize + 1)
                             {
                                 if (MapHolder.tiles[newColumn2, newRow2].type != TileType.Water)
                                 {
@@ -265,7 +291,7 @@ public class BridgesBuilder : MonoBehaviour
                             else
                             {
                                 if (diagonalStart && MapHolder.tiles[newColumn2, newRow2].type != TileType.WaterDiagonal ||
-                                    !diagonalStart && MapHolder.tiles[newColumn2, newRow2].type != TileType.Land)
+                                    !diagonalStart && MapHolder.tiles[newColumn2, newRow2].backgroundType != TilePrefabType.Land)
                                 {
                                     return false;
                                 }
@@ -298,9 +324,9 @@ public class BridgesBuilder : MonoBehaviour
             }
         }
 
-        if (bridgesLimbo[tile.variation][tile.size].Count < maxInclines)
+        if (bridgesLimbo[tile.variation][tile.size - 3].Count < maxInclines)
         {
-            bridgesLimbo[tile.variation][tile.size].Add(tile);
+            bridgesLimbo[tile.variation][tile.size - 3].Add(tile);
             tile.GoToLimbo();
         }
         else
@@ -313,16 +339,16 @@ public class BridgesBuilder : MonoBehaviour
     
     static DecorationTiles GetFromBridgeLimbo(byte variation, int size)
     {
-        if (bridgesLimbo == null || bridgesLimbo.Count < variation + 1 || bridgesLimbo[variation][size].Count == 0)
+        if (bridgesLimbo == null || bridgesLimbo.Count < variation + 1 || bridgesLimbo[variation][size - 3].Count == 0)
         {
             DecorationTiles newTile = new DecorationTiles(DecorationType.Bridge);
             newTile.AddMainTile(GameObject.Instantiate(MapHolder.mapPrefab.bridgePrefabDictionary[variation].bridgePrefabs[size - 3], newTile.decorationBackground));
             newTile.variation = variation;
             return newTile;
         }
-        DecorationTiles tile = bridgesLimbo[variation][size][bridgesLimbo[variation][size - 3].Count - 1];
+        DecorationTiles tile = bridgesLimbo[variation][size - 3][bridgesLimbo[variation][size - 3].Count - 1];
             
-        bridgesLimbo[variation][size].RemoveAt(bridgesLimbo[variation][size].Count - 1);
+        bridgesLimbo[variation][size - 3].RemoveAt(bridgesLimbo[variation][size - 3].Count - 1);
         tile.ReturnFromLimbo();
         return tile;
     }
@@ -344,8 +370,13 @@ public class BridgesBuilder : MonoBehaviour
 
             tile.startingColumn = column;
             tile.startingRow = row;
+            
+            
+            Vector3Int size = MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline];
+            int sizeX = (rotation == 0 || rotation == 2) ? size.x : size.y;
+            int sizeY = (rotation == 0 || rotation == 2) ? size.y : size.x;
 
-            MarkTiles(column,row,MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline],rotation,tile);
+            MarkTiles(column,row,sizeX,sizeY,size.z,DecorationType.Incline,rotation,tile);
             inclinesPlaced += 1;
         }
     }
@@ -360,53 +391,57 @@ public class BridgesBuilder : MonoBehaviour
         int newColumn = MapHolder.decorationsTiles[column, row].startingColumn;
         int newRow = MapHolder.decorationsTiles[column, row].startingRow;
         int rotation = MapHolder.decorationsTiles[column, row].rotation;
-
+        
+        Vector3Int size = MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline];
+        int sizeX = (rotation == 0 || rotation == 2) ? size.x : size.y;
+        int sizeY = (rotation == 0 || rotation == 2) ? size.y : size.x;
+        
         GoToInclineLimbo(MapHolder.decorationsTiles[column, row]);
-        MarkTiles(newColumn, newRow, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline], rotation,null);
+        MarkTiles(newColumn, newRow, sizeX,sizeY,size.z,DecorationType.Incline,rotation,null);
         inclinesPlaced -= 1;
     }
 
-    static void MarkTiles(int column, int row, Vector3Int size, int rotation, DecorationTiles tile)
+    static void MarkTiles(int column, int row, int sizeX,int sizeY, int sizeZ, DecorationType type, int rotation, DecorationTiles tile)
     {
         HashSet<Vector2Int> pathTiles = new HashSet<Vector2Int>();
 
         HashSet<Vector2Int> changedTiles = new HashSet<Vector2Int>();
-        
-        int columnIndexEnd = (rotation == 0 || rotation == 2) ? size.x : size.y;
-        int columnIndexMult = (rotation == 3) ? -1 : 1;
-        
-        int rowIndexEnd = (rotation == 0 || rotation == 2) ? size.y : size.x;
-        int rowIndexMult = (rotation == 2) ? -1 : 1;
 
         int elevation = MapHolder.tiles[column, row].elevation;
-        for (int i = 0; i < rowIndexEnd; i++)
+        int columnMult = (type != DecorationType.Bridge && rotation == 3 ) ? -1 : 1;
+        int rowMult = (type != DecorationType.Bridge && rotation == 2) ? -1 : 1;
+        
+        for (int i = 0; i < sizeY; i++)
         {
-            for (int j = 0; j < columnIndexEnd; j++)
+            for (int j = 0; j < sizeX; j++)
             {
-                MapHolder.decorationsTiles[column + j * columnIndexMult, row - i * rowIndexMult] = tile;
+                MapHolder.decorationsTiles[column + j * columnMult, row - i * rowMult] = tile;
                 
-                if (tile != null && MapHolder.tiles[column+j * columnIndexMult,row-i * rowIndexMult].type == TileType.Path || 
-                    MapHolder.tiles[column + j* columnIndexMult, row - i * rowIndexMult].type == TileType.PathCurve)
+                if (tile != null && MapHolder.tiles[column + j * columnMult , row-i * rowMult].type == TileType.Path || 
+                    MapHolder.tiles[column + j* columnMult, row - i * rowMult].type == TileType.PathCurve)
                 {
                     //for adding path tiles outside of incline size
-                    if (j == 0 || j == columnIndexEnd - 1)
+                    if (j == 0 || j == sizeX - 1)
                     {
-                        int newColumn = column + j * columnIndexMult + (j == 0 ? -1: 1);
-                        pathTiles.Add(new Vector2Int(newColumn, row - i* rowIndexMult - 1));
-                        pathTiles.Add(new Vector2Int(newColumn, row - i* rowIndexMult));
-                        pathTiles.Add(new Vector2Int(newColumn, row - i* rowIndexMult + 1));
+                        int newColumn = column + j * columnMult + (j == 0 ? -1: 1);
+                        if (i == 0 || i == sizeY - 1)
+                        {
+                            int newRow = row - i * rowMult + (i == 0 && rotation != 2 ? 1 : -1);
+                            pathTiles.Add(new Vector2Int(newColumn, newRow));
+                        }
+                        pathTiles.Add(new Vector2Int(newColumn, row - i * rowMult));
                     }
 
-                    if (i == 0 || i == rowIndexEnd - 1)
+                    if (i == 0 || i == sizeY - 1)
                     {
-                        int newRow = row - i*rowIndexMult + (i == 0 ? 1 : -1);
-                        pathTiles.Add(new Vector2Int(column + j * columnIndexMult, newRow));
+                        int newRow = row - i * rowMult + (i == 0 ? 1 : -1);
+                        pathTiles.Add(new Vector2Int(column + j * columnMult, newRow));
                     }
 
-                    MapHolder.tiles[column + j, row - i].type = TileType.Land;
-                    LandBuilder.CreateLandTile(column + j, row - i, MapHolder.tiles[column + j, row - i].elevation);
-                    changedTiles.Add(new Vector2Int(column + j, row - i));
+                    MapHolder.tiles[column + j  * columnMult, row - i * rowMult].type = TileType.Land;
+                    LandBuilder.CreateLandTile(column + j* columnMult, row - i * rowMult, MapHolder.tiles[column + j  * columnMult, row - i * rowMult].elevation);
                 }
+                changedTiles.Add(new Vector2Int(column + j * columnMult, row - i * rowMult));
                 
             }
         }

@@ -160,7 +160,7 @@ public class TilePreview : MonoBehaviour
         {
             //diagonal water offset 0.4,0,-0.4 for rotation 3
             //diagonal water offset -0.4,0,-0.4 for rotation 1
-            int size = BuildersController.CheckBridgeSize(column, row);
+            int size = BuildersController.CheckBridgeSize(column, row, currentRotation);
             Quaternion rotation = Quaternion.identity;
             Vector3 rotatedPosition = Vector3.zero;
             if (currentPreview != null)
@@ -173,7 +173,7 @@ public class TilePreview : MonoBehaviour
             }
             var preview = previewBridge[0].bridgePrefabs[size - 3].transform;
             preview.localPosition = rotatedPosition;
-            preview.localRotation = rotation;
+            preview.GetChild(0).localRotation = rotation;
             currentPreview = preview;
         }
     }

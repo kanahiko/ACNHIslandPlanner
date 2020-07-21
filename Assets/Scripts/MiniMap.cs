@@ -135,70 +135,133 @@ public static class MiniMap
         TileType type = MapHolder.tiles[column, row].type;
         byte elevation = MapHolder.tiles[column, row].elevation;
         byte rotation = 255;
-        Color color;
+        Color color = Color.white;
         Color secondaryColor = Color.white;
-        if (type == TileType.CliffDiagonal || type == TileType.Cliff || type == TileType.Land)
-        {
-            color = MapHolder.mapPrefab.elevationColors[MapHolder.tiles[column, row].elevation];
-            if (type == TileType.CliffDiagonal)
-            {
-                rotation = MapHolder.tiles[column, row].diagonalRotation;
-                secondaryColor = mapPrefab.elevationColors[elevation - 1];
-            }
 
-        }
-        else
+        DecorationType decorationType = DecorationType.Null;
+
+        if (MapHolder.decorationsTiles[column, row] != null &&
+            (MapHolder.decorationsTiles[column, row].type == DecorationType.Bridge ||
+             MapHolder.decorationsTiles[column, row].type == DecorationType.Incline))
         {
-            color = MapHolder.mapPrefab.tileTypeColorDictionary[type];
-            if (type == TileType.PathCurve)
+            decorationType = MapHolder.decorationsTiles[column, row].type;
+            if (decorationType == DecorationType.Incline)
             {
-                rotation = Util.SubstractRotation(MapHolder.tiles[column, row].diagonalRotation, 2);
-                secondaryColor = mapPrefab.elevationColors[elevation];
+                color = mapPrefab.inclineColors[0];
+                secondaryColor = mapPrefab.inclineColors[1];
             }
             else
             {
-                if (type == TileType.WaterDiagonal)
+                color = mapPrefab.bridgeColor;
+                secondaryColor = mapPrefab.tileTypeColorDictionary[MapHolder.tiles[column,row].type];
+            }
+        }
+        else
+        {
+            if (type == TileType.CliffDiagonal || type == TileType.Cliff || type == TileType.Land)
+            {
+                color = MapHolder.mapPrefab.elevationColors[MapHolder.tiles[column, row].elevation];
+                if (type == TileType.CliffDiagonal)
                 {
                     rotation = MapHolder.tiles[column, row].diagonalRotation;
+                    secondaryColor = mapPrefab.elevationColors[elevation - 1];
+                }
+    
+            }
+            else
+            {
+                color = MapHolder.mapPrefab.tileTypeColorDictionary[type];
+                if (type == TileType.PathCurve)
+                {
+                    rotation = Util.SubstractRotation(MapHolder.tiles[column, row].diagonalRotation, 2);
                     secondaryColor = mapPrefab.elevationColors[elevation];
                 }
                 else
                 {
-                    if (type == TileType.SandDiagonal)
+                    if (type == TileType.WaterDiagonal)
                     {
                         rotation = MapHolder.tiles[column, row].diagonalRotation;
-                        if (Util.CoordinateExists(column + Util.oppositeCornerForSand[rotation].x, row + Util.oppositeCornerForSand[rotation].y) &&
-                            MapHolder.tiles[column + Util.oppositeCornerForSand[rotation].x, row + Util.oppositeCornerForSand[rotation].y].type != TileType.Sea)
-                        {
-                            secondaryColor = mapPrefab.elevationColors[0];
-                        }
-                        else
-                        {
-                            secondaryColor = mapPrefab.tileTypeColorDictionary[TileType.Sea];
-                        }
-                        rotation = Util.SubstractRotation(rotation, 2);
+                        secondaryColor = mapPrefab.elevationColors[elevation];
                     }
-
-                    if (type == TileType.SeaDiagonal)
+                    else
                     {
-                        rotation = MapHolder.tiles[column, row].diagonalRotation;
-                        secondaryColor = mapPrefab.elevationColors[0];
-                        rotation = Util.SubstractRotation(rotation, 2);
+                        if (type == TileType.SandDiagonal)
+                        {
+                            rotation = MapHolder.tiles[column, row].diagonalRotation;
+                            if (Util.CoordinateExists(column + Util.oppositeCornerForSand[rotation].x, row + Util.oppositeCornerForSand[rotation].y) &&
+                                MapHolder.tiles[column + Util.oppositeCornerForSand[rotation].x, row + Util.oppositeCornerForSand[rotation].y].type != TileType.Sea)
+                            {
+                                secondaryColor = mapPrefab.elevationColors[0];
+                            }
+                            else
+                            {
+                                secondaryColor = mapPrefab.tileTypeColorDictionary[TileType.Sea];
+                            }
+                            rotation = Util.SubstractRotation(rotation, 2);
+                        }
+    
+                        if (type == TileType.SeaDiagonal)
+                        {
+                            rotation = MapHolder.tiles[column, row].diagonalRotation;
+                            secondaryColor = mapPrefab.elevationColors[0];
+                            rotation = Util.SubstractRotation(rotation, 2);
+                        }
                     }
                 }
             }
         }
+        
 
         for (int rowPixelAdd = 0; rowPixelAdd < pixelSize; rowPixelAdd++)
         {
             for (int columnPixelAdd = 0; columnPixelAdd < pixelSize; columnPixelAdd++)
             {
+                bool isSecondaryColor = false;
+                if (decorationType == DecorationType.Null)
+                {
+                    isSecondaryColor = CheckCanSecondaryColor(rotation, columnPixelAdd, rowPixelAdd);
+                }
+                else
+                {
+                    if (decorationType == DecorationType.Incline)
+                    {
+                        isSecondaryColor = InclineSecondaryColor(column, row, columnPixelAdd, rowPixelAdd);
+                    }
+                    else
+                    {
+                        
+                    }
+                }
+
+                
                 miniMapTexture.SetPixel(column * pixelSize + columnPixelAdd + MapHolder.mapPrefab.miniMapOffset.x,
                     (MapHolder.height * pixelSize) - (row * pixelSize + rowPixelAdd) + MapHolder.mapPrefab.miniMapOffset.y - 1,
-                    CheckCanSecondaryColor(rotation, columnPixelAdd, rowPixelAdd) ? secondaryColor : color);
+                    isSecondaryColor ? secondaryColor : color);
             }
         }
         
+    }
+
+    static  bool[] inclineColors = new bool[]
+    {
+        false,true,false, true,false,true, false,true,false, false,false,false
+    };
+    
+    static bool InclineSecondaryColor(int column, int row, int columnPixelAdd, int rowPixelAdd)
+    {
+        DecorationTiles tile = MapHolder.decorationsTiles[column, row];
+
+        return (tile.rotation == 0 || tile.rotation == 2) && inclineColors[Mathf.Abs(tile.startingRow - row)*pixelSize + rowPixelAdd] ||
+               (tile.rotation == 1 || tile.rotation == 3) && inclineColors[Mathf.Abs(tile.startingColumn - column)*pixelSize + columnPixelAdd];
+    }
+    
+    static bool BridgeSecondaryColor(int column, int row, int columnPixelAdd, int rowPixelAdd)
+    {
+        DecorationTiles tile = MapHolder.decorationsTiles[column, row];
+
+
+        return (tile.rotation == 0 || tile.rotation == 2) && inclineColors[Mathf.Abs(tile.startingRow - row) + rowPixelAdd] ||
+               (tile.rotation == 1 || tile.rotation == 3) && inclineColors[Mathf.Abs(tile.startingColumn - column) + columnPixelAdd];
     }
     
     public static void ChangeMiniMap(HashSet<Vector2Int> coordinates)
