@@ -226,7 +226,8 @@ public class LandBuilder : MonoBehaviour
 
     public static bool CheckSandTile(int column, int row, TileType previousTileType, ref ToolMode toolMode)
     {
-        if (!Util.CoordinateOnBorderChunks(column,row))
+        if (!Util.CoordinateOnBorderChunks(column,row) ||
+            MapHolder.tiles[column,row].elevation > 0)
         {
             return false;
         }

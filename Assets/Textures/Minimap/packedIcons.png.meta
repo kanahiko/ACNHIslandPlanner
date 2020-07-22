@@ -209,10 +209,10 @@ TextureImporter:
       name: packedIcons_3
       rect:
         serializedVersion: 2
-        x: 269
-        y: 91
-        width: 67
-        height: 67
+        x: 263
+        y: 82
+        width: 76
+        height: 77
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

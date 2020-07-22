@@ -254,6 +254,10 @@ public class WaterBuilder
                 MapHolder.tiles[column, row].quarters[rotation].transform.localRotation = rotate;
             }
         }
+        else
+        {
+            MapHolder.tiles[column, row].RemoveQuarter(rotation);
+        }
 
         MapHolder.tiles[column,row].RemoveQuarters(rotation, oppositeRotation);
         

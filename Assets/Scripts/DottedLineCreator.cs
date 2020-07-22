@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 public class DottedLineCreator : MonoBehaviour
@@ -44,8 +46,10 @@ public class DottedLineCreator : MonoBehaviour
         {
             save = false; 
             //string path = FileUtil.GetProjectRelativePath();
+            #if UNITY_EDITOR
             AssetDatabase.CreateAsset(mesh, $"Assets/Borders/border_{(int)size.x}_{(int)size.y}_{(int)size.z}_.asset");
             AssetDatabase.SaveAssets();
+            #endif
         }
     }
     void CreateDottedLine()

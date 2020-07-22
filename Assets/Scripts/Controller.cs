@@ -556,7 +556,7 @@ public class Controller : MonoBehaviour
     }
 
 
-    public void TestSaveButton()
+    public void SaveButton()
     {
         CameraInfo cameraInfo = new CameraInfo();
         cameraInfo.position = playerCamera.localPosition;
@@ -565,7 +565,7 @@ public class Controller : MonoBehaviour
         MapHolder.Save(cameraInfo);
     }
 
-    public void TestLoadButton()
+    public void LoadButton()
     {
        CameraInfo info = MapHolder.Load();
        LoadMap(info);
