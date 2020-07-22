@@ -143,14 +143,24 @@ public static  class Util
     
     public static Vector2Int[] inclineRotationsOffset = new Vector2Int[]
     {
-        new Vector2Int(0,0), new Vector2Int(0,2), new Vector2Int(2,1), new Vector2Int(1,0),    
+        new Vector2Int(0,0), new Vector2Int(0,2), new Vector2Int(2,1), new Vector2Int(1,0)   
     };
 
     public static Vector2[] bridgeRotationsOffset = new Vector2[]
     {
-        new Vector2(0,0), new Vector2(-2.409f,3.411f), new Vector2(0,4), new Vector2(0.58f,0.596f),    
+        new Vector2(0,0), new Vector2(-2.449f,3.371f), new Vector2(0,4), new Vector2(0.62f,0.556f)  
     };
-    
+
+    public static Vector2[] bridgeAdditionalRotationsOffset = new Vector2[]
+    {
+        new Vector2(0,0), new Vector2(-0.51f,-0.51f), new Vector2(0,0), new Vector2(0.51f,-0.51f)
+    };
+
+    public static Quaternion[] bridgeRotations = new Quaternion[]
+     {
+        Quaternion.identity, Quaternion.Euler(0,45,0), Quaternion.Euler(0,90,0), Quaternion.Euler(0,-45,0)
+     };
+
     public static T[,] RotateMatrix<T>(T[,] corners)
     {
         T[,] newMatrix = corners;

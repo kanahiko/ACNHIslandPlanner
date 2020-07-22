@@ -205,6 +205,7 @@ MonoBehaviour:
     - {fileID: 5105638685043627507, guid: a3b5cc09f47a4324bb6477d8b7c8abf9, type: 3}
     - {fileID: 482296877811542094, guid: b5c1bf9dd0e90c4429fec5fb73312329, type: 3}
     - {fileID: 528135663882218634, guid: 2bd5f583fd2acaa4d91c2cfac2919c53, type: 3}
+    - {fileID: 6904979407174469119, guid: 321d8a0f0c935044a9c72af0aa25e931, type: 3}
   tileTypeColorDictionary:
     reorderableList:
       canAdd: 1
@@ -246,3 +247,7 @@ MonoBehaviour:
   - {r: 0.64705884, g: 0.83137256, b: 0.48235294, a: 1}
   miniMapOffset: {x: 10, y: 10}
   plazaColor: {r: 0.69411767, g: 0.6392157, b: 0.49411765, a: 1}
+  inclineColors:
+  - {r: 0.9372549, g: 0.8509804, b: 0.6156863, a: 1}
+  - {r: 0.7254902, g: 0.63529414, b: 0.39215687, a: 1}
+  bridgeColor: {r: 0.5019608, g: 0.5019608, b: 0.42352942, a: 1}

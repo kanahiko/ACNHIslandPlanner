@@ -77,6 +77,7 @@ public class BuildersController : MonoBehaviour
     public void RebuildMap(Dictionary<Vector2Int, List<Vector2Int>> buildings, List<PreDecorationTile> preDecorationTiles)
     {
         ResetInfluence();
+        DecorationsBuilder.ResetDecorations();
 
         for (int i = 0; i < MapHolder.height; i++)
         {
@@ -94,6 +95,37 @@ public class BuildersController : MonoBehaviour
 
     public static int CheckBridgeSize(int column, int row, int rotation)
     {
+        if (rotation == 1 || rotation == 3)
+        {
+            int bridgeSize = 0;
+            for (int i =0; i< 5; i++)
+            {
+                if (i==0)
+                {
+                    if (MapHolder.tiles[column, row].type != TileType.WaterDiagonal &&
+                    MapHolder.tiles[column, row].backgroundType != TilePrefabType.Land)
+                    {
+                        return 3; 
+                    }
+                    continue;            
+                }
+
+                if (MapHolder.tiles[column + i * (rotation == 3 ? -1 : 1), row - i].backgroundType == TilePrefabType.Land ||
+                   MapHolder.tiles[column + i * (rotation == 3 ? -1 : 1), row - i].type == TileType.WaterDiagonal)
+                {
+                    if (bridgeSize <= 2)
+                    {
+                        return 3;
+                    }
+                    return 6;
+                }
+
+                if (MapHolder.tiles[column + i *(rotation == 3 ? -1 : 1) ,row - i].type == TileType.Water)
+                {
+                    bridgeSize++;
+                }
+            }
+        }
         //Debug.Log($"{column}, {row}");
         if (MapHolder.tiles[column,row].backgroundType == TilePrefabType.Land)
         {

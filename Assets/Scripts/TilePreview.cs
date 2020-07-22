@@ -131,21 +131,7 @@ public class TilePreview : MonoBehaviour
         
         if (type == DecorationType.Bridge)
         {
-            Quaternion rotate = Quaternion.identity;
-            if (rotation == 2)
-            {
-                rotate = Quaternion.Euler(0,90,0);
-            }
-
-            if (rotation == 1)
-            {
-                rotate = Quaternion.Euler(0,45,0);
-            }
-
-            if (rotation == 3)
-            {
-                rotate = Quaternion.Euler(0,-45,0); 
-            }
+            Quaternion rotate = Util.bridgeRotations[rotation];
             currentPreview.localPosition = new Vector3(Util.bridgeRotationsOffset[rotation].x,0,Util.bridgeRotationsOffset[rotation].y);
             currentPreview.GetChild(0).localRotation = rotate;
         }
@@ -156,10 +142,37 @@ public class TilePreview : MonoBehaviour
     {
         previewCursor.position = position;
 
-        if (currentType == DecorationType.Bridge && currentRotation != 1 && currentRotation != 3 && column != -1)
+        if (currentType == DecorationType.Bridge && currentRotation != 0 && currentRotation != 2 && column != -1)
         {
             //diagonal water offset 0.4,0,-0.4 for rotation 3
             //diagonal water offset -0.4,0,-0.4 for rotation 1
+            int size = BuildersController.CheckBridgeSize(column, row, currentRotation);
+            Quaternion rotation = Quaternion.identity;
+            Vector3 rotatedPosition = Vector3.zero;
+            if (currentPreview != null)
+            {
+                rotation = currentPreview.GetChild(0).localRotation;
+
+                currentPreview.position = Util.cullingPosition;
+                currentPreview.GetChild(0).localRotation = Quaternion.identity;
+            }
+            var preview = previewBridge[0].bridgePrefabs[size - 3].transform;
+            rotatedPosition = new Vector3(Util.bridgeRotationsOffset[currentRotation].x, 0, Util.bridgeRotationsOffset[currentRotation].y);
+
+            if (MapHolder.tiles[column,row].type == TileType.WaterDiagonal)
+            {
+                rotatedPosition.x += Util.bridgeAdditionalRotationsOffset[currentRotation].x;
+                rotatedPosition.z += Util.bridgeAdditionalRotationsOffset[currentRotation].y;
+            }
+
+            preview.localPosition = rotatedPosition;
+
+            preview.GetChild(0).localRotation = rotation;
+            currentPreview = preview;
+        }
+
+        if (currentType == DecorationType.Bridge && currentRotation != 1 && currentRotation != 3 && column != -1)
+        {
             int size = BuildersController.CheckBridgeSize(column, row, currentRotation);
             Quaternion rotation = Quaternion.identity;
             Vector3 rotatedPosition = Vector3.zero;

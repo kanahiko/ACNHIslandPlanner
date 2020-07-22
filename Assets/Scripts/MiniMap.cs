@@ -153,7 +153,14 @@ public static class MiniMap
             else
             {
                 color = mapPrefab.bridgeColor;
-                secondaryColor = mapPrefab.tileTypeColorDictionary[MapHolder.tiles[column,row].type];
+                if (MapHolder.tiles[column, row].type == TileType.Land)
+                {
+                    secondaryColor = mapPrefab.elevationColors[MapHolder.tiles[column, row].elevation];
+                }
+                else
+                {
+                    secondaryColor = mapPrefab.tileTypeColorDictionary[MapHolder.tiles[column, row].type];
+                }
             }
         }
         else
@@ -229,7 +236,10 @@ public static class MiniMap
                     }
                     else
                     {
-                        
+                        if (decorationType == DecorationType.Bridge)
+                        {
+                            isSecondaryColor = BridgeSecondaryColor(column, row, columnPixelAdd, rowPixelAdd);
+                        }
                     }
                 }
 
@@ -259,6 +269,35 @@ public static class MiniMap
     {
         DecorationTiles tile = MapHolder.decorationsTiles[column, row];
 
+        if (tile.rotation == 0 || tile.rotation == 2)
+        {
+            bool isBridgeColor = true;
+
+            int endRow = tile.rotation == 0 ? tile.size + 1 : 3;
+            int endColumn = tile.rotation == 2 ? tile.size + 1 : 3;
+            bool isVertical = tile.rotation == 0;
+
+            if (Mathf.Abs(tile.startingRow - row) == 0)
+            {
+                isBridgeColor &= (isVertical && rowPixelAdd <= 0) || (isVertical && rowPixelAdd > 1);
+            }
+
+            if (Mathf.Abs(tile.startingRow - row) == endRow)
+            {
+                isBridgeColor &= (isVertical && rowPixelAdd == 2) || (isVertical && rowPixelAdd < 2);
+            }
+
+            if (Mathf.Abs(tile.startingColumn - column) == 0)
+            {
+                isBridgeColor &= (isVertical && columnPixelAdd > 0) || (isVertical && columnPixelAdd > 1);
+            }
+            if (Mathf.Abs(tile.startingColumn - column) == endColumn)
+            {
+                isBridgeColor &= (isVertical && columnPixelAdd < 2) || (isVertical && columnPixelAdd > 1);
+            }
+
+            return !isBridgeColor;
+        }
 
         return (tile.rotation == 0 || tile.rotation == 2) && inclineColors[Mathf.Abs(tile.startingRow - row) + rowPixelAdd] ||
                (tile.rotation == 1 || tile.rotation == 3) && inclineColors[Mathf.Abs(tile.startingColumn - column) + columnPixelAdd];

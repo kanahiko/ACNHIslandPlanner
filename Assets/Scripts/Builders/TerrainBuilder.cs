@@ -28,11 +28,22 @@ public class TerrainBuilder : MonoBehaviour
     public void ChangeTile(ToolType type, ToolMode mode, int column, int row, byte variation)
     {
         //TODO building influence enum, switch to bool variables
+        bool canPath = type == ToolType.PathPermit;
+        if (canPath && MapHolder.decorationsTiles[column, row] != null)
+        {
+            if (MapHolder.buildingsInfluence[column, row] == BuildingInfluence.pathsOnly)
+            {
+                canPath = true;
+            }
+            if (MapHolder.decorationsTiles[column, row].type == DecorationType.Bridge)
+            {
+                canPath = MapHolder.tiles[column, row].backgroundType == TilePrefabType.Land;
+            }
+        }
+
         if ((MapHolder.buildingsInfluence[column, row] == BuildingInfluence.fullInfluence ||
             type != ToolType.PathPermit && MapHolder.treeInfluence[column,row] > 0 || 
-            MapHolder.decorationsTiles[column, row] != null && 
-            (MapHolder.buildingsInfluence[column, row] == 0 || 
-             type != ToolType.PathPermit && MapHolder.buildingsInfluence[column, row] == BuildingInfluence.pathsOnly)))
+            MapHolder.decorationsTiles[column, row] != null && (!canPath)))
         {
             return;
         }
@@ -50,12 +61,12 @@ public class TerrainBuilder : MonoBehaviour
 
     public void RebuildTile(MapTile tile)
     {
-        bool yes = false;
+        /*bool yes = false;
         if (tile.elevation != 0)
         {
             yes = true;
             Debug.Log(tile.elevation);
-        }
+        }*/
         switch (tile.type)
         {
             case TileType.Land:
@@ -89,10 +100,10 @@ public class TerrainBuilder : MonoBehaviour
                 LandBuilder.RebuildSandDiagonal(tile);
                 break;
         }
-        if (yes)
+        /*if (yes)
         {
             Debug.Log("aaas " +tile.elevation);
-        }
+        }*/
         if (tile.elevation > 0)
         {
             CliffBuilder.ChangeElevation(tile);

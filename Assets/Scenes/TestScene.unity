@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae3f7104dd0f550419c177ab85e05ae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: {x: 4, y: 7, z: 0}
+  size: {x: 4, y: 6.46931, z: 0}
   segmentSize: 0.23529
   thickness: 0.05
   create: 0

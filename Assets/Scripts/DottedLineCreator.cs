@@ -44,7 +44,7 @@ public class DottedLineCreator : MonoBehaviour
         {
             save = false; 
             //string path = FileUtil.GetProjectRelativePath();
-            AssetDatabase.CreateAsset(mesh, $"Assets/Borders/border_{(int)size.x}_{(int)size.y}_{(int)size.z}.asset");
+            AssetDatabase.CreateAsset(mesh, $"Assets/Borders/border_{(int)size.x}_{(int)size.y}_{(int)size.z}_.asset");
             AssetDatabase.SaveAssets();
         }
     }

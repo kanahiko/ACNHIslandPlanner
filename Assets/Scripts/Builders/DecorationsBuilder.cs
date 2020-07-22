@@ -54,7 +54,6 @@ public class DecorationsBuilder : MonoBehaviour
 
     public static void RebuildTile(Dictionary<Vector2Int, List<Vector2Int>> buildings, List<PreDecorationTile> preDecorationTiles)
     {
-        ResetDecorations();
         Dictionary<Vector2Int, DecorationTiles> buildingDictionary = new Dictionary<Vector2Int, DecorationTiles>();
 
         for (int i = 0; i < preDecorationTiles.Count; i++)
@@ -100,7 +99,28 @@ public class DecorationsBuilder : MonoBehaviour
 
                     break;
                 case DecorationType.Incline:
+                    if (buildingDictionary.ContainsKey(preDecorationTiles[i].startingCoords))
+                    {
+                        MapHolder.decorationsTiles[column, row] = buildingDictionary[preDecorationTiles[i].startingCoords];
+                    }
+                    else
+                    {
+                        DecorationTiles incline = BridgesBuilder.RebuildIncline(preDecorationTiles[i]);
+                        MapHolder.decorationsTiles[column, row] = incline;
+                        buildingDictionary.Add(preDecorationTiles[i].startingCoords, incline);
+                    }
+                    break;
                 case DecorationType.Bridge:
+                    if (buildingDictionary.ContainsKey(preDecorationTiles[i].startingCoords))
+                    {
+                        MapHolder.decorationsTiles[column, row] = buildingDictionary[preDecorationTiles[i].startingCoords];
+                    }
+                    else
+                    {
+                        DecorationTiles bridge = BridgesBuilder.RebuildBridge(preDecorationTiles[i]);
+                        MapHolder.decorationsTiles[column, row] = bridge;
+                        buildingDictionary.Add(preDecorationTiles[i].startingCoords, bridge);
+                    }
                     break;
 
             }
@@ -109,7 +129,7 @@ public class DecorationsBuilder : MonoBehaviour
     }
 
 
-    static void ResetDecorations()
+    public static void ResetDecorations()
     {
         for (int i = 0; i < MapHolder.height; i++)
         {
@@ -123,9 +143,16 @@ public class DecorationsBuilder : MonoBehaviour
                             FenceBuilder.AddToFenceLimbo(MapHolder.decorationsTiles[j, i]);
                             break;
                         case DecorationType.Incline:
-                            BridgesBuilder.RemoveInclines(MapHolder.decorationsTiles[j, i].startingColumn, MapHolder.decorationsTiles[j, i].startingRow);
+                            if (j == MapHolder.decorationsTiles[j, i].startingColumn && i == MapHolder.decorationsTiles[j, i].startingRow)
+                            {
+                                BridgesBuilder.RemoveInclinesBeforeLoad(MapHolder.decorationsTiles[j, i].startingColumn, MapHolder.decorationsTiles[j, i].startingRow);
+                            }
                             break;
                         case DecorationType.Bridge:
+                            if (j == MapHolder.decorationsTiles[j, i].startingColumn && i == MapHolder.decorationsTiles[j, i].startingRow)
+                            {
+                                BridgesBuilder.RemoveBridgesBeforeLoad(MapHolder.decorationsTiles[j, i].startingColumn, MapHolder.decorationsTiles[j, i].startingRow);
+                            }
                             break;
                         case DecorationType.Flora:
                         case DecorationType.Tree:

@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using UnityEngine;
 
 public class BridgesBuilder : MonoBehaviour
@@ -42,34 +44,78 @@ public class BridgesBuilder : MonoBehaviour
     public static void AddBridges(int column, int row, byte variation, int rotation)
     {
         int size = -1;
-        if (CheckCanPlaceBridgeDiagonal(column, row, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge], rotation, out size))
-        {
-            Debug.Log("yay");
-        }
         
-        if (bridgesPlaced < MapHolder.mapPrefab.maxCount[DecorationType.Bridge] &&
-            CheckCanPlaceBridge(column, row, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge], rotation, out size))
+        if (bridgesPlaced < MapHolder.mapPrefab.maxCount[DecorationType.Bridge])
         {
+            bool canBePlaced = false;
+            HashSet<Vector2Int> changedTiles;
+            HashSet<Vector2Int> pathTiles;
+            if (rotation == 0 || rotation == 2)
+            {
+                canBePlaced = CheckCanPlaceBridge(column, row, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge], rotation,out changedTiles, out size);
+            }
+            else
+            {
+                canBePlaced = CheckCanPlaceBridgeDiagonal(column, row, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge], rotation,out changedTiles, out size);
+                
+            }
+
+            if (!canBePlaced)
+            {
+                return;
+            }
+
             DecorationTiles tile = GetFromBridgeLimbo(variation,size);
             
             tile.decorationBackground.parent = MapHolder.decorationsParent;
-            tile.decorationBackground.localPosition = new Vector3(column + Util.bridgeRotationsOffset[rotation].x, 
-                Util.GetHeight(column, row),  
+            Vector3 position = new Vector3(column + Util.bridgeRotationsOffset[rotation].x,
+                Util.GetHeight(column, row),
                 -row + Util.bridgeRotationsOffset[rotation].y);
-            tile.decorationBackground.localRotation = Quaternion.Euler(0,rotation==0?0:90,0);
+            if ((rotation == 1 || rotation == 3) && MapHolder.tiles[column,row].type == TileType.WaterDiagonal)
+            {
+                position.x += Util.bridgeAdditionalRotationsOffset[rotation].x;
+                position.z += Util.bridgeAdditionalRotationsOffset[rotation].y;
+            }
+
+            tile.decorationBackground.localRotation = Util.bridgeRotations[rotation];
+            tile.decorationBackground.localPosition = position;
             tile.type = DecorationType.Bridge;
             tile.rotation = rotation;
             tile.size = size;
             tile.startingColumn = column;
             tile.startingRow = row;
-            
-            Vector3Int sizeBridge = MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge];
-            int sizeX = (rotation == 0 ) ? sizeBridge.x : size+2;
-            int sizeY = (rotation == 0) ? size+2 : sizeBridge.x;
-            
-            MarkTiles(column,row,sizeX,sizeY,sizeBridge.z,DecorationType.Bridge,rotation,tile);
+                        
+            MarkTiles(tile, changedTiles, null);
             bridgesPlaced += 1;
         }
+    }
+
+    public static DecorationTiles RebuildBridge(PreDecorationTile preTile)
+    {
+        DecorationTiles tile = GetFromBridgeLimbo(preTile.variation, preTile.size);
+
+        tile.decorationBackground.parent = MapHolder.decorationsParent;
+
+        Vector3 position = new Vector3(preTile.startingCoords.x + Util.bridgeRotationsOffset[preTile.rotation].x,
+                Util.GetHeight(preTile.startingCoords.x, preTile.startingCoords.y),
+                -preTile.startingCoords.y + Util.bridgeRotationsOffset[preTile.rotation].y);
+        if ((preTile.rotation == 1 || preTile.rotation == 3) && MapHolder.tiles[preTile.startingCoords.x, preTile.startingCoords.y].type == TileType.WaterDiagonal)
+        {
+            position.x += Util.bridgeAdditionalRotationsOffset[preTile.rotation].x;
+            position.z += Util.bridgeAdditionalRotationsOffset[preTile.rotation].y;
+        }
+        tile.decorationBackground.localRotation = Util.bridgeRotations[preTile.rotation];
+        tile.decorationBackground.localPosition = position;
+
+        tile.type = DecorationType.Bridge;
+        tile.rotation = preTile.rotation;
+        tile.size = preTile.size;
+        tile.startingColumn = preTile.startingCoords.x;
+        tile.startingRow = preTile.startingCoords.y;
+
+        bridgesPlaced += 1;
+
+        return tile;
     }
     
     public static void RemoveBridges(int column, int row)
@@ -84,21 +130,101 @@ public class BridgesBuilder : MonoBehaviour
         int rotation = MapHolder.decorationsTiles[column, row].rotation;
         
         Vector3Int size = MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge];
-        int sizeX = rotation == 0 ? size.x : MapHolder.decorationsTiles[column, row].size + 2;
-        int sizeY = rotation == 0 ? MapHolder.decorationsTiles[column, row].size + 2 : size.x;
+        int sizeX = size.x;
+        int sizeY = MapHolder.decorationsTiles[column, row].size; 
+        if (sizeY == 6)
+        {
+            sizeY = 4;
+        }
         
         GoToBridgeLimbo(MapHolder.decorationsTiles[column, row]);
-        MarkTiles(newColumn, newRow, sizeX,sizeY,size.z,DecorationType.Bridge, rotation,null);
+        HashSet<Vector2Int> changedTiles;
+        CreateChangedTiles(newColumn, newRow, rotation, sizeX, sizeY, out changedTiles);
+        MarkTiles(null, changedTiles,null);
         bridgesPlaced -= 1;
     }
 
-    public static bool CheckCanPlaceBridge(int column, int row, Vector3Int size, int rotation, out int sizeBridge)
+    public static void RemoveBridgesBeforeLoad(int column, int row)
+    {
+        if (MapHolder.decorationsTiles[column, row] == null ||
+            (MapHolder.decorationsTiles[column, row].type != DecorationType.Bridge))
+        {
+            return;
+        }
+        int newColumn = MapHolder.decorationsTiles[column, row].startingColumn;
+        int newRow = MapHolder.decorationsTiles[column, row].startingRow;
+        int rotation = MapHolder.decorationsTiles[column, row].rotation;
+
+        Vector3Int size = MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge];
+        int sizeX = size.x;
+        int sizeY = MapHolder.decorationsTiles[column, row].size; 
+        if (sizeY == 6)
+        {
+            sizeY = 4;
+        }
+
+        GoToBridgeLimbo(MapHolder.decorationsTiles[column, row]);
+        HashSet<Vector2Int> changedTiles;
+        CreateChangedTiles(newColumn, newRow, rotation, sizeX, sizeY, out changedTiles); 
+        
+        foreach (var changedTile in changedTiles)
+        {
+            MapHolder.decorationsTiles[changedTile.x, changedTile.y] = null;
+        }
+        bridgesPlaced -= 1;
+    }
+
+    static void CreateChangedTiles(int column, int row, int rotation, int sizeX, int sizeY, out HashSet<Vector2Int> changedTiles)
+    {
+        changedTiles = new HashSet<Vector2Int>();
+
+        if (rotation == 0 || rotation == 2)
+        {
+            int columnIndexEnd = rotation == 0 ? sizeX : (sizeY + 2);
+            int rowIndexEnd = rotation == 0 ? (sizeY + 2) : sizeX;
+
+            for (int i = 0; i < rowIndexEnd; i++)
+            {
+                for (int j = 0; j < columnIndexEnd; j++)
+                {
+                    changedTiles.Add(new Vector2Int(column + j, row - i));
+                }
+            }
+        }
+        else
+        {
+            int columnIndexEnd = rotation == 3 ? sizeX : (sizeY + 2);
+            int rowIndexEnd = rotation == 3 ? (sizeY + 2) : sizeX;
+            bool diagonalStart = MapHolder.tiles[column, row].type == TileType.WaterDiagonal;
+
+            int rotationMult = rotation == 3 ? 1 : -1;
+
+            for (int j = 0; j < sizeX; j++)
+            {
+                for (int i = 0; i < sizeY + 2; i++)
+                {
+                    int newColumn = column + j * rotationMult + (-1 * i * rotationMult);
+                    int newRow = row - j + (-1 * i);
+                    int newColumn2 = column + (diagonalStart ? 1 * rotationMult : 0) + j * rotationMult + (-1 * i * rotationMult);
+                    int newRow2 = row - (diagonalStart ? 0 : 1) - j + (-1 * i);
+
+                    changedTiles.Add(new Vector2Int(newColumn, newRow));
+                    if (j + 1 < sizeX)
+                    {
+                        changedTiles.Add(new Vector2Int(newColumn2, newRow2));
+                    }
+                }
+            }
+        }
+    }
+
+    public static bool CheckCanPlaceBridge(int column, int row, Vector3Int size, int rotation, out HashSet<Vector2Int> changedTiles, out int sizeBridge)
     {
         //rotation 0 is vertical
         //rotation 1 is diagonal bottom left to top right
         //rotation 2 is sideways
         //rotation 3 is diagonal top left to bottom right
-        
+        changedTiles = new HashSet<Vector2Int>();
         sizeBridge = -1;
         int elevation = MapHolder.tiles[column, row].elevation;
         if (rotation == 0 || rotation == 2)
@@ -112,6 +238,13 @@ public class BridgesBuilder : MonoBehaviour
             {
                 for (int j = 0; j < columnIndexEnd; j++)
                 {
+                    if (bridgeSize != -1 && 
+                        (rotation == 0 && i - 1 > bridgeSize ||
+                        rotation == 2 && j - 1 > bridgeSize))
+                    {
+                        continue;
+                    }
+
                     //check for undesirable blocks
                     if (!Util.CoordinateExists(column + j, row - i) || 
                         MapHolder.tiles[column+j,row-i].elevation != elevation ||
@@ -147,10 +280,12 @@ public class BridgesBuilder : MonoBehaviour
                             else
                             {
 
+                                changedTiles.Add(new Vector2Int(column + j, row - i));
                                 if (rotation == 0 && j + 1 == columnIndexEnd ||
                                     rotation == 2 && i + 1 == rowIndexEnd)
                                 {
                                     sizeBridge = bridgeSize;
+                                    //changedTiles.Add(new Vector2Int(column + j, row - i));
                                     return true;
                                 }
                             }
@@ -172,6 +307,7 @@ public class BridgesBuilder : MonoBehaviour
                             }
                         }
                     }
+                    changedTiles.Add(new Vector2Int(column + j, row - i));
                 }
             }
 
@@ -183,13 +319,14 @@ public class BridgesBuilder : MonoBehaviour
         
         return false;
     }
-    
-    public static bool CheckCanPlaceBridgeDiagonal(int column, int row, Vector3Int size, int rotation, out int sizeBridge)
+
+    public static bool CheckCanPlaceBridgeDiagonal(int column, int row, Vector3Int size, int rotation, out HashSet<Vector2Int> changedTiles,out int sizeBridge)
     {
-        
+        changedTiles = new HashSet<Vector2Int>();
         sizeBridge = -1;
         int elevation = MapHolder.tiles[column, row].elevation;
         bool diagonalStart = diagonalStart = MapHolder.tiles[column, row].type == TileType.WaterDiagonal;
+        int rotationMult = rotation == 3 ? 1 : -1;
         if (rotation == 1 || rotation == 3)
         {
             int columnIndexEnd = rotation == 0 ? size.x : (size.y + 2);
@@ -197,16 +334,16 @@ public class BridgesBuilder : MonoBehaviour
 
             int bridgeSize = -1;
 
-            if (Util.CoordinateExists(column - 3, row - 3))
+            if (Util.CoordinateExists(column - 3* rotationMult, row - 3))
             {
-                if (MapHolder.tiles[column - 3, row - 3].type == TileType.Water)
+                if (MapHolder.tiles[column - 3 * rotationMult, row - 3].type == TileType.Water)
                 {
                     bridgeSize = 4;
                 }
                 else
                 {
-                    if (MapHolder.tiles[column - 3, row - 3].backgroundType == TilePrefabType.Land ||
-                        MapHolder.tiles[column - 3, row - 3].type == TileType.WaterDiagonal)
+                    if (MapHolder.tiles[column - 3 * rotationMult, row - 3].backgroundType == TilePrefabType.Land ||
+                        MapHolder.tiles[column - 3 * rotationMult, row - 3].type == TileType.WaterDiagonal)
                     {
                         bridgeSize = 3;
                     }
@@ -215,20 +352,21 @@ public class BridgesBuilder : MonoBehaviour
                         return false;
                     }
                 }
+                sizeBridge = bridgeSize;
             }
             else
             {
                 return false;
             }
-            Debug.Log(bridgeSize);
+            //Debug.Log(bridgeSize);
 
             for (int j = 0; j < size.x; j++)
             {
                 for (int i = 0; i < bridgeSize + 1; i++)
                 {
-                    int newColumn = column + j + (-1 * i);
+                    int newColumn = column + j* rotationMult + (-1 * i * rotationMult);
                     int newRow = row - j + (-1 * i);
-                    int newColumn2 = column + (diagonalStart ? 1 : 0) + j + (-1 * i);
+                    int newColumn2 = column + (diagonalStart ? 1 * rotationMult : 0) + j* rotationMult + (-1 * i * rotationMult);
                     int newRow2 = row - (diagonalStart ? 0: 1) - j + (-1 * i);
 
                     if (!Util.CoordinateExists(newColumn, newRow) ||
@@ -268,7 +406,8 @@ public class BridgesBuilder : MonoBehaviour
                             }   
                         }
                     }
-                    
+                    changedTiles.Add(new Vector2Int(newColumn, newRow));
+
                     if (j + 1 < size.x)
                     {
                         if (i == 0)
@@ -297,8 +436,13 @@ public class BridgesBuilder : MonoBehaviour
                                 }
                             }
                         }
+                        changedTiles.Add(new Vector2Int(newColumn2, newRow2));
                     }
                 }
+            }
+            if (bridgeSize == 4)
+            {
+                sizeBridge = 6;
             }
             return true;
         }
@@ -319,7 +463,7 @@ public class BridgesBuilder : MonoBehaviour
             {
                 bridgesLimbo.Add(new List<List<DecorationTiles>>
                 {
-                    new List<DecorationTiles>(),new List<DecorationTiles>(),new List<DecorationTiles>()
+                    new List<DecorationTiles>(),new List<DecorationTiles>(),new List<DecorationTiles>(),new List<DecorationTiles>()
                 });
             }
         }
@@ -355,8 +499,10 @@ public class BridgesBuilder : MonoBehaviour
 
     static void AddInclines(int column, int row, byte variation, int rotation)
     {
+        HashSet<Vector2Int> changedTiles;
+        HashSet<Vector2Int> pathTiles;
         if (inclinesPlaced < MapHolder.mapPrefab.maxCount[DecorationType.Incline] &&
-            CheckCanPlaceIncline(column, row, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline], rotation))
+            CheckCanPlaceIncline(column, row, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline], rotation, out changedTiles, out pathTiles))
         {
             DecorationTiles tile = GetFromInclineLimbo(variation);
             
@@ -369,20 +515,36 @@ public class BridgesBuilder : MonoBehaviour
             tile.rotation = rotation;
 
             tile.startingColumn = column;
-            tile.startingRow = row;
+            tile.startingRow = row;  
             
-            
-            Vector3Int size = MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline];
-            int sizeX = (rotation == 0 || rotation == 2) ? size.x : size.y;
-            int sizeY = (rotation == 0 || rotation == 2) ? size.y : size.x;
-
-            MarkTiles(column,row,sizeX,sizeY,size.z,DecorationType.Incline,rotation,tile);
+            MarkTiles(tile, changedTiles, pathTiles);
             inclinesPlaced += 1;
         }
     }
-    
+    public static DecorationTiles RebuildIncline(PreDecorationTile preTile)
+    {
+        DecorationTiles tile = GetFromInclineLimbo(preTile.variation);
+
+        tile.decorationBackground.parent = MapHolder.decorationsParent;
+        tile.decorationBackground.localPosition = new Vector3(preTile.startingCoords.x + Util.inclineRotationsOffset[preTile.rotation].x,
+            Util.GetHeight(preTile.startingCoords.x, preTile.startingCoords.y),
+            -preTile.startingCoords.y + Util.inclineRotationsOffset[preTile.rotation].y);
+        tile.decorationBackground.localRotation = Quaternion.Euler(0, 90 * preTile.rotation, 0);
+        tile.type = DecorationType.Incline;
+        tile.rotation = preTile.rotation;
+
+        tile.startingColumn = preTile.startingCoords.x;
+        tile.startingRow = preTile.startingCoords.y;
+
+
+        inclinesPlaced += 1;
+
+        return tile;
+    }
+
     public static void RemoveInclines(int column, int row)
     {
+        Debug.Log(column+" "+ row);
         if (MapHolder.decorationsTiles[column, row]  == null ||
             (MapHolder.decorationsTiles[column, row].type != DecorationType.Incline))
         {
@@ -397,62 +559,80 @@ public class BridgesBuilder : MonoBehaviour
         int sizeY = (rotation == 0 || rotation == 2) ? size.y : size.x;
         
         GoToInclineLimbo(MapHolder.decorationsTiles[column, row]);
-        MarkTiles(newColumn, newRow, sizeX,sizeY,size.z,DecorationType.Incline,rotation,null);
+        HashSet<Vector2Int> changedTiles;
+        CreateChangedInclineTiles(newColumn, newRow, rotation, sizeX, sizeY, out changedTiles);
+        MarkTiles(null, changedTiles, null);
+        inclinesPlaced -= 1;
+    }
+    public static void RemoveInclinesBeforeLoad(int column, int row)
+    {
+        Debug.Log(column + " " + row);
+        if (MapHolder.decorationsTiles[column, row] == null ||
+            (MapHolder.decorationsTiles[column, row].type != DecorationType.Incline))
+        {
+            return;
+        }
+        int newColumn = MapHolder.decorationsTiles[column, row].startingColumn;
+        int newRow = MapHolder.decorationsTiles[column, row].startingRow;
+        int rotation = MapHolder.decorationsTiles[column, row].rotation;
+
+        Vector3Int size = MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline];
+        int sizeX = (rotation == 0 || rotation == 2) ? size.x : size.y;
+        int sizeY = (rotation == 0 || rotation == 2) ? size.y : size.x;
+
+        GoToInclineLimbo(MapHolder.decorationsTiles[column, row]);
+        HashSet<Vector2Int> changedTiles;
+        CreateChangedInclineTiles(newColumn, newRow, rotation, sizeX, sizeY, out changedTiles); 
+        foreach (var changedTile in changedTiles)
+        {
+            MapHolder.decorationsTiles[changedTile.x, changedTile.y] = null;
+        }
         inclinesPlaced -= 1;
     }
 
-    static void MarkTiles(int column, int row, int sizeX,int sizeY, int sizeZ, DecorationType type, int rotation, DecorationTiles tile)
+    static void CreateChangedInclineTiles(int column, int row, int rotation, int sizeX, int sizeY, out HashSet<Vector2Int> changedTiles)
     {
-        HashSet<Vector2Int> pathTiles = new HashSet<Vector2Int>();
-
-        HashSet<Vector2Int> changedTiles = new HashSet<Vector2Int>();
-
-        int elevation = MapHolder.tiles[column, row].elevation;
-        int columnMult = (type != DecorationType.Bridge && rotation == 3 ) ? -1 : 1;
-        int rowMult = (type != DecorationType.Bridge && rotation == 2) ? -1 : 1;
+        changedTiles = new HashSet<Vector2Int>();
         
+        int columnIndexMult = (rotation == 3) ? -1 : 1;
+        int rowIndexMult = (rotation == 2) ? -1 : 1;
+
         for (int i = 0; i < sizeY; i++)
         {
             for (int j = 0; j < sizeX; j++)
             {
-                MapHolder.decorationsTiles[column + j * columnMult, row - i * rowMult] = tile;
-                
-                if (tile != null && MapHolder.tiles[column + j * columnMult , row-i * rowMult].type == TileType.Path || 
-                    MapHolder.tiles[column + j* columnMult, row - i * rowMult].type == TileType.PathCurve)
-                {
-                    //for adding path tiles outside of incline size
-                    if (j == 0 || j == sizeX - 1)
-                    {
-                        int newColumn = column + j * columnMult + (j == 0 ? -1: 1);
-                        if (i == 0 || i == sizeY - 1)
-                        {
-                            int newRow = row - i * rowMult + (i == 0 && rotation != 2 ? 1 : -1);
-                            pathTiles.Add(new Vector2Int(newColumn, newRow));
-                        }
-                        pathTiles.Add(new Vector2Int(newColumn, row - i * rowMult));
-                    }
-
-                    if (i == 0 || i == sizeY - 1)
-                    {
-                        int newRow = row - i * rowMult + (i == 0 ? 1 : -1);
-                        pathTiles.Add(new Vector2Int(column + j * columnMult, newRow));
-                    }
-
-                    MapHolder.tiles[column + j  * columnMult, row - i * rowMult].type = TileType.Land;
-                    LandBuilder.CreateLandTile(column + j* columnMult, row - i * rowMult, MapHolder.tiles[column + j  * columnMult, row - i * rowMult].elevation);
-                }
-                changedTiles.Add(new Vector2Int(column + j * columnMult, row - i * rowMult));
-                
+                changedTiles.Add(new Vector2Int(column + j * columnIndexMult, row - i * rowIndexMult));
             }
         }
-        
-        
-        PathBuilder.RedoTiles(pathTiles);
+    }
+
+    static void MarkTiles(DecorationTiles tile,HashSet<Vector2Int> changedTiles, HashSet<Vector2Int> pathTiles)
+    {           
+
+        foreach(var changedTile in changedTiles)
+        {
+            MapHolder.decorationsTiles[changedTile.x, changedTile.y] = tile;
+
+            if (MapHolder.tiles[changedTile.x, changedTile.y].type == TileType.Path ||
+                MapHolder.tiles[changedTile.x, changedTile.y].type == TileType.PathCurve)
+            {
+                MapHolder.tiles[changedTile.x, changedTile.y].type = TileType.Land;
+                LandBuilder.CreateLandTile(changedTile.x, changedTile.y, MapHolder.tiles[changedTile.x, changedTile.y].elevation);
+            }
+        }
+
+        if (pathTiles != null && pathTiles.Count > 0)
+        {
+            PathBuilder.RedoTiles(pathTiles); 
+        }
         MiniMap.ChangeMiniMap(changedTiles);
     }
 
-    static bool CheckCanPlaceIncline(int column, int row, Vector3Int size, int rotation)
+    static bool CheckCanPlaceIncline(int column, int row, Vector3Int size, int rotation, out HashSet<Vector2Int> changedTiles, out HashSet<Vector2Int> pathTiles)
     {
+        changedTiles = new HashSet<Vector2Int>();
+        pathTiles = new HashSet<Vector2Int>();
+
         int columnIndexEnd = (rotation == 0 || rotation == 2) ? size.x : size.y;
         int columnIndexMult = (rotation == 3) ? -1 : 1;
         
@@ -475,32 +655,50 @@ public class BridgesBuilder : MonoBehaviour
                 
                 if (j == 0 || j + 1 == columnIndexEnd)
                 {
-                    int newColumn = column + j*columnIndexMult + (j == 0 ? -1 : 1);
+                    int newColumn = column + j * columnIndexMult + (j == 0 ? -1 : 1) * columnIndexMult;
+
                     if (i == 0 || i + 1 == rowIndexEnd)
                     {
-                        int newRow = row - i*rowIndexMult+ (i == 0 ? 1 : -1);
+                        int newRow = row - i * rowIndexMult + (i == 0 ? 1 : -1) * rowIndexMult;
                         if (MapHolder.decorationsTiles[newColumn, newRow] != null && 
                             MapHolder.decorationsTiles[newColumn, newRow].type == DecorationType.Incline)
                         {
                             return false;
                         }
+                        if (MapHolder.tiles[newColumn, newRow].type == TileType.Path ||
+                            MapHolder.tiles[newColumn, newRow].type == TileType.PathCurve)
+                        {
+                            pathTiles.Add(new Vector2Int(newColumn, newRow));
+                        }
                     }
 
-                    if (MapHolder.decorationsTiles[newColumn, row + i * rowIndexMult] != null && 
-                        MapHolder.decorationsTiles[newColumn, row + i * rowIndexMult].type == DecorationType.Incline)
+                    if (MapHolder.decorationsTiles[newColumn, row - i * rowIndexMult] != null && 
+                        MapHolder.decorationsTiles[newColumn, row - i * rowIndexMult].type == DecorationType.Incline)
                     {
                         return false;
+                    }
+
+                    if (MapHolder.tiles[newColumn,row - i * rowIndexMult].type == TileType.Path ||
+                        MapHolder.tiles[newColumn, row - i * rowIndexMult].type == TileType.PathCurve)
+                    {
+                        pathTiles.Add(new Vector2Int(newColumn, row - i * rowIndexMult));
                     }
                 }
                 
                 if (i == 0 || i + 1 == rowIndexEnd)
                 {
-                    int newRow = row - i*rowIndexMult+ (i == 0 ? 1 : -1);
+                    int newRow = row - i * rowIndexMult + (i == 0 ? 1 : -1) * rowIndexMult;
                     if (MapHolder.decorationsTiles[column + j * columnIndexMult, newRow] != null && 
                         MapHolder.decorationsTiles[column + j * columnIndexMult, newRow].type == DecorationType.Incline)
                     {
                         return false;
                     }
+                    if (MapHolder.tiles[column + j * columnIndexMult, newRow].type == TileType.Path ||
+                        MapHolder.tiles[column + j * columnIndexMult, newRow].type == TileType.PathCurve)
+                    {
+                        pathTiles.Add(new Vector2Int(column + j * columnIndexMult, newRow));
+                    }
+                    //changedTiles.Add(new Vector2Int(column + j * columnIndexMult, newRow));
                 }
 
                 if ((rotation == 0 || rotation == 2) && i+ 1 == rowIndexEnd ||
@@ -518,6 +716,7 @@ public class BridgesBuilder : MonoBehaviour
                         return false;
                     }
                 }
+                changedTiles.Add(new Vector2Int(column + j * columnIndexMult, row - i * rowIndexMult));
             }
         }
 
