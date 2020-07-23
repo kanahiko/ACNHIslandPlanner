@@ -153,6 +153,15 @@ MonoBehaviour:
   - variationPrefabs:
     - {fileID: 1711820876549624461, guid: a44a4d5c568402b488cf79ac4951074a, type: 3}
     - {fileID: 3297764002176095933, guid: 2729c0986ef48cd46a0b2b791a2d0d1d, type: 3}
+  - variationPrefabs:
+    - {fileID: 7722883189518653619, guid: 450be695430f6ab4fab49baab6ca03c3, type: 3}
+    - {fileID: 9061819826819364452, guid: a1b31502e696a254c8c40a0733770613, type: 3}
+  - variationPrefabs:
+    - {fileID: 4958330606606112533, guid: 53d069c035fc0ac4cad5bebcca921475, type: 3}
+    - {fileID: 4574185745813326625, guid: 675c32a572741b440bd063b3e4d9668d, type: 3}
+  - variationPrefabs:
+    - {fileID: 6205076341817434794, guid: 77bc726945ec99e40a915bef9e7bb9b0, type: 3}
+    - {fileID: 7630355617621725019, guid: 6f27083ab710b7b4ebf56c9c5f7f2389, type: 3}
   floraPrefabDictionary:
   - {fileID: 5536630880792107103, guid: 904812feb218fa647aece055279f4306, type: 3}
   - {fileID: 8799968536769206395, guid: c8c888c062bff8d46b012569c4128ddb, type: 3}
