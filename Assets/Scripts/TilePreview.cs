@@ -104,7 +104,9 @@ public class TilePreview : MonoBehaviour
         if (currentPreview != null)
         {
             currentPreview.position = Util.cullingPosition;
-            if (currentType == DecorationType.Fence || currentType == DecorationType.Incline || currentType == DecorationType.Bridge)
+            if (currentType == DecorationType.Fence && type != DecorationType.Fence || 
+                currentType == DecorationType.Incline && type != DecorationType.Incline || 
+                currentType == DecorationType.Bridge && type != DecorationType.Bridge)
             {
                 currentPreview.GetChild(0).localRotation = Quaternion.identity;
             }

@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 904812feb218fa647aece055279f4306
+labels:
+- Vegetation
 PrefabImporter:
   externalObjects: {}
   userData: 

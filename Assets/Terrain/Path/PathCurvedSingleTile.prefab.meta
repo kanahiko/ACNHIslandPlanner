@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 681ae49308c686641beb0cc3569ae598
+labels:
+- Road
 PrefabImporter:
   externalObjects: {}
   userData: 

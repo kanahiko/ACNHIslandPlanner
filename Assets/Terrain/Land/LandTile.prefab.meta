@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 07c16055e2f3e754eb2fa10a4557c5c5
+labels:
+- Landscape
 PrefabImporter:
   externalObjects: {}
   userData: 

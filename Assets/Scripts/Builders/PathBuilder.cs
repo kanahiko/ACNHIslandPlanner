@@ -131,6 +131,7 @@ public class PathBuilder
             }
             MapHolder.tiles[column, row].diagonalRotation = 255;
         }
+        MapHolder.tiles[column, row].variation = variation;
         if (elevationLevel > 0)
         {
             CliffBuilder.CreateCliffSides(column, row, MapHolder.tiles[column, row]);

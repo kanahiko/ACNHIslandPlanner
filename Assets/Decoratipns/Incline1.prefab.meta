@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 8b5a110a3fe8a6640be41c00f20a4a0c
+labels:
+- Bridge
 PrefabImporter:
   externalObjects: {}
   userData: 

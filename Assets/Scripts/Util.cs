@@ -231,7 +231,7 @@ public static  class Util
         return corners;
     }
 
-    public static bool[] CreateFenceMatrix(int column, int row)
+    public static bool[] CreateFenceMatrix(int column, int row, byte variation)
     {
         bool[] corners = new bool[4];
         int elevation = MapHolder.tiles[column, row].elevation;
@@ -243,7 +243,8 @@ public static  class Util
             {
                 corners[i] = MapHolder.decorationsTiles[column + indexOffsetCross[i].y, row + indexOffsetCross[i].x] != null &&
                              MapHolder.decorationsTiles[column + indexOffsetCross[i].y, row + indexOffsetCross[i].x].type == DecorationType.Fence &&
-                             elevation == MapHolder.tiles[column + indexOffsetCross[i].y, row + indexOffsetCross[i].x].elevation;
+                             elevation == MapHolder.tiles[column + indexOffsetCross[i].y, row + indexOffsetCross[i].x].elevation &&
+                             MapHolder.decorationsTiles[column + indexOffsetCross[i].y, row + indexOffsetCross[i].x].variation == variation;
             }
         }
 

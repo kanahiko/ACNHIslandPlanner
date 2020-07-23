@@ -135,7 +135,7 @@ public class FenceBuilder : MonoBehaviour
     static void CheckQuarters(int column, int row, byte variation, bool isHorizontal)
     {
 
-        bool[] corners = Util.CreateFenceMatrix(column, row);
+        bool[] corners = Util.CreateFenceMatrix(column, row, variation);
 
         for (int i = 0; i < 4; i++)
         {
@@ -143,7 +143,7 @@ public class FenceBuilder : MonoBehaviour
             //means (isHorizontal && i <= 1) || (!isHorizontal && i> 1)
             if ((isHorizontal && i <= 1) || (!isHorizontal && i > 1))
             {
-                if (corners[Util.sortedDirectionalIndexes[i]])
+                if (corners[Util.sortedDirectionalIndexes[i]] )
                 {
                     //linked
                     CreateQuarter(column, row, variation, FenceLinked.isLinked, Util.sortedDirectionalIndexes[i]);

@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: e4e73b1d900e5e24cb07e37a65994f96
+labels:
+- Water
 PrefabImporter:
   externalObjects: {}
   userData: 
