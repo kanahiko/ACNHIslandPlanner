@@ -101,6 +101,7 @@ public static class MiniMap
                 minimapInactivePins.Add(type.Key, images);
             }
         }
+        cameraPosition.transform.SetAsLastSibling();
     }
 
     static bool CheckCanSecondaryColor(int rotation, int column, int row)
@@ -138,33 +139,18 @@ public static class MiniMap
         Color color = Color.white;
         Color secondaryColor = Color.white;
 
-        DecorationType decorationType = DecorationType.Null;
+        DecorationType decorationType;
 
         if (MapHolder.decorationsTiles[column, row] != null &&
-            (MapHolder.decorationsTiles[column, row].type == DecorationType.Bridge ||
-             MapHolder.decorationsTiles[column, row].type == DecorationType.Incline))
+            MapHolder.decorationsTiles[column, row].type == DecorationType.Incline)
         {
             decorationType = MapHolder.decorationsTiles[column, row].type;
-            if (decorationType == DecorationType.Incline)
-            {
-                color = mapPrefab.inclineColors[0];
-                secondaryColor = mapPrefab.inclineColors[1];
-            }
-            else
-            {
-                color = mapPrefab.bridgeColor;
-                if (MapHolder.tiles[column, row].type == TileType.Land)
-                {
-                    secondaryColor = mapPrefab.elevationColors[MapHolder.tiles[column, row].elevation];
-                }
-                else
-                {
-                    secondaryColor = mapPrefab.tileTypeColorDictionary[MapHolder.tiles[column, row].type];
-                }
-            }
+            color = mapPrefab.inclineColors[0];
+            secondaryColor = mapPrefab.inclineColors[1];
         }
         else
         {
+            decorationType = DecorationType.Null;
             if (type == TileType.CliffDiagonal || type == TileType.Cliff || type == TileType.Land)
             {
                 color = MapHolder.mapPrefab.elevationColors[MapHolder.tiles[column, row].elevation];
@@ -230,17 +216,7 @@ public static class MiniMap
                 }
                 else
                 {
-                    if (decorationType == DecorationType.Incline)
-                    {
-                        isSecondaryColor = InclineSecondaryColor(column, row, columnPixelAdd, rowPixelAdd);
-                    }
-                    else
-                    {
-                        if (decorationType == DecorationType.Bridge)
-                        {
-                            isSecondaryColor = BridgeSecondaryColor(column, row, columnPixelAdd, rowPixelAdd);
-                        }
-                    }
+                    isSecondaryColor = InclineSecondaryColor(column, row, columnPixelAdd, rowPixelAdd);
                 }
 
                 
@@ -264,45 +240,7 @@ public static class MiniMap
         return (tile.rotation == 0 || tile.rotation == 2) && inclineColors[Mathf.Abs(tile.startingRow - row)*pixelSize + rowPixelAdd] ||
                (tile.rotation == 1 || tile.rotation == 3) && inclineColors[Mathf.Abs(tile.startingColumn - column)*pixelSize + columnPixelAdd];
     }
-    
-    static bool BridgeSecondaryColor(int column, int row, int columnPixelAdd, int rowPixelAdd)
-    {
-        DecorationTiles tile = MapHolder.decorationsTiles[column, row];
-
-        if (tile.rotation == 0 || tile.rotation == 2)
-        {
-            bool isBridgeColor = true;
-
-            int endRow = tile.rotation == 0 ? tile.size + 1 : 3;
-            int endColumn = tile.rotation == 2 ? tile.size + 1 : 3;
-            bool isVertical = tile.rotation == 0;
-
-            if (Mathf.Abs(tile.startingRow - row) == 0)
-            {
-                isBridgeColor &= (isVertical && rowPixelAdd <= 0) || (isVertical && rowPixelAdd > 1);
-            }
-
-            if (Mathf.Abs(tile.startingRow - row) == endRow)
-            {
-                isBridgeColor &= (isVertical && rowPixelAdd == 2) || (isVertical && rowPixelAdd < 2);
-            }
-
-            if (Mathf.Abs(tile.startingColumn - column) == 0)
-            {
-                isBridgeColor &= (isVertical && columnPixelAdd > 0) || (isVertical && columnPixelAdd > 1);
-            }
-            if (Mathf.Abs(tile.startingColumn - column) == endColumn)
-            {
-                isBridgeColor &= (isVertical && columnPixelAdd < 2) || (isVertical && columnPixelAdd > 1);
-            }
-
-            return !isBridgeColor;
-        }
-
-        return (tile.rotation == 0 || tile.rotation == 2) && inclineColors[Mathf.Abs(tile.startingRow - row) + rowPixelAdd] ||
-               (tile.rotation == 1 || tile.rotation == 3) && inclineColors[Mathf.Abs(tile.startingColumn - column) + columnPixelAdd];
-    }
-    
+        
     public static void ChangeMiniMap(HashSet<Vector2Int> coordinates)
     {
         var mapPrefab = MapHolder.mapPrefab;
@@ -432,6 +370,100 @@ public static class MiniMap
 
             minimapInactivePins[type].Add(pin);
             minimapActivePins.Remove(column +  row *MapHolder.width);
+        }
+    }
+
+    public static void PutBridgePin(int column, int row, int rotation, int sizeY, bool isAdd)
+    {
+        if (isAdd)
+        {
+            if (minimapInactivePins.ContainsKey(DecorationType.Bridge))
+            {
+                Image pin = minimapInactivePins[DecorationType.Bridge][minimapInactivePins[DecorationType.Bridge].Count - 1];
+                minimapInactivePins[DecorationType.Bridge].RemoveAt(minimapInactivePins[DecorationType.Bridge].Count - 1);
+
+                Vector2 position = new Vector2();
+                position.x = (column * pixelSize + MapHolder.mapPrefab.miniMapOffset.x + pixelSize * 0.5f) * ratio.x;
+                position.y = -(row * pixelSize + MapHolder.mapPrefab.miniMapOffset.y + pixelSize) * ratio.y;
+                Quaternion rotate = Quaternion.identity;
+                switch (rotation)
+                {
+                    case 0:
+                        position.x += 0.5f;
+                        position.y += 3.4f;
+                        break;
+                    case 1:
+                        position.x -= 7;
+                        position.y += 11;
+
+                        if (MapHolder.tiles[column, row].type == TileType.WaterDiagonal)
+                        {
+                            position.x -= 2;
+                            position.y -= 2;
+                        }
+                        rotate = Quaternion.Euler(0, 0, -45);
+
+
+                break;
+                    case 2:
+                        position.x += 1.6f;
+                        position.y += 11.6f;
+                        rotate = Quaternion.Euler(0, 0, -90);
+                        break;
+                    case 3:
+                        position.x += (-1 + 1);
+                        position.y += (5 - 1);
+
+                        if (MapHolder.tiles[column, row].type == TileType.WaterDiagonal)
+                        {
+                            position.x += 2;
+                            position.y -= 2;
+                        }
+                        rotate = Quaternion.Euler(0, 0, 45);
+                        break;
+                }
+
+                pin.transform.localPosition = position;
+                pin.transform.localRotation = rotate;
+                Vector2 size = pin.rectTransform.sizeDelta;
+                switch (sizeY)
+                {
+                    case 3:
+                        if (rotation != 0 && rotation != 2)
+                        {
+                            size.y = 36;
+                        }
+                        else
+                        {
+                            size.y = 26.25f;
+                        }
+                        break;
+                    case 4:
+                        size.y = 35;
+                        break;
+                    case 5:
+                        size.y = 43.75f;
+                        break;
+                    case 6:
+                        size.y = 42;
+                        break;
+                    case 7:
+                        size.y = 48;
+                        break;
+                }
+                pin.rectTransform.sizeDelta = size;
+
+            minimapActivePins.Add(column + row * MapHolder.width, pin);
+            }
+        }
+        else
+        {
+            Image pin = minimapActivePins[column + row * MapHolder.width];
+
+            pin.transform.localPosition = hidePosition;
+
+            minimapInactivePins[DecorationType.Bridge].Add(pin);
+            minimapActivePins.Remove(column + row * MapHolder.width);
         }
     }
 

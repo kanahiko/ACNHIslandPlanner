@@ -117,7 +117,15 @@ public class BuildersController : MonoBehaviour
                     {
                         return 3;
                     }
-                    return 6;
+
+                    if (MapHolder.tiles[column + i * (rotation == 3 ? -1 : 1), row - i].backgroundType == TilePrefabType.Land &&
+                        MapHolder.tiles[column, row].type != TileType.WaterDiagonal)
+                    {
+
+                        return 6;
+                    }
+
+                    return 7;
                 }
 
                 if (MapHolder.tiles[column + i *(rotation == 3 ? -1 : 1) ,row - i].type == TileType.Water)

@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 53d069c035fc0ac4cad5bebcca921475
+labels:
+- Fence
 PrefabImporter:
   externalObjects: {}
   userData: 

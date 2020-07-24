@@ -23,6 +23,9 @@ public class TilePreview : MonoBehaviour
 
     int currentRotation = 0;
 
+    int currentColumn = -1;
+    int currentRow = -1;
+
     public void ChangeTile(DecorationType type = DecorationType.Null, byte variation = 0)
     {
         Transform preview = null;
@@ -143,6 +146,13 @@ public class TilePreview : MonoBehaviour
     public void FollowMousePosition(Vector3 position, int column, int row)
     {
         previewCursor.position = position;
+
+        if (currentColumn == column && currentRow == row)
+        {
+            return;
+        }
+        currentColumn = column;
+        currentRow = row;
 
         if (currentType == DecorationType.Bridge && currentRotation != 0 && currentRotation != 2 && column != -1)
         {

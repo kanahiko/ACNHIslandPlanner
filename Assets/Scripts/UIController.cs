@@ -22,10 +22,10 @@ public class UIController : MonoBehaviour
 
     private void Start()
     {
+        MiniMap.cameraPosition = cameraPosition;
         MiniMap.UpdateMiniMap = SetNewMiniMapTexture;
         MiniMap.CreateMiniMap();
         MiniMap.CreatePins(minimapPinsDictionary);
-        MiniMap.cameraPosition = cameraPosition;
         
         MiniMap.ratio = new Vector2();
         MiniMap.ratio.x = miniMap.rectTransform.rect.width / (MapHolder.width*MiniMap.pixelSize + MapHolder.mapPrefab.miniMapOffset.x * 2);

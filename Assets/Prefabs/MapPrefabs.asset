@@ -21,9 +21,16 @@ MonoBehaviour:
   gridMaterials:
   - {fileID: 2100000, guid: 85986eb5c2123fa4a9e18eb1c8f4914f, type: 2}
   - {fileID: 2100000, guid: 93c4fc2d66db6e54390b2c6125bf3b06, type: 2}
-  - {fileID: 2100000, guid: 68078f02f8f8fef42b8ff8587f7d22bc, type: 2}
   - {fileID: 2100000, guid: 8992898ca248c244dae6086cde4658ab, type: 2}
   - {fileID: 2100000, guid: 259617b40142fc94294ab8a1063a9d91, type: 2}
+  - {fileID: 2100000, guid: 68078f02f8f8fef42b8ff8587f7d22bc, type: 2}
+  - {fileID: 2100000, guid: 273e3c75297db394ab62fd5110c5baf2, type: 2}
+  - {fileID: 2100000, guid: 002c7a97c40db99448c2ae04efaf49b1, type: 2}
+  - {fileID: 2100000, guid: b6801041da6eb16439ae764773ecef05, type: 2}
+  - {fileID: 2100000, guid: 593ff2d9d51f969448dda36b13986295, type: 2}
+  - {fileID: 2100000, guid: edcb268d8115f7d43bdb451f8aea04d4, type: 2}
+  - {fileID: 2100000, guid: 4f8a803849cc7d245b7585747f52babd, type: 2}
+  - {fileID: 2100000, guid: 6b20709f15cc7eb45ade4c4a4e8cd21c, type: 2}
   elevationMaterials:
   - {fileID: 2100000, guid: 85986eb5c2123fa4a9e18eb1c8f4914f, type: 2}
   - {fileID: 2100000, guid: 6af877b08975cd2478629c727c21eb32, type: 2}
@@ -162,6 +169,12 @@ MonoBehaviour:
   - variationPrefabs:
     - {fileID: 6205076341817434794, guid: 77bc726945ec99e40a915bef9e7bb9b0, type: 3}
     - {fileID: 7630355617621725019, guid: 6f27083ab710b7b4ebf56c9c5f7f2389, type: 3}
+  - variationPrefabs:
+    - {fileID: 6655850589045947982, guid: b28d8835424b8284d8e7803a6c2cd63e, type: 3}
+    - {fileID: 5045440939375677880, guid: d2d3cac49ead0634cb8d5a88a4e08b9b, type: 3}
+  - variationPrefabs:
+    - {fileID: 5626438843041450353, guid: d357a9583dacf264fbe91cd2eace0048, type: 3}
+    - {fileID: 5756774845066682318, guid: c4b394e872f3bf5429598e62c04ca8fb, type: 3}
   floraPrefabDictionary:
   - {fileID: 5536630880792107103, guid: 904812feb218fa647aece055279f4306, type: 3}
   - {fileID: 8799968536769206395, guid: c8c888c062bff8d46b012569c4128ddb, type: 3}
@@ -237,6 +250,7 @@ MonoBehaviour:
     - {fileID: 5105638685043627507, guid: a3b5cc09f47a4324bb6477d8b7c8abf9, type: 3}
     - {fileID: 482296877811542094, guid: b5c1bf9dd0e90c4429fec5fb73312329, type: 3}
     - {fileID: 528135663882218634, guid: 2bd5f583fd2acaa4d91c2cfac2919c53, type: 3}
+    - {fileID: 6008588029949970648, guid: 94ca11e98b7cfca418b64867836be760, type: 3}
     - {fileID: 6904979407174469119, guid: 321d8a0f0c935044a9c72af0aa25e931, type: 3}
   tileTypeColorDictionary:
     reorderableList:
