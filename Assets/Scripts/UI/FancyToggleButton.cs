@@ -61,6 +61,7 @@ public class FancyToggleButton : Button
                 children.Add(childrenToggleGroup.transform.GetChild(i).GetComponent<FancyToggleButton>());
             }
         }
+        
 
         currentButton = -1;
         base.OnEnable();

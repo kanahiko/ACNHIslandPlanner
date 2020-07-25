@@ -14,13 +14,25 @@ public class ButtonToggleGroup:MonoBehaviour
     void Awake()
     {
         registeredToggleButtons = new HashSet<FancyToggleButton>();
-        activeToggles = new HashSet<FancyToggleButton>();
+        if (activeToggles == null)
+        {
+            activeToggles = new HashSet<FancyToggleButton>();
+        }
     }
     
     
     public void RegisterToggle(FancyToggleButton toggle)
     {
         toggle.onClick.AddListener(() => CheckButtonValue(toggle));
+
+        if (toggle.isOn)
+        {
+            if (activeToggles == null)
+            {
+                activeToggles = new HashSet<FancyToggleButton>();
+            }
+            activeToggles.Add(toggle);
+        }
     }
 
     public void CheckButtonValue(FancyToggleButton toggle)

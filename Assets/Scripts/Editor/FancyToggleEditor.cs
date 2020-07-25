@@ -50,7 +50,7 @@ public class FancyToggleButtonEditor : Editor
 
         toggle.interactable = EditorGUILayout.Toggle("Interactable", toggle.interactable);
 
-        toggle.isOn = EditorGUILayout.Toggle("Is on",toggle.isOn);
+        //toggle.isOn = EditorGUILayout.Toggle("Is on",toggle.isOn);
 
         /*this.serializedObject.Update();
         EditorGUILayout.PropertyField(toggleTransition, new GUIContent("Toggle transition"));

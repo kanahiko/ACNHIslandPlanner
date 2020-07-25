@@ -157,8 +157,8 @@ public class FenceBuilder : MonoBehaviour
                     }
                     else
                     {
-                        MapHolder.decorationsTiles[column, row].isLinked[Util.sortedDirectionalIndexes[i]] = FenceLinked.noFence;
                         RemoveQuarter(column, row, Util.sortedDirectionalIndexes[i]);
+                        MapHolder.decorationsTiles[column, row].isLinked[Util.sortedDirectionalIndexes[i]] = FenceLinked.noFence;
                     }
 
 
@@ -173,8 +173,8 @@ public class FenceBuilder : MonoBehaviour
                 }
                 else
                 {
-                    MapHolder.decorationsTiles[column, row].isLinked[Util.sortedDirectionalIndexes[i]] = FenceLinked.noFence;
                     RemoveQuarter(column, row, Util.sortedDirectionalIndexes[i]);
+                    MapHolder.decorationsTiles[column, row].isLinked[Util.sortedDirectionalIndexes[i]] = FenceLinked.noFence;
                 }
             }
         }
@@ -195,7 +195,6 @@ public class FenceBuilder : MonoBehaviour
         }
         //Debug.Log($"!!---- {column} {row}");
         MapHolder.decorationsTiles[column, row].quarters[rotation] = GetTileFromFencePartLimbo(variation, isLinked == FenceLinked.isLinked);
-
         MapHolder.decorationsTiles[column, row].quarters[rotation].transform.parent = MapHolder.decorationsTiles[column, row].decorationBackground.transform;
         MapHolder.decorationsTiles[column, row].quarters[rotation].transform.localPosition = Util.halfOffset;
         MapHolder.decorationsTiles[column, row].quarters[rotation].transform.localRotation = Quaternion.Euler(0, 90 * rotation, 0);
