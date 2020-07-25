@@ -43,6 +43,9 @@ public class MapPrefabs : ScriptableObject
     public List<VariationList> fencePrefabDictionary;
     public List<GameObject> floraPrefabDictionary;
     public List<GameObject> treePrefabDictionary;
+    public List<FlowerPrefabs> flowerPrefabDictionary;
+    [NonSerialized]
+    public List<FlowerPrefabDictionary> flowerPrefabConvertedDictionary;
 
     public DecorationsSizeDictionary decorationsSizeDictionary;
     public DecorationsMaxCountDictionary maxCount;
@@ -72,6 +75,22 @@ public class MapPrefabs : ScriptableObject
 
         showGridId =Shader.PropertyToID("ShowGrid");
         showElevationId =Shader.PropertyToID("ShowElevation");
+
+        flowerPrefabConvertedDictionary = new List<FlowerPrefabDictionary>();
+        for (int i = 0; i < flowerPrefabDictionary.Count; i++)
+        {
+            FlowerPrefabDictionary dictionary = new FlowerPrefabDictionary();
+
+            for (int j = 0; j < flowerPrefabDictionary[i].flowers.Count; j++)
+            {
+                if (flowerPrefabDictionary[i].flowers[j] != null)
+                {
+                    dictionary.Add((FlowerColors)j,flowerPrefabDictionary[i].flowers[j]);
+                }
+            }
+            
+            flowerPrefabConvertedDictionary.Add(dictionary);
+        }
     }
 
     public void ResetShaders()
@@ -134,6 +153,15 @@ public class BridgeSizeList
         bridgePrefabs = new GameObject[3];
     }
 }
+
+[Serializable]
+public class FlowerPrefabs
+{
+    public List<GameObject> flowers;
+}
+
+[System.Serializable]
+public class FlowerPrefabDictionary : SerializableDictionaryBase<FlowerColors, GameObject> { }
 
 [System.Serializable]
 public class DecorationsPrefabDictionary : SerializableDictionaryBase<DecorationType, GameObject> { }

@@ -60,5 +60,6 @@ Material:
     - Vector1_486515CA: 1
     - Vector1_4EA2BAC: 16
     - Vector1_97C9C261: 0.01
-    m_Colors: []
+    m_Colors:
+    - _ShadowColor: {r: 0.47129402, g: 0.46110716, b: 0.6226415, a: 1}
   m_BuildTextureStacks: []

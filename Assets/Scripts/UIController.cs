@@ -7,9 +7,9 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
-
+    public FancyToggleButton terraFormingToggles;
     public ToggleDictionary toggleDictionary;
-
+    public FancyToggleButton colorToggles;
     public AudioSource click;
 
     private Transform previousToggle;
@@ -19,6 +19,11 @@ public class UIController : MonoBehaviour
 
     public MinimapDecorationsDictionary minimapPinsDictionary;
     public Image cameraPosition;
+    
+    
+    public Canvas minimapParent;
+    public Canvas controlsParent;
+    public Canvas tipsParent;
 
     private void Start()
     {
@@ -39,6 +44,15 @@ public class UIController : MonoBehaviour
         miniMap.texture = texture;
     }
 
+    public void SetTerraformingButton(int type)
+    {
+        if (terraFormingToggles)
+        {
+            terraFormingToggles.WasClicked(type);
+            //toggleDictionary[type].onClick?.Invoke();
+        }
+    }
+    
     public void SetToolButton(ToolType type)
     {
         if (toggleDictionary.ContainsKey(type))
@@ -47,6 +61,16 @@ public class UIController : MonoBehaviour
             //toggleDictionary[type].onClick?.Invoke();
         }
     }
+    
+    public void SetColorButton()
+    {
+        if (colorToggles)
+        {
+            colorToggles.WasClicked();
+            //toggleDictionary[type].onClick?.Invoke();
+        }
+    }
+    
     public void ScaleHoverButton(Transform rect)
     {
         if (previousHover != null)
@@ -80,6 +104,33 @@ public class UIController : MonoBehaviour
             miniMapTransform.transform.localScale = Vector3.one;
             
         }
+    }
+    
+    public void OnMiniMapRightClick(Transform miniMapTransform)
+    {
+        if (miniMapTransform.transform.localScale.x > 0.9f)
+        {
+            miniMapTransform.transform.localScale = Vector3.one * 0.5f;
+        }else
+        {
+            miniMapTransform.transform.localScale = Vector3.one;
+            
+        }
+    }
+
+    public void HideTips()
+    {
+        tipsParent.enabled = !tipsParent.enabled;
+    }
+    
+    public void HideControls()
+    {
+        controlsParent.enabled = !controlsParent.enabled;
+    }
+    
+    public void HideMinimap()
+    {
+        minimapParent.enabled = !minimapParent.enabled;
     }
 }
 

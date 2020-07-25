@@ -590,7 +590,7 @@ public class BridgesBuilder : MonoBehaviour
     }
     public static void RemoveInclinesBeforeLoad(int column, int row)
     {
-        Debug.Log(column + " " + row);
+        //Debug.Log(column + " " + row);
         if (MapHolder.decorationsTiles[column, row] == null ||
             (MapHolder.decorationsTiles[column, row].type != DecorationType.Incline))
         {

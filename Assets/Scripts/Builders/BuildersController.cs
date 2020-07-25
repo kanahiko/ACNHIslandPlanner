@@ -33,9 +33,10 @@ public class BuildersController : MonoBehaviour
         Controller.StartConstructionAction = terrainBuilder.StartConstruction;
         Controller.EndConstructionAction = terrainBuilder.EndConstruction;
         Controller.RebuildMap = RebuildMap;
+        Controller.RebuildEmptyMap = RebuildEmptyMap;
     }
 
-    public void ChangeTile(int column, int row, ToolType tool, ToolMode mode , byte variation, DecorationType decorationType, byte rotation)
+    public void ChangeTile(int column, int row, ToolType tool, ToolMode mode , byte variation, DecorationType decorationType, byte rotation,FlowerColors color)
     {
         switch (tool)
         {
@@ -52,7 +53,7 @@ public class BuildersController : MonoBehaviour
             case ToolType.FlowerPlanting:
             case ToolType.FenceBuilding:
             case ToolType.BuildingsMarkUp:
-                DecorationsBuilder.ChangeTile(column,row,decorationType,tool,mode,rotation, variation);
+                DecorationsBuilder.ChangeTile(column,row,decorationType,tool,mode,rotation, variation, color);
                 break;
             /*case ToolType.BuildingsMarkUp:
                 BuildingsBuilder.ChangeTile(column, row, mode, decorationType);
@@ -61,6 +62,15 @@ public class BuildersController : MonoBehaviour
                 break;
         }
 
+        MapHolder.isDirty = true;
+    }
+
+    void RebuildEmptyMap()
+    {
+        ResetInfluence();
+        DecorationsBuilder.ResetDecorations();
+        LandBuilder.CreateEmptyLand(MapHolder.width, MapHolder.height);
+        MiniMap.RebuildMap();
     }
 
     public static void ResetInfluence()

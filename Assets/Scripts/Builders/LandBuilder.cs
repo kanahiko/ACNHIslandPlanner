@@ -160,27 +160,30 @@ public class LandBuilder : MonoBehaviour
         
         MapHolder.tiles[column, row].variation = 0;
     }
+    
     public static void RebuildSandTile(MapTile tile)
     {
         tile.SoftErase();
         tile.backgroundTile = Instantiate(MapHolder.mapPrefab.prefabDictionary[TilePrefabType.Sand], tile.colliderObject.transform);
     }
+    
     public static void RebuildSandDiagonal(MapTile tile)
     {
         tile.SoftErase(); 
         byte rotation = tile.diagonalRotation;
         int oppositeRotation = Util.SubstractRotation(rotation, 2);
 
-
         tile.backgroundTile = GameObject.Instantiate(MapHolder.mapPrefab.prefabDictionary[tile.backgroundType], tile.colliderObject.transform);
         tile.backgroundTile.transform.localPosition = Util.halfOffset;
         tile.backgroundTile.transform.GetChild(0).localRotation = Quaternion.Euler(0, 90 * rotation, 0);
         tile.diagonalRotation = rotation;
     }
+    
     public static void RebuildSeaTile(MapTile tile)
     {
         tile.SoftErase();
     }
+    
     public static void RebuildSeaDiagonal(MapTile tile)
     {
         tile.SoftErase();
@@ -359,7 +362,8 @@ public class LandBuilder : MonoBehaviour
             else
             {
                 if (MapHolder.tiles[column, row].backgroundType == TilePrefabType.Sand || 
-                    MapHolder.tiles[column, row].backgroundType == TilePrefabType.SandDiagonal)
+                    MapHolder.tiles[column, row].backgroundType == TilePrefabType.SandDiagonal ||
+                    MapHolder.tiles[column, row].backgroundType == TilePrefabType.SandDiagonalLand)
                 {
                     return TileType.Sand;
                 }
@@ -389,7 +393,7 @@ public class LandBuilder : MonoBehaviour
             MapHolder.tiles[column,row].colliderObject.transform);
         MapHolder.tiles[column, row].backgroundTile.transform.localPosition = Util.halfOffset;
         MapHolder.tiles[column, row].backgroundTile.transform.GetChild(0).localRotation = Quaternion.Euler(0,90*rotation,0);
-        MapHolder.tiles[column, row].backgroundType = TilePrefabType.SandDiagonal;
+        MapHolder.tiles[column, row].backgroundType = type;
         MapHolder.tiles[column, row].diagonalRotation = rotation;
     }
     

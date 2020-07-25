@@ -8,7 +8,7 @@ public class PathBuilder
 {
     public static bool CheckPath(int column, int row, TileType previousTileType,ref ToolMode toolMode, byte variation)
     {
-        if (previousTileType == TileType.CliffDiagonal || previousTileType == TileType.Sand || previousTileType == TileType.Sea)
+        if (previousTileType == TileType.CliffDiagonal|| previousTileType == TileType.SandDiagonal  || previousTileType == TileType.Sand || previousTileType == TileType.Sea)
         {
             return false;
         }

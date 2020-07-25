@@ -24,6 +24,8 @@ public class DecorationTiles : IDisposable
 
     public byte variation;
 
+    public FlowerColors color;
+
     public DecorationTiles()
     {
         quarters = new Transform[4];

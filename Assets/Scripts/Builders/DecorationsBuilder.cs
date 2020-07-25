@@ -17,7 +17,7 @@ public class DecorationsBuilder : MonoBehaviour
         MapHolder.decorationsParent = transform;
     }
     
-    public static void ChangeTile(int column, int row, DecorationType type,ToolType tool, ToolMode mode, byte rotation, byte variation = 0)
+    public static void ChangeTile(int column, int row, DecorationType type,ToolType tool, ToolMode mode, byte rotation, byte variation, FlowerColors color)
     {
         //check if tile has something in it
         //add to tile
@@ -32,10 +32,14 @@ public class DecorationsBuilder : MonoBehaviour
             case DecorationType.Flora:
                 NonBuildingsBuilder.ChangeTile(column, row, type, mode, variation);
                 break;
+            case DecorationType.Flower:
+                FlowerBuilder.ChangeTile(column,row,type,mode,variation,color);
+                break;
             case DecorationType.Fence:
                 FenceBuilder.ChangeTile(column,row,mode,variation, (rotation == 0 || rotation == 2));
                 //FenceBuilder
                 break;
+            case DecorationType.Building:
             case DecorationType.Plaza:
             case DecorationType.NookShop:
             case DecorationType.Tailors:
@@ -66,6 +70,9 @@ public class DecorationsBuilder : MonoBehaviour
             {
                 case DecorationType.Fence:
                     FenceBuilder.RebuildTile(column, row, preDecorationTiles[i]);
+                    break;
+                case DecorationType.Flower:
+                    FlowerBuilder.RebuildTile(column, row, preDecorationTiles[i]);
                     break;
                 case DecorationType.Flora:
                 case DecorationType.Tree:
@@ -153,6 +160,9 @@ public class DecorationsBuilder : MonoBehaviour
                             {
                                 BridgesBuilder.RemoveBridgesBeforeLoad(MapHolder.decorationsTiles[j, i].startingColumn, MapHolder.decorationsTiles[j, i].startingRow);
                             }
+                            break;
+                        case DecorationType.Flower:
+                            FlowerBuilder.AddToDecorationLimbo(MapHolder.decorationsTiles[j, i]);
                             break;
                         case DecorationType.Flora:
                         case DecorationType.Tree:

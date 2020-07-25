@@ -182,6 +182,78 @@ MonoBehaviour:
   treePrefabDictionary:
   - {fileID: 7317034837161324369, guid: e91af21b995219148829585a0a359e9f, type: 3}
   - {fileID: 1721413198783520019, guid: 98905b40f015a924784333657d06deb4, type: 3}
+  flowerPrefabDictionary:
+  - flowers:
+    - {fileID: 4534485478008189855, guid: 7cb990c73285b2a43adc0d5d278a8b00, type: 3}
+    - {fileID: 2893087729796333780, guid: a0dcbf9a9cd97c548b59349c80e00514, type: 3}
+    - {fileID: 4880505224942425482, guid: 90988dced9a4da74db774faba146c7db, type: 3}
+    - {fileID: 7904430181075430212, guid: 4055adebc707bad48892b3168e8f8efd, type: 3}
+    - {fileID: 6585072214880780774, guid: 58d841f45f7d761439b5dceb1d1bcd58, type: 3}
+    - {fileID: 637588412371243541, guid: 49e6949a56702cc4e948e2668227cf54, type: 3}
+  - flowers:
+    - {fileID: 1173618229070828179, guid: 7c678786d0bc11a499aa1df0b92bca49, type: 3}
+    - {fileID: 7539802732575692367, guid: 51eb3d02d311e69469b864775048a0f9, type: 3}
+    - {fileID: 3017360785623583749, guid: a03ce69a14709ff45a5d9ea5492fa3cf, type: 3}
+    - {fileID: 7529769512539087285, guid: 795daa05827e66c4786bbfbafa2177b6, type: 3}
+    - {fileID: 505862326358462337, guid: 6e49cfb3466364347956c8124a2f3f72, type: 3}
+    - {fileID: 0}
+    - {fileID: 3973915769436372336, guid: 993d9befcbc13044d8ca289a602e307d, type: 3}
+    - {fileID: 455908738378009879, guid: f6c1a53e77ff2bf4cb623456cb8db31c, type: 3}
+  - flowers:
+    - {fileID: 1286513419116219470, guid: bf78cd5d08d5341499388fc2d30aa5ce, type: 3}
+    - {fileID: 3249056169461282243, guid: 96105fc3e9fbb294b83fb4e766852372, type: 3}
+    - {fileID: 6179687947980331292, guid: ff6a4ff973b7ea946ae2f9b31778b4d3, type: 3}
+    - {fileID: 717190065382855925, guid: 99a9fbf5824d143499f6f5aab1ae3627, type: 3}
+    - {fileID: 2865560994288559184, guid: a939d45f9b595754986ab3832ad734c6, type: 3}
+    - {fileID: 6366887612426614949, guid: ac57e32c295ffe74cb0a36a1b70c84b3, type: 3}
+  - flowers:
+    - {fileID: 8776911960009944928, guid: 9b304ec631311c24cacb2b18c9b7077e, type: 3}
+    - {fileID: 7115171036859487108, guid: 0a75763942e246d4480247828f81e945, type: 3}
+    - {fileID: 6513334091875641979, guid: 6f028537e1e04ad46ab1bd9031fb9d72, type: 3}
+    - {fileID: 356196941138454279, guid: 73f5f36c130061e469a5e2e8507263ca, type: 3}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 2125677109027371297, guid: 05a84f43d0122434a90b2071aacce1fd, type: 3}
+    - {fileID: 2798288545444802212, guid: 853acd0e2d17ed444bac93aa0bf17e9b, type: 3}
+  - flowers:
+    - {fileID: 3403060537554734919, guid: 5626d7a6bbce84045bde206042478f05, type: 3}
+    - {fileID: 8240758823582964629, guid: 66f187d77c2848b44a901f00eb4a6339, type: 3}
+    - {fileID: 7719839825271809876, guid: 25b5d626de13b714cb168b5793033aec, type: 3}
+    - {fileID: 0}
+    - {fileID: 5398919354037090274, guid: f517202f361d54a4088208bec06688c4, type: 3}
+    - {fileID: 0}
+    - {fileID: 3913730769473824839, guid: 2c588fa087cd668479752e5d24aed21e, type: 3}
+    - {fileID: 7843229292218955627, guid: a7b3d28bfdfd5e34ca0ff258b79a2ee3, type: 3}
+  - flowers:
+    - {fileID: 236174237032728570, guid: 57c2dec0a5e47ba4fb6643574efd00e3, type: 3}
+    - {fileID: 4856160315108860388, guid: 23017cd6171a06f4991df2a9f451eea5, type: 3}
+    - {fileID: 7890019370444871343, guid: d0db7a9b5664dc0498aabbab27b2f619, type: 3}
+    - {fileID: 1983829192222408437, guid: 6a6736e4dc9aa834eba622a184c4873a, type: 3}
+    - {fileID: 3159843780226373910, guid: 03b8d78603335774b83f976ed28f5a21, type: 3}
+    - {fileID: 244422079231433253, guid: 0d3cbf1b2d276614892c35aa8a09a9ac, type: 3}
+    - {fileID: 812081803191748527, guid: 70a41913f17b7d342a605b80f3ed7d47, type: 3}
+    - {fileID: 3665660916883100577, guid: 73609332c5eef6741ba84872a34f6d2b, type: 3}
+    - {fileID: 0}
+    - {fileID: 6845009489768108704, guid: 8b413e21f5277e64990c7cf2cad75e60, type: 3}
+  - flowers:
+    - {fileID: 1366545367552614549, guid: bf1ece847ea30294dbf0d85c2f324dc2, type: 3}
+    - {fileID: 6343704007642917070, guid: d0abcb1c13018f84ebb7c9f3f1dc6047, type: 3}
+    - {fileID: 4626406526011408428, guid: 7c74c9a43ba1ba644be3ff78364e2667, type: 3}
+    - {fileID: 3699634127982957209, guid: d90a1e6756a5c7b4896a2c8e47499049, type: 3}
+    - {fileID: 3099348304669112709, guid: 9c6b23c73fd104049bee7317c07af1e4, type: 3}
+    - {fileID: 2489135597015337209, guid: 2bf8200d2f394844d9dfeedede8a81da, type: 3}
+    - {fileID: 0}
+    - {fileID: 7955713800462368215, guid: 77674a8a9c5e0664fa467bfe00714978, type: 3}
+  - flowers:
+    - {fileID: 5259358278009271230, guid: fa1341df74dc6b145b294d9f3852e112, type: 3}
+    - {fileID: 6360432420480595387, guid: cbc3c7584b7b57b4ca09e363b439c7e7, type: 3}
+    - {fileID: 6818688630047272541, guid: 7d5d4107e0b7ec343a5ff838a26ae555, type: 3}
+    - {fileID: 3358372645758887925, guid: 006a38046c545ba44816818c3a39d8c1, type: 3}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 4723194639578471666, guid: cf002b2835e319548877efde74d181cd, type: 3}
+    - {fileID: 7483827507675092301, guid: 18edff3f6f366ca4d860d03bdccfe691, type: 3}
   decorationsSizeDictionary:
     reorderableList:
       canAdd: 1

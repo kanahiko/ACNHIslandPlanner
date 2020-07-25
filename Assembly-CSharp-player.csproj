@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <_TargetFrameworkDirectories>non_empty_path_generated_by_unity.rider.package</_TargetFrameworkDirectories>
@@ -12,8 +11,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <ProjectGuid>{05513dc3-aa5f-dddf-fdbe-2c33c22d3476}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -62,6 +60,7 @@
     <Compile Include="Assets\Scripts\DottedLineCreator.cs" />
     <Compile Include="Assets\Scripts\UI\Test.cs" />
     <Compile Include="Assets\Scripts\Builders\BuildersController.cs" />
+    <Compile Include="Assets\Scripts\Builders\FlowerBuilder.cs" />
     <Compile Include="Assets\Scripts\Builders\BridgesBuilder.cs" />
     <Compile Include="Assets\Rotary Heart\SerializableDictionaryLite\DrawKeyAsPropertyAttribute.cs" />
     <Compile Include="Assets\Scripts\UI\FancyToggleButton.cs" />
@@ -85,6 +84,10 @@
     <Compile Include="Assets\Scripts\Builders\CliffBuilder.cs" />
     <Compile Include="Assets\Scripts\UIOnHover.cs" />
     <Compile Include="Assets\Scripts\TilePreview.cs" />
+    <Compile Include="Assets\Scripts\UI\RightClickButton.cs" />
+    <Compile Include="Assets\Scripts\SaveSystem.cs" />
+    <Compile Include="Assets\Scripts\UI\SaveUI.cs" />
+    <Compile Include="Assets\Scripts\UI\SimpleButton.cs" />
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
       <HintPath>D:/UnityGamez/ACNHIslandPlanner/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
     </Reference>
@@ -100,9 +103,6 @@
     <Reference Include="Unity.RenderPipelines.Universal.Runtime">
       <HintPath>D:/UnityGamez/ACNHIslandPlanner/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Program Files\2020.1.0b15\Editor\Data\Managed\UnityEditor.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>D:/UnityGamez/ACNHIslandPlanner/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
@@ -114,6 +114,9 @@
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
       <HintPath>D:/UnityGamez/ACNHIslandPlanner/Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>D:/UnityGamez/ACNHIslandPlanner/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>D:/Program Files/2020.1.0b15/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/Variations/mono/Managed/UnityEngine.dll</HintPath>
@@ -324,6 +327,9 @@
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>D:/UnityGamez/ACNHIslandPlanner/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro.Editor">
+      <HintPath>D:/UnityGamez/ACNHIslandPlanner/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>D:/Program Files/2020.1.0b15/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

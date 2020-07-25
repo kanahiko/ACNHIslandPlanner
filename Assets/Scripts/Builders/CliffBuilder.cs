@@ -9,7 +9,7 @@ public class CliffBuilder
     public static bool CheckCliff(int column, int row, TileType previousTileType,ref ToolMode toolMode,ref int cliffConstructionElevationLevel, out TileType newType)
     {
         newType = TileType.Land;
-        if (cliffConstructionElevationLevel != MapHolder.tiles[column, row].elevation || previousTileType == TileType.Sand || previousTileType == TileType.Sea)
+        if (cliffConstructionElevationLevel != MapHolder.tiles[column, row].elevation|| previousTileType == TileType.SandDiagonal || previousTileType == TileType.Sand || previousTileType == TileType.Sea)
         {
             return false;
         }

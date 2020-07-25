@@ -115,6 +115,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""SandPermitTool"",
+                    ""type"": ""Button"",
+                    ""id"": ""ae2674e1-f1af-4b68-bb50-6781a30ba98f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""PathPermitTool"",
                     ""type"": ""Button"",
                     ""id"": ""e89f957c-e33a-4428-b26f-07697cf68c2e"",
@@ -139,9 +147,33 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""InclineTool"",
+                    ""type"": ""Button"",
+                    ""id"": ""f42e8b6b-9bcb-4556-a7d0-0e3a9fbcc0b8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""BridgeTool"",
+                    ""type"": ""Button"",
+                    ""id"": ""20741fef-7b27-463e-9dc5-6e702a0cc3cf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""BushTool"",
                     ""type"": ""Button"",
                     ""id"": ""50e2bc62-4838-40dd-bfe9-516c67836dac"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""FlowersTool"",
+                    ""type"": ""Button"",
+                    ""id"": ""4889d753-10ed-4027-aed3-d6859afb4dc8"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -158,6 +190,38 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""name"": ""Rotate"",
                     ""type"": ""Button"",
                     ""id"": ""47cb29f6-cc22-4f23-917a-b2e3b7e34643"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""ColorsScroll"",
+                    ""type"": ""Button"",
+                    ""id"": ""c5496321-d5af-48e2-9922-6da62cc8de6b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Tips"",
+                    ""type"": ""Button"",
+                    ""id"": ""97ed4a05-e598-45a4-9d0b-20cc3d800f89"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""HideControls"",
+                    ""type"": ""Button"",
+                    ""id"": ""2c98ad01-297b-489e-a23c-36d738ebe797"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""HideMiniMap"",
+                    ""type"": ""Button"",
+                    ""id"": ""a1265cc8-84b1-420b-8f0d-5519460b4edc"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -331,30 +395,8 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""96a8f7db-ecc3-4ea5-993b-3322a65e492f"",
-                    ""path"": ""<Keyboard>/3"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard and Mouse"",
-                    ""action"": ""PathPermitTool"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""36f9710b-78b5-470f-95a7-c209f04a331e"",
-                    ""path"": ""<Keyboard>/numpad3"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard and Mouse"",
-                    ""action"": ""PathPermitTool"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""31e6b714-2af9-46cd-bbed-b37c07aebf2f"",
-                    ""path"": ""<Keyboard>/4"",
+                    ""path"": ""<Keyboard>/5"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -365,7 +407,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""16b54a1f-132d-481e-a79a-90d9b53129ba"",
-                    ""path"": ""<Keyboard>/numpad4"",
+                    ""path"": ""<Keyboard>/numpad5"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -497,7 +539,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a723e897-7c81-4e3d-b55b-4fa076a531e7"",
-                    ""path"": ""<Keyboard>/6"",
+                    ""path"": ""<Keyboard>/9"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -508,7 +550,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f247aa73-95ef-4899-b625-aa1e9b308ef3"",
-                    ""path"": ""<Keyboard>/numpad6"",
+                    ""path"": ""<Keyboard>/numpad9"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -519,7 +561,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""5ee8958a-4962-45f8-8a6a-e9f19a891956"",
-                    ""path"": ""<Keyboard>/8"",
+                    ""path"": ""<Keyboard>/0"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -529,8 +571,8 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""6a1fb84f-3137-4ac8-a453-4524d13d3d16"",
-                    ""path"": ""<Keyboard>/numpad8"",
+                    ""id"": ""a3e57b6f-18c9-4d4f-95af-505cd4fdd9e3"",
+                    ""path"": ""<Keyboard>/numpad0"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -541,7 +583,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""45f28111-721f-49c8-b552-9589eb1d247e"",
-                    ""path"": ""<Keyboard>/5"",
+                    ""path"": ""<Keyboard>/6"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
@@ -552,11 +594,154 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0e528dff-fe38-49db-b56a-874744bdbca3"",
-                    ""path"": ""<Keyboard>/numpad5"",
+                    ""path"": ""<Keyboard>/numpad6"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
                     ""action"": ""BuildingsTool"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e5015f3c-aaf2-4885-8e2a-7c9ea7ae5932"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""ColorsScroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a6e8f74d-9db8-4553-bd7f-5780bd31151d"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""SandPermitTool"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""aa644713-7f54-4508-83b0-4f9e15395786"",
+                    ""path"": ""<Keyboard>/numpad3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""SandPermitTool"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""96a8f7db-ecc3-4ea5-993b-3322a65e492f"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""PathPermitTool"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""36f9710b-78b5-470f-95a7-c209f04a331e"",
+                    ""path"": ""<Keyboard>/numpad4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""PathPermitTool"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""39700aea-1e15-4f81-9576-33fc5169bcc2"",
+                    ""path"": ""<Keyboard>/7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""BridgeTool"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c04e725f-5503-47c0-8b5f-889941f5637b"",
+                    ""path"": ""<Keyboard>/numpad7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""BridgeTool"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dafb5225-f44a-4bc9-9a0b-5e6d15923e1f"",
+                    ""path"": ""<Keyboard>/8"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""InclineTool"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e4001d0-374a-4350-b889-5ef774a8e315"",
+                    ""path"": ""<Keyboard>/numpad8"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""InclineTool"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5479f46b-cb05-44ee-ac83-00bcb20fc9b4"",
+                    ""path"": ""<Keyboard>/backquote"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""FlowersTool"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5fcf50ca-45dc-479a-8f78-e1a52b223314"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Tips"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ac80d835-bbcd-404b-91ba-d06d982dcd28"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""HideControls"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e6929481-f07c-43f1-b250-74afb9d96e0a"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""HideMiniMap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -596,12 +781,20 @@ public class @Controls : IInputActionCollection, IDisposable
         m_MapControl_SampleItem = m_MapControl.FindAction("SampleItem", throwIfNotFound: true);
         m_MapControl_CliffConstructionTool = m_MapControl.FindAction("CliffConstructionTool", throwIfNotFound: true);
         m_MapControl_WaterscapingTool = m_MapControl.FindAction("WaterscapingTool", throwIfNotFound: true);
+        m_MapControl_SandPermitTool = m_MapControl.FindAction("SandPermitTool", throwIfNotFound: true);
         m_MapControl_PathPermitTool = m_MapControl.FindAction("PathPermitTool", throwIfNotFound: true);
         m_MapControl_FenceTool = m_MapControl.FindAction("FenceTool", throwIfNotFound: true);
         m_MapControl_BuildingsTool = m_MapControl.FindAction("BuildingsTool", throwIfNotFound: true);
+        m_MapControl_InclineTool = m_MapControl.FindAction("InclineTool", throwIfNotFound: true);
+        m_MapControl_BridgeTool = m_MapControl.FindAction("BridgeTool", throwIfNotFound: true);
         m_MapControl_BushTool = m_MapControl.FindAction("BushTool", throwIfNotFound: true);
+        m_MapControl_FlowersTool = m_MapControl.FindAction("FlowersTool", throwIfNotFound: true);
         m_MapControl_TreeTool = m_MapControl.FindAction("TreeTool", throwIfNotFound: true);
         m_MapControl_Rotate = m_MapControl.FindAction("Rotate", throwIfNotFound: true);
+        m_MapControl_ColorsScroll = m_MapControl.FindAction("ColorsScroll", throwIfNotFound: true);
+        m_MapControl_Tips = m_MapControl.FindAction("Tips", throwIfNotFound: true);
+        m_MapControl_HideControls = m_MapControl.FindAction("HideControls", throwIfNotFound: true);
+        m_MapControl_HideMiniMap = m_MapControl.FindAction("HideMiniMap", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -663,12 +856,20 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_MapControl_SampleItem;
     private readonly InputAction m_MapControl_CliffConstructionTool;
     private readonly InputAction m_MapControl_WaterscapingTool;
+    private readonly InputAction m_MapControl_SandPermitTool;
     private readonly InputAction m_MapControl_PathPermitTool;
     private readonly InputAction m_MapControl_FenceTool;
     private readonly InputAction m_MapControl_BuildingsTool;
+    private readonly InputAction m_MapControl_InclineTool;
+    private readonly InputAction m_MapControl_BridgeTool;
     private readonly InputAction m_MapControl_BushTool;
+    private readonly InputAction m_MapControl_FlowersTool;
     private readonly InputAction m_MapControl_TreeTool;
     private readonly InputAction m_MapControl_Rotate;
+    private readonly InputAction m_MapControl_ColorsScroll;
+    private readonly InputAction m_MapControl_Tips;
+    private readonly InputAction m_MapControl_HideControls;
+    private readonly InputAction m_MapControl_HideMiniMap;
     public struct MapControlActions
     {
         private @Controls m_Wrapper;
@@ -685,12 +886,20 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @SampleItem => m_Wrapper.m_MapControl_SampleItem;
         public InputAction @CliffConstructionTool => m_Wrapper.m_MapControl_CliffConstructionTool;
         public InputAction @WaterscapingTool => m_Wrapper.m_MapControl_WaterscapingTool;
+        public InputAction @SandPermitTool => m_Wrapper.m_MapControl_SandPermitTool;
         public InputAction @PathPermitTool => m_Wrapper.m_MapControl_PathPermitTool;
         public InputAction @FenceTool => m_Wrapper.m_MapControl_FenceTool;
         public InputAction @BuildingsTool => m_Wrapper.m_MapControl_BuildingsTool;
+        public InputAction @InclineTool => m_Wrapper.m_MapControl_InclineTool;
+        public InputAction @BridgeTool => m_Wrapper.m_MapControl_BridgeTool;
         public InputAction @BushTool => m_Wrapper.m_MapControl_BushTool;
+        public InputAction @FlowersTool => m_Wrapper.m_MapControl_FlowersTool;
         public InputAction @TreeTool => m_Wrapper.m_MapControl_TreeTool;
         public InputAction @Rotate => m_Wrapper.m_MapControl_Rotate;
+        public InputAction @ColorsScroll => m_Wrapper.m_MapControl_ColorsScroll;
+        public InputAction @Tips => m_Wrapper.m_MapControl_Tips;
+        public InputAction @HideControls => m_Wrapper.m_MapControl_HideControls;
+        public InputAction @HideMiniMap => m_Wrapper.m_MapControl_HideMiniMap;
         public InputActionMap Get() { return m_Wrapper.m_MapControl; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -736,6 +945,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @WaterscapingTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnWaterscapingTool;
                 @WaterscapingTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnWaterscapingTool;
                 @WaterscapingTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnWaterscapingTool;
+                @SandPermitTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnSandPermitTool;
+                @SandPermitTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnSandPermitTool;
+                @SandPermitTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnSandPermitTool;
                 @PathPermitTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnPathPermitTool;
                 @PathPermitTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnPathPermitTool;
                 @PathPermitTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnPathPermitTool;
@@ -745,15 +957,36 @@ public class @Controls : IInputActionCollection, IDisposable
                 @BuildingsTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBuildingsTool;
                 @BuildingsTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBuildingsTool;
                 @BuildingsTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBuildingsTool;
+                @InclineTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnInclineTool;
+                @InclineTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnInclineTool;
+                @InclineTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnInclineTool;
+                @BridgeTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBridgeTool;
+                @BridgeTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBridgeTool;
+                @BridgeTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBridgeTool;
                 @BushTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBushTool;
                 @BushTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBushTool;
                 @BushTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnBushTool;
+                @FlowersTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnFlowersTool;
+                @FlowersTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnFlowersTool;
+                @FlowersTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnFlowersTool;
                 @TreeTool.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnTreeTool;
                 @TreeTool.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnTreeTool;
                 @TreeTool.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnTreeTool;
                 @Rotate.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnRotate;
                 @Rotate.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnRotate;
                 @Rotate.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnRotate;
+                @ColorsScroll.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnColorsScroll;
+                @ColorsScroll.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnColorsScroll;
+                @ColorsScroll.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnColorsScroll;
+                @Tips.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnTips;
+                @Tips.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnTips;
+                @Tips.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnTips;
+                @HideControls.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnHideControls;
+                @HideControls.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnHideControls;
+                @HideControls.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnHideControls;
+                @HideMiniMap.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnHideMiniMap;
+                @HideMiniMap.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnHideMiniMap;
+                @HideMiniMap.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnHideMiniMap;
             }
             m_Wrapper.m_MapControlActionsCallbackInterface = instance;
             if (instance != null)
@@ -794,6 +1027,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @WaterscapingTool.started += instance.OnWaterscapingTool;
                 @WaterscapingTool.performed += instance.OnWaterscapingTool;
                 @WaterscapingTool.canceled += instance.OnWaterscapingTool;
+                @SandPermitTool.started += instance.OnSandPermitTool;
+                @SandPermitTool.performed += instance.OnSandPermitTool;
+                @SandPermitTool.canceled += instance.OnSandPermitTool;
                 @PathPermitTool.started += instance.OnPathPermitTool;
                 @PathPermitTool.performed += instance.OnPathPermitTool;
                 @PathPermitTool.canceled += instance.OnPathPermitTool;
@@ -803,15 +1039,36 @@ public class @Controls : IInputActionCollection, IDisposable
                 @BuildingsTool.started += instance.OnBuildingsTool;
                 @BuildingsTool.performed += instance.OnBuildingsTool;
                 @BuildingsTool.canceled += instance.OnBuildingsTool;
+                @InclineTool.started += instance.OnInclineTool;
+                @InclineTool.performed += instance.OnInclineTool;
+                @InclineTool.canceled += instance.OnInclineTool;
+                @BridgeTool.started += instance.OnBridgeTool;
+                @BridgeTool.performed += instance.OnBridgeTool;
+                @BridgeTool.canceled += instance.OnBridgeTool;
                 @BushTool.started += instance.OnBushTool;
                 @BushTool.performed += instance.OnBushTool;
                 @BushTool.canceled += instance.OnBushTool;
+                @FlowersTool.started += instance.OnFlowersTool;
+                @FlowersTool.performed += instance.OnFlowersTool;
+                @FlowersTool.canceled += instance.OnFlowersTool;
                 @TreeTool.started += instance.OnTreeTool;
                 @TreeTool.performed += instance.OnTreeTool;
                 @TreeTool.canceled += instance.OnTreeTool;
                 @Rotate.started += instance.OnRotate;
                 @Rotate.performed += instance.OnRotate;
                 @Rotate.canceled += instance.OnRotate;
+                @ColorsScroll.started += instance.OnColorsScroll;
+                @ColorsScroll.performed += instance.OnColorsScroll;
+                @ColorsScroll.canceled += instance.OnColorsScroll;
+                @Tips.started += instance.OnTips;
+                @Tips.performed += instance.OnTips;
+                @Tips.canceled += instance.OnTips;
+                @HideControls.started += instance.OnHideControls;
+                @HideControls.performed += instance.OnHideControls;
+                @HideControls.canceled += instance.OnHideControls;
+                @HideMiniMap.started += instance.OnHideMiniMap;
+                @HideMiniMap.performed += instance.OnHideMiniMap;
+                @HideMiniMap.canceled += instance.OnHideMiniMap;
             }
         }
     }
@@ -839,11 +1096,19 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnSampleItem(InputAction.CallbackContext context);
         void OnCliffConstructionTool(InputAction.CallbackContext context);
         void OnWaterscapingTool(InputAction.CallbackContext context);
+        void OnSandPermitTool(InputAction.CallbackContext context);
         void OnPathPermitTool(InputAction.CallbackContext context);
         void OnFenceTool(InputAction.CallbackContext context);
         void OnBuildingsTool(InputAction.CallbackContext context);
+        void OnInclineTool(InputAction.CallbackContext context);
+        void OnBridgeTool(InputAction.CallbackContext context);
         void OnBushTool(InputAction.CallbackContext context);
+        void OnFlowersTool(InputAction.CallbackContext context);
         void OnTreeTool(InputAction.CallbackContext context);
         void OnRotate(InputAction.CallbackContext context);
+        void OnColorsScroll(InputAction.CallbackContext context);
+        void OnTips(InputAction.CallbackContext context);
+        void OnHideControls(InputAction.CallbackContext context);
+        void OnHideMiniMap(InputAction.CallbackContext context);
     }
 }

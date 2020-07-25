@@ -5,7 +5,7 @@ public class WaterBuilder
     
     public static bool CheckWater(int column, int row, TileType previousTileType,ref ToolMode toolMode)
     {
-        if (previousTileType == TileType.CliffDiagonal || previousTileType == TileType.Sand || previousTileType == TileType.Sea)
+        if (previousTileType == TileType.CliffDiagonal|| previousTileType == TileType.SandDiagonal || previousTileType == TileType.Sand || previousTileType == TileType.Sea)
         {
             return false;
         }

@@ -55,7 +55,20 @@
             "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"91f598cd-7368-4f88-aeee-9520064abbe1\"\n    },\n    \"m_Name\": \"ShowElevation\",\n    \"m_DefaultReferenceName\": \"Vector1_9F911990\",\n    \"m_OverrideReferenceName\": \"ShowElevation\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Precision\": 0,\n    \"m_GPUInstanced\": false,\n    \"m_Hidden\": false,\n    \"m_Value\": 0.0,\n    \"m_FloatType\": 0,\n    \"m_RangeValues\": {\n        \"x\": 0.0,\n        \"y\": 1.0\n    }\n}"
         }
     ],
-    "m_SerializedKeywords": [],
+    "m_SerializedKeywords": [
+        {
+            "typeInfo": {
+                "fullName": "UnityEditor.ShaderGraph.ShaderKeyword"
+            },
+            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"a9aee15b-f9a7-4186-889b-64003142daeb\"\n    },\n    \"m_Name\": \"_SHADOW_SOFT\",\n    \"m_DefaultReferenceName\": \"BOOLEAN_5CCE85B_ON\",\n    \"m_OverrideReferenceName\": \"_SHADOW_SOFT\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_KeywordType\": 0,\n    \"m_KeywordDefinition\": 1,\n    \"m_KeywordScope\": 1,\n    \"m_Entries\": [],\n    \"m_Value\": 1,\n    \"m_IsEditable\": true,\n    \"m_IsExposable\": true\n}"
+        },
+        {
+            "typeInfo": {
+                "fullName": "UnityEditor.ShaderGraph.ShaderKeyword"
+            },
+            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"44657f8d-0095-4a30-b95c-012e98b69681\"\n    },\n    \"m_Name\": \"multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE\",\n    \"m_DefaultReferenceName\": \"BOOLEAN_6E62D473_ON\",\n    \"m_OverrideReferenceName\": \"_MAIN_LIGHT_SHADOWS_CASCADE\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_KeywordType\": 0,\n    \"m_KeywordDefinition\": 0,\n    \"m_KeywordScope\": 1,\n    \"m_Entries\": [],\n    \"m_Value\": 1,\n    \"m_IsEditable\": true,\n    \"m_IsExposable\": true\n}"
+        }
+    ],
     "m_SerializableNodes": [
         {
             "typeInfo": {

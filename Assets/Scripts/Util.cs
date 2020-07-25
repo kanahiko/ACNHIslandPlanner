@@ -56,7 +56,8 @@ public enum ToolMode
 
 public enum DecorationType
 {
-   Null = 13, Fence = 0, Plaza = 1, NookShop = 2, Tailors = 3, Museum = 4, PlayerHouse = 5, House =6, Incline =7, Bridge = 8, Camp =9, Flora = 10, Tree = 11, Building = 12
+   Null = 13, Fence = 0, Plaza = 1, NookShop = 2, Tailors = 3, Museum = 4, PlayerHouse = 5, House =6, Incline =7, Bridge = 8, Camp =9, Flora = 10, Tree = 11, Building = 12,
+    Flower = 14
 }
 
 public enum FenceType
@@ -77,6 +78,11 @@ public enum BuildingInfluence
 public enum FenceLinked
 {
     noFence = 0, noLink = 1, isLinked = 2
+}
+
+public enum FlowerColors
+{
+    Red =0, White = 1, Yellow = 2, Pink = 3, Orange = 4, Black = 5, Blue = 6, Purple = 7, Green = 8, Gold = 9
 }
 
 [Serializable]
@@ -110,7 +116,7 @@ public static  class Util
         };
     
     public static Vector3 halfOffset = new Vector3(0.5f, 0, 0.5f);
-    public static Vector3 cullingPosition = new Vector3(0, 50, 0);
+    public static Vector3 cullingPosition = new Vector3(50, 0, 50);
 
     /// <summary>
     /// x - row, y - column
@@ -160,6 +166,22 @@ public static  class Util
      {
         Quaternion.identity, Quaternion.Euler(0,45,0), Quaternion.Euler(0,90,0), Quaternion.Euler(0,-45,0)
      };
+    
+    public static Dictionary<ToolType, DecorationType> toolToDecorationType = new Dictionary<ToolType, DecorationType>
+    {
+        {ToolType.Waterscaping, DecorationType.Null},
+        {ToolType.CliffConstruction, DecorationType.Null},
+        {ToolType.SandPermit, DecorationType.Null},
+        {ToolType.PathPermit, DecorationType.Null},
+        {ToolType.FenceBuilding, DecorationType.Fence},
+        {ToolType.FlowerPlanting, DecorationType.Flower},
+        {ToolType.BushPlanting, DecorationType.Flora},
+        {ToolType.TreePlanting, DecorationType.Tree},
+        {ToolType.BridgeMarkUp, DecorationType.Bridge},
+        {ToolType.InclineMarkUp, DecorationType.Incline},
+        {ToolType.BuildingsMarkUp, DecorationType.Building}
+        
+    };
 
     public static T[,] RotateMatrix<T>(T[,] corners)
     {
@@ -179,6 +201,7 @@ public static  class Util
 
         return newMatrix;
     }
+    
 
     public static byte SubstractRotation(int rotation, int subtrahend)
     {
@@ -619,7 +642,7 @@ public static  class Util
 
     public static bool CoordinateOnBorderChunks(int column, int row)
     {
-        return (column <= 16 || column > MapHolder.width - 16) || (row <= 16 || row > MapHolder.height - 16);
+        return (column < 16 || column + 1 > MapHolder.width - 16) || (row < 16 || row + 1 > MapHolder.height - 16);
     }
 
     public static bool IsOnLandSandBorder(int column, int row)

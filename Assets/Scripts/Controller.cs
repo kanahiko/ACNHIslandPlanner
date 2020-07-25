@@ -11,6 +11,7 @@ public class Controller : MonoBehaviour
 {
     public BuildersController buildersController;
     public UIController controller;
+    public SaveUI saveUI;
     
     public Vector2 playerFieldSizeMin = new Vector2(0, 0);
     public Vector2 playerFieldSizeMax = new Vector2(0, -3.5f);
@@ -27,7 +28,6 @@ public class Controller : MonoBehaviour
     public Camera mainCamera;
     public Transform playerCamera;
     public Transform playerZoomCamera;
-
     
     [Range(0, 10)]
     public float speed;
@@ -43,11 +43,13 @@ public class Controller : MonoBehaviour
     //public float timeBetweenClicks = 0.1f;
 
     //checks how much zoomed in or out
-    float currentScroll = 0;
+    public CameraInfo cameraInfo;
+    
+    //float currentScroll = 0;
     //of scroll
     Vector3 currentPosition;
 
-    bool isCameraParallelToGround = false;
+    //bool isCameraParallelToGround = false;
     float cameraDegrees = 45;
     bool cameraChanged;
     Vector2 mousePos;
@@ -61,13 +63,14 @@ public class Controller : MonoBehaviour
     DecorationType currentDecorationTool;
     byte rotation = 0;
     byte variation = 0;
+    FlowerColors color = FlowerColors.Red;
     int currentBlockX = -1;
     int currentBlockY = -1;
 
     int prevBlockX = -1;
     int prevBlockY = -1;
 
-    public static Action<int, int, ToolType, ToolMode, byte, DecorationType, byte> ChangeTile;
+    public static Action<int, int, ToolType, ToolMode, byte, DecorationType, byte, FlowerColors> ChangeTile;
     public static Action<int, int> StartConstructionAction;
     public static Action EndConstructionAction;
 
@@ -78,10 +81,9 @@ public class Controller : MonoBehaviour
 
     Controls controls;
     public static Action<Dictionary<Vector2Int, List<Vector2Int>>, List<PreDecorationTile>> RebuildMap;
-
-    //private float timeElapsedSinceClick;
-
-
+    public static Action RebuildEmptyMap;
+    private int colorEnumCount = Enum.GetValues(typeof(FlowerColors)).Length;
+    
     private void Awake()
     {
         ChangeCursor = cursor.ChangeTile;
@@ -108,13 +110,17 @@ public class Controller : MonoBehaviour
         controls.MapControl.SpeedChange.canceled += ctx => currentSpeedMultiplier = 1;
 
         //placing items controls
-        controls.MapControl.WaterscapingTool.performed += ctx => controller.SetToolButton(ToolType.Waterscaping);
-        controls.MapControl.CliffConstructionTool.performed += ctx => controller.SetToolButton(ToolType.CliffConstruction);
+        controls.MapControl.CliffConstructionTool.performed += ctx => controller.SetTerraformingButton(0);
+        controls.MapControl.WaterscapingTool.performed += ctx => controller.SetTerraformingButton(1);
+        controls.MapControl.SandPermitTool.performed += ctx => controller.SetTerraformingButton(2);
         controls.MapControl.PathPermitTool.performed += ctx => controller.SetToolButton(ToolType.PathPermit);
         controls.MapControl.FenceTool.performed += ctx => controller.SetToolButton(ToolType.FenceBuilding);
         controls.MapControl.BushTool.performed += ctx => controller.SetToolButton(ToolType.BushPlanting);
         controls.MapControl.TreeTool.performed += ctx => controller.SetToolButton(ToolType.TreePlanting);
         controls.MapControl.BuildingsTool.performed += ctx => controller.SetToolButton(ToolType.BuildingsMarkUp);
+        controls.MapControl.InclineTool.performed += ctx => controller.SetToolButton(ToolType.InclineMarkUp);
+        controls.MapControl.BridgeTool.performed += ctx => controller.SetToolButton(ToolType.BridgeMarkUp);
+        controls.MapControl.FlowersTool.performed += ctx => controller.SetToolButton(ToolType.FlowerPlanting);
 
         controls.MapControl.PlaceItem.performed += ctx =>
         {
@@ -131,11 +137,41 @@ public class Controller : MonoBehaviour
         controls.MapControl.SampleItem.performed += ctx => SampleItem();
 
         controls.MapControl.Rotate.performed += ctx => Rotate();
+        controls.MapControl.ColorsScroll.performed += ctx => ScrollColors();
+
+        controls.MapControl.HideControls.performed += ctx => controller.HideControls();
+        controls.MapControl.HideMiniMap.performed += ctx => controller.HideMinimap();
+        controls.MapControl.Tips.performed += ctx => controller.HideTips();
+        
+        
         
         construct = ToolMode.None;
 
+        cameraInfo = new CameraInfo();
+        cameraInfo.position = new Vector3();
+
+        SaveSystem.cameraInfo = cameraInfo;
+        SaveSystem.LoadCameraInfo += LoadMap;
+        saveUI.Pause = Pause;
     }
-    
+
+    private void ScrollColors()
+    {
+        if (currentTool != ToolType.FlowerPlanting)
+        {
+            return;
+        }
+        int currentColor = (int) color;
+        currentColor++;
+        if (currentColor >= colorEnumCount)
+        {
+            currentColor = 0;
+        }
+
+        color = (FlowerColors) currentColor;
+        controller.SetColorButton();
+    }
+
 
     void SetToolButton(ToolType type)
     {
@@ -147,7 +183,7 @@ public class Controller : MonoBehaviour
         playerFieldSizeMin.y = playerFieldSizeMax.y - MapHolder.height;
         playerFieldSizeMax.x = MapHolder.width;
 
-        currentScroll = defaultScroll;
+        cameraInfo.currentScroll = defaultScroll;
         currentPosition = playerZoomCamera.localPosition;
         cameraDegrees = playerZoomCamera.localRotation.eulerAngles.x;
         CalculateScroll();
@@ -239,7 +275,7 @@ public class Controller : MonoBehaviour
         }
 
         playerCamera.localPosition = currentPosition;
-        
+        cameraInfo.position = currentPosition;
         if (cameraChangedHere)
         {
             UpdateCameraPositionOnTheMap();
@@ -251,12 +287,12 @@ public class Controller : MonoBehaviour
     {
         Vector3 position = playerCamera.position - buildersController.offsetTerrain;
         
-        ChangeCameraPosition?.Invoke(new Vector2(position.x,Mathf.Abs(position.z)), Mathf.Abs((currentScroll - scrollMinMax.y)/scrollMinMax.y));
+        ChangeCameraPosition?.Invoke(new Vector2(position.x,Mathf.Abs(position.z)), Mathf.Abs((cameraInfo.currentScroll - scrollMinMax.y)/scrollMinMax.y));
     }
 
     void HandleTilt()
     {
-        if (isCameraParallelToGround)
+        if (cameraInfo.isCameraParallelToGround)
         {
             playerZoomCamera.localPosition = Vector3.zero;
             playerZoomCamera.localRotation = Quaternion.Euler(cameraDegrees, 0, 0);
@@ -272,7 +308,7 @@ public class Controller : MonoBehaviour
         currentPosition = playerZoomCamera.localPosition;
 
         cameraChanged = true;
-        isCameraParallelToGround = !isCameraParallelToGround;
+        cameraInfo.isCameraParallelToGround = !cameraInfo.isCameraParallelToGround;
 
         CalculateScroll();
     }
@@ -281,8 +317,8 @@ public class Controller : MonoBehaviour
     {
         if (Mathf.Abs(scroll) > 0.01f)
         {
-            currentScroll += scroll * scrollSpeed * currentSpeedMultiplier *Time.deltaTime;
-            currentScroll = Mathf.Clamp(currentScroll, scrollMinMax.x, scrollMinMax.y);
+            cameraInfo.currentScroll += scroll * scrollSpeed * currentSpeedMultiplier *Time.deltaTime;
+            cameraInfo.currentScroll = Mathf.Clamp(cameraInfo.currentScroll, scrollMinMax.x, scrollMinMax.y);
 
             CalculateScroll();
             cameraChanged = true;
@@ -291,17 +327,17 @@ public class Controller : MonoBehaviour
     void CalculateScroll()
     {
         var normal = playerZoomCamera.forward;
-        scrollOffset = normal * currentScroll;
+        scrollOffset = normal * cameraInfo.currentScroll;
         playerZoomCamera.localPosition = currentPosition +scrollOffset;
     }
 
-    void LoadMap(CameraInfo loadedCamera)
+    void LoadMap()
     {
         cameraChanged = true;
-        isCameraParallelToGround = !loadedCamera.isTilted;
-        currentScroll = loadedCamera.currentScroll;
+        cameraInfo.isCameraParallelToGround = !cameraInfo.isCameraParallelToGround;
+        cameraInfo.currentScroll = cameraInfo.currentScroll;
         HandleTilt();
-        playerCamera.localPosition = loadedCamera.position;
+        playerCamera.localPosition = cameraInfo.position;
         UpdateCameraPositionOnTheMap();
     }
 
@@ -363,13 +399,14 @@ public class Controller : MonoBehaviour
                 }
             }
 
-            ChangeTile?.Invoke(currentBlockX, Mathf.Abs(currentBlockY), currentTool, construct, variation, currentDecorationTool, rotation);
+            ChangeTile?.Invoke(currentBlockX, Mathf.Abs(currentBlockY), currentTool, construct, variation, currentDecorationTool, rotation, color);
 
             prevBlockX = currentBlockX;
             prevBlockY = currentBlockY;
         }
     }
 
+    //TODO: dooo
     private void SampleItem()
     {
         if (currentBlockX != -1)
@@ -401,130 +438,64 @@ public class Controller : MonoBehaviour
 
     public void WaterscapingButtonClick()
     {
-        if (currentTool != ToolType.Waterscaping)
-        {
-            variation = 0;
-            rotation = 0;
-            ChangeCursor.Invoke(DecorationType.Null, 0);
-            currentDecorationTool = DecorationType.Null;
-            ToolChange(ToolType.Waterscaping);
-        }
+        ToolChange(ToolType.Waterscaping);
     }
     
     public void CliffConstructionButtonClick()
     {
-        if (currentTool != ToolType.CliffConstruction)
-        {
-            variation = 0;
-            rotation = 0;
-            ChangeCursor.Invoke(DecorationType.Null, 0);
-            currentDecorationTool = DecorationType.Null;
-            ToolChange(ToolType.CliffConstruction);
-        }
+        ToolChange(ToolType.CliffConstruction);
     }
     public void SandPermitButtonClick()
     {
-        if (currentTool != ToolType.SandPermit)
-        {
-            variation = 0;
-            rotation = 0;
-            ChangeCursor.Invoke(DecorationType.Null, 0);
-            currentDecorationTool = DecorationType.Null;
-            ToolChange(ToolType.SandPermit);
-        }
+        ToolChange(ToolType.SandPermit);
     }
 
     public void PathPermitButtonClick()
     {
-        if (currentTool != ToolType.PathPermit)
-        {
-            rotation = 0;
-            ChangeCursor.Invoke(DecorationType.Null, 0);
-            currentDecorationTool = DecorationType.Null;
-            ToolChange(ToolType.PathPermit);
-        }
+        ToolChange(ToolType.PathPermit);
     }
 
     public void FencePermitButtonClick()
     {
-        if (currentTool != ToolType.FenceBuilding)
-        {
-            rotation = 0;
-            currentDecorationTool = DecorationType.Fence;
-            ToolChange(ToolType.FenceBuilding);
-        }
+        ToolChange(ToolType.FenceBuilding);
     }
     public void BushPermitButtonClick()
     {
-        if (currentTool != ToolType.BushPlanting)
-        {
-            rotation = 0;
-            currentDecorationTool = DecorationType.Flora;
-            ToolChange(ToolType.BushPlanting);
-        }
+        ToolChange(ToolType.BushPlanting);
     }
     
     public void TreePermitButtonClick()
     {
-        if (currentTool != ToolType.TreePlanting)
-        {
-            rotation = 0;
-            currentDecorationTool = DecorationType.Tree;
-            ToolChange(ToolType.TreePlanting);
-        }
+        ToolChange(ToolType.TreePlanting);
     }
     public void BuildingsPermitButtonClick()
     {
-        if (currentTool != ToolType.BuildingsMarkUp)
-        {
-            rotation = 0;
-            currentDecorationTool = DecorationType.House;
-            ToolChange(ToolType.BuildingsMarkUp);
-        }
+        ToolChange(ToolType.BuildingsMarkUp);
     }
     
     public void InclinePermitButtonClick()
     {
-        if (currentTool != ToolType.InclineMarkUp)
-        {
-            rotation = 0;
-            currentDecorationTool = DecorationType.Incline;
-            ToolChange(ToolType.InclineMarkUp);
-        }
+        ToolChange(ToolType.InclineMarkUp);
     }
     public void BridgePermitButtonClick()
     {
-        if (currentTool != ToolType.BridgeMarkUp)
-        {
-            rotation = 0;
-            currentDecorationTool = DecorationType.Bridge;
-            ToolChange(ToolType.BridgeMarkUp);
-        }
+        ToolChange(ToolType.BridgeMarkUp);
+    }
+    public void FlowerPermitButtonClick()
+    {
+        ToolChange(ToolType.FlowerPlanting);
     }
 
     public void ChooseVariation(int variation)
     {
         this.variation = (byte)variation;
-        switch (currentTool)
+        if (currentTool == ToolType.BuildingsMarkUp)
         {
-            case ToolType.BridgeMarkUp:
-                ChangeCursor.Invoke(DecorationType.Bridge,this.variation);
-                break;
-            case ToolType.InclineMarkUp:
-                ChangeCursor.Invoke(DecorationType.Incline,this.variation);
-                break;
-            case ToolType.TreePlanting:
-                ChangeCursor.Invoke(DecorationType.Tree, this.variation);
-                break;
-            case ToolType.BushPlanting:
-                ChangeCursor.Invoke(DecorationType.Flora, this.variation);
-                break;
-            case ToolType.FenceBuilding:
-                ChangeCursor.Invoke(DecorationType.Fence, this.variation);
-                break;
-            case ToolType.BuildingsMarkUp:
-                ChangeCursor.Invoke((DecorationType)variation, 0);
-                break;
+            ChangeCursor.Invoke((DecorationType)variation, 0);
+        }
+        else
+        {
+            ChangeCursor.Invoke(currentDecorationTool,this.variation);
         }
     }
 
@@ -533,13 +504,55 @@ public class Controller : MonoBehaviour
         currentDecorationTool = (DecorationType) newBuilding;
     }
 
+    public void ChangeColor(int color)
+    {
+        this.color = (FlowerColors) color;
+    }
+
     public void ToolChange(ToolType tool)
     {
-        currentTool = tool;
+        if (currentTool != tool)
+        {
+            currentTool = tool;
+            rotation = 0;
+            currentDecorationTool = Util.toolToDecorationType[tool];
+            if (currentDecorationTool == DecorationType.Null)
+            {
+                variation = 0;
+            }
+            ChangeCursor.Invoke(currentDecorationTool, variation);
+        }
     }
     
     
+    
+    /*public void SaveButton()
+    {
+        CameraInfo cameraInfo = new CameraInfo();
+        cameraInfo.position = playerCamera.localPosition;
+        cameraInfo.currentScroll = currentScroll;
+        cameraInfo.isTilted = isCameraParallelToGround;
+        SaveSystem.Save(cameraInfo);
+    }*/
 
+    /*public void LoadButton()
+    {
+       CameraInfo info = SaveSystem.Load();
+       LoadMap(info);
+    }*/
+
+    public void Pause(bool isPaused)
+    {
+        if (isPaused)
+        {
+            controls.MapControl.Disable();
+        }
+        else
+        {
+            controls.MapControl.Enable();
+        }
+    }
+    
     private void OnEnable()
     {
         controls.MapControl.Enable();
@@ -553,21 +566,5 @@ public class Controller : MonoBehaviour
     private void OnApplicationQuit()
     {
         MapHolder.mapPrefab.ResetShaders();
-    }
-
-
-    public void SaveButton()
-    {
-        CameraInfo cameraInfo = new CameraInfo();
-        cameraInfo.position = playerCamera.localPosition;
-        cameraInfo.currentScroll = currentScroll;
-        cameraInfo.isTilted = isCameraParallelToGround;
-        MapHolder.Save(cameraInfo);
-    }
-
-    public void LoadButton()
-    {
-       CameraInfo info = MapHolder.Load();
-       LoadMap(info);
     }
 }

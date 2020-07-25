@@ -28,7 +28,9 @@ public class FancyToggleButton : Button
     private List<FancyToggleButton> children;
 
     private int currentButton = -1;
-    
+    public Color borderColor;
+    public Color selectedColor;
+
     protected override void OnEnable()
     {
         toggleGroup?.RegisterToggle(this);
@@ -36,6 +38,7 @@ public class FancyToggleButton : Button
         if (borderImage)
         {
             borderSize = borderImage.transform.localScale;
+            //borderImage.color = normalColor;
         }
 
         if (backgroundImage)
@@ -46,6 +49,7 @@ public class FancyToggleButton : Button
         if (graphic)
         {
             graphic.enabled = isOn;
+            //graphic.color = pressedColor;
         }
 
         if (childrenToggleGroup)
@@ -77,6 +81,23 @@ public class FancyToggleButton : Button
         else
         {
             onClick?.Invoke();
+        }
+    }
+    
+    public void WasClicked(int button)
+    {
+        if (childrenToggleGroup)
+        {
+            currentButton = button;
+            previousButton = children[currentButton];
+            if (isOn)
+            {
+                children[currentButton].onClick?.Invoke();
+            }
+            else
+            {
+                onClick?.Invoke();
+            }
         }
     }
 
@@ -161,7 +182,14 @@ public class FancyToggleButton : Button
         if (borderImage)
         { 
             borderImage.transform.localScale = hoverBorderSize;
+        }
+
+        if (backgroundImage)
+        {
             backgroundImage.transform.localScale = hoverBorderSize;
+        }
+        if (graphic)
+        {
             graphic.transform.localScale = hoverBorderSize;
         }
 
@@ -173,7 +201,13 @@ public class FancyToggleButton : Button
         if (borderImage)
         {
             borderImage.transform.localScale = borderSize;
+        }
+        if (backgroundImage)
+        {
             backgroundImage.transform.localScale = borderSize;
+        }
+        if (graphic)
+        {
             graphic.transform.localScale = borderSize;
         }
         base.OnPointerExit(eventData);

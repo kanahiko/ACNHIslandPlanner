@@ -15,6 +15,7 @@ public class TilePreview : MonoBehaviour
     public List<Transform> previewFence;
     public List<Transform> previewIncline;
     public List<BridgeSizeList> previewBridge;
+    public List<Transform> previewFlower;
 
     public Transform nullPreview;
 
@@ -45,6 +46,15 @@ public class TilePreview : MonoBehaviour
                 }
 
                 break;
+            case DecorationType.Flower:
+                if (previewFlower.Count < variation + 1)
+                {
+                    preview = previewFlower[previewFlower.Count - 1];
+                }else
+                {
+                    preview = previewFlower[variation];
+                }
+                break;
             case DecorationType.Flora:
                 if (previewFlora.Count < variation + 1)
                 {
@@ -64,7 +74,6 @@ public class TilePreview : MonoBehaviour
                     preview = previewTree[variation];
                 }
                 break;
-            
             case DecorationType.Incline:
                 
                 if (previewIncline.Count < variation + 1)
