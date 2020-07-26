@@ -78,7 +78,7 @@ public class TilePreview : MonoBehaviour
                 
                 if (previewIncline.Count < variation + 1)
                 {
-                    preview = nullPreview;
+                    preview = previewIncline[0];
                 }
                 else
                 {

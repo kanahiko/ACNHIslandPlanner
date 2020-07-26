@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RotaryHeart", "RotaryHeart.csproj", "{4c9a66a7-9e67-441f-bff0-0b7e795f6f36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-player", "Assembly-CSharp-player.csproj", "{05513dc3-aa5f-dddf-fdbe-2c33c22d3476}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{4c9a66a7-9e67-441f-bff0-0b7e795f6f36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4c9a66a7-9e67-441f-bff0-0b7e795f6f36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4c9a66a7-9e67-441f-bff0-0b7e795f6f36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05513dc3-aa5f-dddf-fdbe-2c33c22d3476}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05513dc3-aa5f-dddf-fdbe-2c33c22d3476}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05513dc3-aa5f-dddf-fdbe-2c33c22d3476}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05513dc3-aa5f-dddf-fdbe-2c33c22d3476}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
