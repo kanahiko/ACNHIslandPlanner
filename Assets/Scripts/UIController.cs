@@ -61,6 +61,20 @@ public class UIController : MonoBehaviour
             //toggleDictionary[type].onClick?.Invoke();
         }
     }
+
+    public void SetNewTool(ToolType type, int variation, FlowerColors color)
+    {
+        if (toggleDictionary.ContainsKey(type))
+        {
+            toggleDictionary[type].WasClicked(variation);
+
+            if (type == ToolType.FlowerPlanting)
+            {
+
+                colorToggles.WasClicked((int)color);
+            }
+        }
+    }
     
     public void SetColorButton()
     {

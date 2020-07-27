@@ -103,6 +103,7 @@ public class TilePreview : MonoBehaviour
             case DecorationType.House:
             case DecorationType.Camp:
             case DecorationType.Building:
+            case DecorationType.Rock:
                 if (!previewBuilding.ContainsKey(type))
                 {
                     preview = nullPreview;

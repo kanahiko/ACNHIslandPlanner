@@ -57,7 +57,7 @@ public enum ToolMode
 public enum DecorationType
 {
    Null = 13, Fence = 0, Plaza = 1, NookShop = 2, Tailors = 3, Museum = 4, PlayerHouse = 5, House =6, Incline =7, Bridge = 8, Camp =9, Flora = 10, Tree = 11, Building = 12,
-    Flower = 14
+    Flower = 14, Rock = 15
 }
 
 public enum FenceType

@@ -334,8 +334,10 @@ public class Controller : MonoBehaviour
     void LoadMap()
     {
         cameraChanged = true;
+        //cause it will be flipped in HandleTilt
+        //so i preflipped it
         cameraInfo.isCameraParallelToGround = !cameraInfo.isCameraParallelToGround;
-        cameraInfo.currentScroll = cameraInfo.currentScroll;
+        //cameraInfo.currentScroll = cameraInfo.currentScroll;
         HandleTilt();
         playerCamera.localPosition = cameraInfo.position;
         UpdateCameraPositionOnTheMap();
@@ -349,10 +351,10 @@ public class Controller : MonoBehaviour
             if (Physics.Raycast(mainCamera.ScreenPointToRay(mousePos), out hit, 50,256))
             {
                 currentBlockX = (int)(hit.collider.transform.position.x - MapHolder.offset.x);
-                currentBlockY = (int)(hit.collider.transform.position.z - MapHolder.offset.z);
-                ChangeCursorPosition.Invoke(hit.collider.transform.position, currentBlockX, Mathf.Abs(currentBlockY));
+                currentBlockY = Mathf.Abs((int)(hit.collider.transform.position.z - MapHolder.offset.z));
+                ChangeCursorPosition.Invoke(hit.collider.transform.position, currentBlockX,currentBlockY);
 
-                coordinateText.text = $"{currentBlockX} {-currentBlockY}";
+                coordinateText.text = $"{currentBlockX} {currentBlockY}";
             }
             else
             {
@@ -373,7 +375,7 @@ public class Controller : MonoBehaviour
     {
         if (construct == ToolMode.None && currentBlockX != -1)
         {
-            StartConstructionAction?.Invoke(currentBlockX, Mathf.Abs(currentBlockY));
+            StartConstructionAction?.Invoke(currentBlockX, currentBlockY);
         }
     }
 
@@ -399,7 +401,7 @@ public class Controller : MonoBehaviour
                 }
             }
 
-            ChangeTile?.Invoke(currentBlockX, Mathf.Abs(currentBlockY), currentTool, construct, variation, currentDecorationTool, rotation, color);
+            ChangeTile?.Invoke(currentBlockX, currentBlockY, currentTool, construct, variation, currentDecorationTool, rotation, color);
 
             prevBlockX = currentBlockX;
             prevBlockY = currentBlockY;
@@ -411,27 +413,97 @@ public class Controller : MonoBehaviour
     {
         if (currentBlockX != -1)
         {
-            switch (MapHolder.tiles[currentBlockX , Mathf.Abs(currentBlockY)].type)
+            ToolType newTool = ToolType.Null;
+            byte newVariation = 0;
+            int terraTool = -1;
+
+            if (MapHolder.decorationsTiles[currentBlockX, currentBlockY] != null)
             {
-                case TileType.Null:
-                    break;
-                case TileType.Water:
-                case TileType.WaterDiagonal:
-                    currentTool = ToolType.Waterscaping;
-                    break;
-                case TileType.Path:
-                case TileType.PathCurve:
-                    currentTool = ToolType.PathPermit;
-                    break;
-                case TileType.Land:
-                case TileType.CliffDiagonal:
-                    currentTool = ToolType.CliffConstruction;
-                    break;
+                switch (MapHolder.decorationsTiles[currentBlockX,currentBlockY].type)
+                {
+                    case DecorationType.Fence:
+                        newTool = ToolType.FenceBuilding;
+                        break;
+                    case DecorationType.Building:
+                        newTool = ToolType.BuildingsMarkUp;
+                        break;
+                    case DecorationType.Incline:
+                        newTool = ToolType.InclineMarkUp;
+                        rotation = 0;
+                        break;
+                    case DecorationType.Bridge:
+                        newTool = ToolType.BridgeMarkUp;
+                        rotation = 0;
+                        break;
+                    case DecorationType.Flora:
+                        newTool = ToolType.BushPlanting;
+                        break;
+                    case DecorationType.Tree:
+                        newTool = ToolType.TreePlanting;
+                        break;
+                    case DecorationType.Flower:
+                        newTool = ToolType.FlowerPlanting;
+                        color = MapHolder.decorationsTiles[currentBlockX, currentBlockY].color;
+                        break;
+                }
+                if (newTool == ToolType.BuildingsMarkUp)
+                {
+                    newVariation = (byte) MapHolder.decorationsTiles[currentBlockX, currentBlockY].building.type;
+                }
+                else
+                {
+                    newVariation = MapHolder.decorationsTiles[currentBlockX, currentBlockY].variation;
+                }
             }
-        }
-        else
-        {
-            currentTool = ToolType.Null;
+            else
+            {
+                switch (MapHolder.tiles[currentBlockX, currentBlockY].type)
+                {
+                    case TileType.Null:
+                        break;
+                    case TileType.Water:
+                    case TileType.WaterDiagonal:
+                        terraTool = 1;
+                        newTool = ToolType.Waterscaping;
+                        break;
+                    case TileType.Path:
+                    case TileType.PathCurve:
+                        newTool = ToolType.PathPermit;
+                        newVariation = MapHolder.tiles[currentBlockX, currentBlockY].variation;
+                        break;
+                    case TileType.Land:
+                    case TileType.CliffDiagonal:
+                        terraTool = 0;
+                        newTool = ToolType.CliffConstruction;
+                        break;
+                    case TileType.Sea:
+                    case TileType.Sand:
+                    case TileType.SandDiagonal:
+                    case TileType.SeaDiagonal:
+                        terraTool = 2;
+                        newTool = ToolType.SandPermit;
+                        break;
+                }
+
+            }
+            if (newTool != ToolType.Null)
+            {
+                ToolChange(newTool);
+
+                if (terraTool != -1)
+                {
+                    controller.SetTerraformingButton(terraTool);
+                }
+                else
+                {
+                    controller.SetNewTool(newTool, newVariation, color);
+                }
+                /*if (currentDecorationTool != DecorationType.Null)
+                {
+                    ChooseVariation(newVariation);
+                }*/
+                //variation = newVariation;
+            }
         }
     }
 

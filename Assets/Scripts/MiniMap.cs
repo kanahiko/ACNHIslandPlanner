@@ -339,6 +339,10 @@ public static class MiniMap
 
     public static void PutPin(int column, int row, int sizeX, int sizeY, DecorationType type, bool isAdd)
     {
+        if (type == DecorationType.Rock)
+        {
+            return;
+        }
         if (isAdd)
         {
             
