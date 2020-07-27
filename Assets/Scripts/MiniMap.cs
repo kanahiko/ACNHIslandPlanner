@@ -433,14 +433,7 @@ public static class MiniMap
                 switch (sizeY)
                 {
                     case 3:
-                        if (rotation != 0 && rotation != 2)
-                        {
-                            size.y = 36;
-                        }
-                        else
-                        {
-                            size.y = 26.25f;
-                        }
+                        size.y = 26.25f;
                         break;
                     case 4:
                         size.y = 35;
@@ -449,9 +442,12 @@ public static class MiniMap
                         size.y = 43.75f;
                         break;
                     case 6:
-                        size.y = 42;
+                        size.y = 36;
                         break;
                     case 7:
+                        size.y = 42;
+                        break;
+                    case 8:
                         size.y = 48;
                         break;
                 }

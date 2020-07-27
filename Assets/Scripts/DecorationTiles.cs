@@ -60,7 +60,7 @@ public class DecorationTiles : IDisposable
         decorationBackground.position = Util.cullingPosition;
         if (mainTile)
         {
-            mainTileRenderer.enabled = false;
+            //mainTileRenderer.enabled = false;
             //mainTile.SetActive(false);
         }
 
@@ -81,7 +81,7 @@ public class DecorationTiles : IDisposable
         //decorationBackground.parent = MapHolder.decorationsParent;
         if (mainTile)
         {
-            mainTileRenderer.enabled = true;
+            //mainTileRenderer.enabled = true;
             //mainTile.SetActive(true);
         }
     }

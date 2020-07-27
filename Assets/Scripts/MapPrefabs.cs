@@ -146,12 +146,12 @@ public class VariationList
 [Serializable]
 public class BridgeSizeList
 {
-    public GameObject[] bridgePrefabs;
+    public List<GameObject> bridgePrefabs;
 
-    public BridgeSizeList()
+    /*public BridgeSizeList()
     {
-        bridgePrefabs = new GameObject[3];
-    }
+        bridgePrefabs = new GameObject[6];
+    }*/
 }
 
 [Serializable]

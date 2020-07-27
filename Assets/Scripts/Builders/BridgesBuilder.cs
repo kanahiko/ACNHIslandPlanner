@@ -137,7 +137,7 @@ public class BridgesBuilder : MonoBehaviour
         Vector3Int size = MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge];
         int sizeX = size.x;
         int sizeY = MapHolder.decorationsTiles[column, row].size; 
-        if (sizeY >= 6)
+        if (sizeY >= 7)
         {
             sizeY = 4;
         }
@@ -166,7 +166,7 @@ public class BridgesBuilder : MonoBehaviour
         Vector3Int size = MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Bridge];
         int sizeX = size.x;
         int sizeY = MapHolder.decorationsTiles[column, row].size; 
-        if (sizeY >= 6)
+        if (sizeY >= 7)
         {
             sizeY = 4;
         }
@@ -466,7 +466,11 @@ public class BridgesBuilder : MonoBehaviour
             }
             if (bridgeSize != 3)
             {
-                sizeBridge = isThreeAndHalfSize ? 6 : 7;
+                sizeBridge = isThreeAndHalfSize ? 7 : 8;
+            }
+            else
+            {
+                sizeBridge = 6;
             }
             return true;
         }
@@ -487,7 +491,7 @@ public class BridgesBuilder : MonoBehaviour
             {
                 bridgesLimbo.Add(new List<List<DecorationTiles>>
                 {
-                    new List<DecorationTiles>(),new List<DecorationTiles>(),new List<DecorationTiles>(),new List<DecorationTiles>(),new List<DecorationTiles>()
+                    new List<DecorationTiles>(),new List<DecorationTiles>(),new List<DecorationTiles>(),new List<DecorationTiles>(),new List<DecorationTiles>(),new List<DecorationTiles>()
                 });
             }
         }
