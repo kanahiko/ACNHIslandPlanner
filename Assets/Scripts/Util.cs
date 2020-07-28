@@ -440,7 +440,7 @@ public static  class Util
         return true;
     }
 
-    public static bool CheckSurroundedByLandElevation(int column, int row)
+    public static bool CheckSurroundedByLandElevation(int column, int row, bool hasToBeLand)
     {
         int elevation = MapHolder.tiles[column, row].elevation;
 
@@ -458,7 +458,30 @@ public static  class Util
                 }
                 if (elevation > MapHolder.tiles[column + j, row + i].elevation || 
                     (MapHolder.decorationsTiles[column + j, row - i] != null  && MapHolder.decorationsTiles[column + j, row - i].type == DecorationType.Building) ||
-                    !CheckSurroundedIsLand(column + j, row + i)) 
+                    (hasToBeLand && !CheckSurroundedIsLand(column + j, row + i))) 
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    public static bool CheckSurroundedBySand(int column, int row)
+    {
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (i == 0 && j == 0)
+                {
+                    continue;
+                }
+                if (!(column + j >= 0 && column + j < MapHolder.width && row + i >= 0 && row + i < MapHolder.height))
+                {
+                    return false;
+                }
+                if (MapHolder.tiles[column + j, row - i].backgroundType != TilePrefabType.Sand) 
                 {
                     return false;
                 }

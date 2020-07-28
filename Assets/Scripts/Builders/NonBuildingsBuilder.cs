@@ -47,16 +47,27 @@ public class NonBuildingsBuilder
     {
         
         if (MapHolder.tiles[column,row].type != TileType.Land && MapHolder.tiles[column,row].type != TileType.Sand ||
-            MapHolder.tiles[column,row].type == TileType.Sand && (type != DecorationType.Flora || Util.IsOnLandSandBorder(column, row)) ||
+            MapHolder.tiles[column,row].type == TileType.Sand && (type != DecorationType.Flora && variation != 9 || Util.IsOnLandSandBorder(column, row)) ||
             MapHolder.decorationsTiles[column, row] != null  &&
             (MapHolder.decorationsTiles[column,row].type != DecorationType.Flora && MapHolder.decorationsTiles[column, row].type != DecorationType.Tree))
         {
             return;
         }
-        if (type == DecorationType.Tree && (!Util.CheckSurroundedByLandElevation(column, row) || MapHolder.treeInfluence[column,row] > 0))
+        
+        if (type == DecorationType.Tree)
         {
-            return;
+            if (!Util.CheckSurroundedByLandElevation(column, row, variation != MapHolder.mapPrefab.treePrefabDictionary.Count - 1) ||
+                MapHolder.treeInfluence[column,row] > 0)
+            {
+                return;
+            }
+
+            if (variation == MapHolder.mapPrefab.treePrefabDictionary.Count - 1 && !Util.CheckSurroundedBySand(column, row))
+            {
+                return;
+            }
         }
+        
 
         if (MapHolder.decorationsTiles[column, row] != null)
         {

@@ -81,7 +81,7 @@ Material:
     - Vector1_EA654C52: 1
     - Vector1_F402CC69: 1
     - Vector1_FDD56E9: 2
-    - _FresnelIntensity: 1
+    - _FresnelIntensity: 0
     - _FresnelPower: 3.8
     m_Colors:
     - Color_3AA1389B: {r: 0.47129402, g: 0.46110716, b: 0.6226415, a: 1}
