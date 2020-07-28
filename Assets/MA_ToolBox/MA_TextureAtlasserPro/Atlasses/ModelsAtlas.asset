@@ -1,0 +1,425 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8745090189772650261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ad07a78750c7644b710e19e1a23d4a, type: 3}
+  m_Name: BushesInclines
+  m_EditorClassIdentifier: 
+  isSelected: 0
+  rect:
+    serializedVersion: 2
+    x: 267.9612
+    y: 0
+    width: 267.80585
+    height: 249.35919
+  guiRect:
+    serializedVersion: 2
+    x: 256
+    y: 0
+    width: 256
+    height: 256
+  debugMode: 0
+  dragRectHeight:
+    serializedVersion: 2
+    x: 510.8333
+    y: 372
+    width: 64
+    height: 16
+  dragRectWidth:
+    serializedVersion: 2
+    x: 654.8333
+    y: 228
+    width: 16
+    height: 64
+  dragRectPos:
+    serializedVersion: 2
+    x: 526.8333
+    y: 244
+    width: 32
+    height: 32
+  textureGroups:
+  - name: Albedo
+    texture: {fileID: 2800000, guid: 2a092ef5f77d85146bd1ba750e49d125, type: 3}
+  modelGroups:
+  - name: Bushes
+    meshes:
+    - {fileID: 919132149155446097, guid: 5b927f4ad44e3ee49a712f1ec5520496, type: 3}
+    - {fileID: 919132149155446097, guid: dc1b8e3bda312624c80829987f48fdfa, type: 3}
+    - {fileID: 919132149155446097, guid: 34593a55b38760245954519fb1678b39, type: 3}
+    - {fileID: 919132149155446097, guid: 579d4f9143787fe4b8f3e8704b697ad5, type: 3}
+    - {fileID: 919132149155446097, guid: 05a8d956ede4b814b91f890294d3d7ea, type: 3}
+    - {fileID: 919132149155446097, guid: 7cb235f4beca1894cb359beb332b3746, type: 3}
+    - {fileID: 919132149155446097, guid: 9aa68a0483cd28d4793b0d2cf3899336, type: 3}
+    - {fileID: 919132149155446097, guid: 5b2c25464a26cce4a9988a605e2643a2, type: 3}
+    - {fileID: 919132149155446097, guid: fd37cbf4a60fdd54b9c673b21487b120, type: 3}
+    - {fileID: 919132149155446097, guid: aed7f3825472a2c4c868c2f1c1b4b802, type: 3}
+    - {fileID: 919132149155446097, guid: 979521a1eb12ccb409c8174505623e65, type: 3}
+    - {fileID: 919132149155446097, guid: fb18c703cb82cff4693ab5e76de2f9b0, type: 3}
+  - name: Inclines
+    meshes:
+    - {fileID: 919132149155446097, guid: 733ee90af47266d4c8f1f30af5ffacd1, type: 3}
+    - {fileID: 919132149155446097, guid: 171e914fe1bb37f408d8f707d6301866, type: 3}
+    - {fileID: 919132149155446097, guid: 3c232eb798ff37a47938a6bea433f195, type: 3}
+    - {fileID: 919132149155446097, guid: 04eb3d42fbbb4754cb42faee9bcd3584, type: 3}
+    - {fileID: 919132149155446097, guid: 20fe457ecfa866a4c80d9aa267ff4527, type: 3}
+    - {fileID: 919132149155446097, guid: 0aa25d370eb2c2043a0020dce069b4e9, type: 3}
+    - {fileID: 919132149155446097, guid: 2255c8aedd2fd8a47b3399b40c959028, type: 3}
+    - {fileID: 919132149155446097, guid: 5abcf9f714362bc45bbcc691da56d956, type: 3}
+--- !u!114 &-853601637713259911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ad07a78750c7644b710e19e1a23d4a, type: 3}
+  m_Name: Paths
+  m_EditorClassIdentifier: 
+  isSelected: 0
+  rect:
+    serializedVersion: 2
+    x: 116.93085
+    y: 199.51785
+    width: 374.04877
+    height: 197
+  guiRect:
+    serializedVersion: 2
+    x: 128
+    y: 192
+    width: 384
+    height: 192
+  debugMode: 0
+  dragRectHeight:
+    serializedVersion: 2
+    x: 637.03
+    y: 486.0269
+    width: 64
+    height: 16
+  dragRectWidth:
+    serializedVersion: 2
+    x: 845.03
+    y: 374.0269
+    width: 16
+    height: 64
+  dragRectPos:
+    serializedVersion: 2
+    x: 653.03
+    y: 390.0269
+    width: 32
+    height: 32
+  textureGroups:
+  - name: Albedo
+    texture: {fileID: 2800000, guid: 6dee38385fb06c4499b74300019433cd, type: 3}
+  modelGroups:
+  - name: Paths
+    meshes:
+    - {fileID: 919132149155446097, guid: e2b7148575c2f9a419ce6df7deee8dba, type: 3}
+    - {fileID: 919132149155446097, guid: 454800fd2bd70d249a5e91709630a77d, type: 3}
+    - {fileID: 919132149155446097, guid: 807d09c43b75d814c9cc431119809909, type: 3}
+    - {fileID: 919132149155446097, guid: 1bb08d58b02ec31479c1aea8e8301890, type: 3}
+    - {fileID: 919132149155446097, guid: 4a832f2672548d3408db652405ad0248, type: 3}
+    - {fileID: 919132149155446097, guid: aca4664884bfb344e911876de5cadf0c, type: 3}
+    - {fileID: 919132149155446097, guid: a909026f07ffc7d408023ab69334b536, type: 3}
+    - {fileID: 919132149155446097, guid: 3412acde183952a4f9d9755a9556168c, type: 3}
+    - {fileID: 919132149155446097, guid: 81a9cc944f0902542971e43fd2a407a4, type: 3}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 892d1a7aeb4cc284dbf62e69e125db52, type: 3}
+  m_Name: ModelsAtlas
+  m_EditorClassIdentifier: 
+  textureQuads:
+  - {fileID: 4182925970420174817}
+  - {fileID: -8745090189772650261}
+  - {fileID: 1613989989250757908}
+  - {fileID: 5270963556337915741}
+  - {fileID: -853601637713259911}
+  selectedTextureQuad: {fileID: -853601637713259911}
+  showTextures: 1
+  exportSettings: {fileID: 11400000, guid: 89979bff0666d9845b67abbd14dee292, type: 2}
+  textureAtlasSize: {x: 512, y: 512}
+  textureGroupRegistration:
+  - name: Albedo
+  mapPrefab: {fileID: 11400000, guid: f8bd1e56c1644164ab424cec82488798, type: 2}
+--- !u!114 &1613989989250757908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ad07a78750c7644b710e19e1a23d4a, type: 3}
+  m_Name: Flowers
+  m_EditorClassIdentifier: 
+  isSelected: 0
+  rect:
+    serializedVersion: 2
+    x: 6.7961426
+    y: 134.95145
+    width: 260.03894
+    height: 263.92236
+  guiRect:
+    serializedVersion: 2
+    x: 0
+    y: 128
+    width: 256
+    height: 256
+  debugMode: 0
+  dragRectHeight:
+    serializedVersion: 2
+    x: 445.03006
+    y: 486.0269
+    width: 64
+    height: 16
+  dragRectWidth:
+    serializedVersion: 2
+    x: 589.03
+    y: 342.0269
+    width: 16
+    height: 64
+  dragRectPos:
+    serializedVersion: 2
+    x: 461.03006
+    y: 358.0269
+    width: 32
+    height: 32
+  textureGroups:
+  - name: Albedo
+    texture: {fileID: 2800000, guid: e82ab5193f9fa424693c25e3d492f84d, type: 3}
+  modelGroups:
+  - name: Cosmos
+    meshes:
+    - {fileID: 919132149155446097, guid: 2104bae76b83e5a47a9daffdc83d2061, type: 3}
+    - {fileID: 919132149155446097, guid: 8d3f049a26b91b24a855ab6980db6ae2, type: 3}
+    - {fileID: 919132149155446097, guid: 6eaeb5ac93aee9842a7e09acea0a9550, type: 3}
+    - {fileID: 919132149155446097, guid: 41c90d9f959b07b46afcc07a6c942547, type: 3}
+    - {fileID: 919132149155446097, guid: 780d3fd2d7777044d8348a2a219f823a, type: 3}
+    - {fileID: 919132149155446097, guid: 01c8b9341e259b34bb9a6fe463832d34, type: 3}
+  - name: Hya
+    meshes:
+    - {fileID: 919132149155446097, guid: ac498a0aa2392e245a21d81754b8c4ab, type: 3}
+    - {fileID: 919132149155446097, guid: 41436b59a8dc023469af78e14fb8ec45, type: 3}
+    - {fileID: 919132149155446097, guid: b7c9846104b823b45bac5ab5a8b811e5, type: 3}
+    - {fileID: 919132149155446097, guid: 834e241d87d103b419bb13c04489f184, type: 3}
+    - {fileID: 919132149155446097, guid: db7a4ba061668f54bbe2a179865116fc, type: 3}
+    - {fileID: 919132149155446097, guid: 35196c9b954691b4992c94b541f2398c, type: 3}
+    - {fileID: 919132149155446097, guid: 1e9e4a8acf6d9094598321ee4aea1ad6, type: 3}
+  - name: Lilies
+    meshes:
+    - {fileID: 919132149155446097, guid: ca3dfb4f61cd3ed4ca15e8f07a65c461, type: 3}
+    - {fileID: 919132149155446097, guid: 24914bf8bc7abf1488b3b58b27a9f159, type: 3}
+    - {fileID: 919132149155446097, guid: 6b5a268aaa1d32a47ba0284aa9b9f0bf, type: 3}
+    - {fileID: 919132149155446097, guid: 087ac213a7b668a4bb76fa21044b0fac, type: 3}
+    - {fileID: 919132149155446097, guid: c50b43ac69610434199de5cb56b6ab3d, type: 3}
+    - {fileID: 919132149155446097, guid: 35fefcbbc1e7a874a831d60f08d8cc3b, type: 3}
+  - name: Mums
+    meshes:
+    - {fileID: 919132149155446097, guid: 986da8c637ef19042a4f84882ccc1352, type: 3}
+    - {fileID: 919132149155446097, guid: 6395df39878c287439a330ca65e037f3, type: 3}
+    - {fileID: 919132149155446097, guid: abdece29464064a4682f3d5ae581e2ca, type: 3}
+    - {fileID: 919132149155446097, guid: f156c766dd05a2143bc236011b824678, type: 3}
+    - {fileID: 919132149155446097, guid: efbf52130c060b747a63ee090fe0ba35, type: 3}
+    - {fileID: 919132149155446097, guid: bf3dec5295076254f87c09c220189cf8, type: 3}
+  - name: Pansies
+    meshes:
+    - {fileID: 919132149155446097, guid: 7f1320f5632f8584e817de181011be77, type: 3}
+    - {fileID: 919132149155446097, guid: cda04b6cf8f57d14e8459969c25e3c0d, type: 3}
+    - {fileID: 919132149155446097, guid: d39239e0bf8530449bdd28923611ca53, type: 3}
+    - {fileID: 919132149155446097, guid: 1f882b982b7cc8c479f3c8f7eb87485a, type: 3}
+    - {fileID: 919132149155446097, guid: e14bd5b0225115846bcd233374297c3d, type: 3}
+    - {fileID: 919132149155446097, guid: fe4f759ade1b2e54bb430e176eb0876b, type: 3}
+  - name: Roses
+    meshes:
+    - {fileID: 919132149155446097, guid: 139dbd4d1aa95014b9541a36a2046cf2, type: 3}
+    - {fileID: 919132149155446097, guid: 2872b9045c1369446a49d3b1f69c7691, type: 3}
+    - {fileID: 919132149155446097, guid: 6e030a0616f37df4a9c792348080dbf2, type: 3}
+    - {fileID: 919132149155446097, guid: 963957e302aba7441b521e37595b2bf4, type: 3}
+    - {fileID: 919132149155446097, guid: 2f03b8a05e6ebba46846eee76bae08c0, type: 3}
+    - {fileID: 919132149155446097, guid: 1531e5d2e5f46df42afb5a5c1a6eda3d, type: 3}
+    - {fileID: 919132149155446097, guid: bb6992b2409a3da438806fd3f7fef265, type: 3}
+    - {fileID: 919132149155446097, guid: db17340e433c1dd47977204290b285d3, type: 3}
+    - {fileID: 919132149155446097, guid: 4abb5c6c6ac155649bc6358b7183973b, type: 3}
+  - name: Tulips
+    meshes:
+    - {fileID: 919132149155446097, guid: a80e9ac6da115c3439394ca75430d359, type: 3}
+    - {fileID: 919132149155446097, guid: 7c77f8191323d4f4baf1ff3acee137fa, type: 3}
+    - {fileID: 919132149155446097, guid: dd0a53a87e1e7e04295ed80d7f27fb87, type: 3}
+    - {fileID: 919132149155446097, guid: 5038b3eddbc21d14a97318d1dfbecc72, type: 3}
+    - {fileID: 919132149155446097, guid: 118dc9efdcb7cad4eb2aea29c16ae823, type: 3}
+    - {fileID: 919132149155446097, guid: 05fd6c4adbaef0841b22026811be902a, type: 3}
+    - {fileID: 919132149155446097, guid: d1c33535c88e20c4ea70cdb05bdee868, type: 3}
+  - name: Windflowers
+    meshes:
+    - {fileID: 919132149155446097, guid: 4b311c3ff1890764084cb034e9fe0a41, type: 3}
+    - {fileID: 919132149155446097, guid: 733a53f3210de1447b7f7430ff9a11c6, type: 3}
+    - {fileID: 919132149155446097, guid: f352e9580216270469ac6043baed8faf, type: 3}
+    - {fileID: 919132149155446097, guid: 0f8a1c1c1ad893c409ce34cc7ea57736, type: 3}
+    - {fileID: 919132149155446097, guid: d7bc8241d5d32014da740978f3976855, type: 3}
+    - {fileID: 919132149155446097, guid: 4685f6a9ada5f6247839d6ae2fba7943, type: 3}
+--- !u!114 &4182925970420174817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ad07a78750c7644b710e19e1a23d4a, type: 3}
+  m_Name: Bridges
+  m_EditorClassIdentifier: 
+  isSelected: 0
+  rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 258.1887
+    height: 118.56604
+  guiRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 256
+    height: 128
+  debugMode: 0
+  dragRectHeight:
+    serializedVersion: 2
+    x: 254.83333
+    y: 244
+    width: 64
+    height: 16
+  dragRectWidth:
+    serializedVersion: 2
+    x: 398.8333
+    y: 164
+    width: 16
+    height: 64
+  dragRectPos:
+    serializedVersion: 2
+    x: 270.8333
+    y: 180
+    width: 32
+    height: 32
+  textureGroups:
+  - name: Albedo
+    texture: {fileID: 2800000, guid: ae24d152c25b7db43b7056c88400a781, type: 3}
+  modelGroups:
+  - name: BrickBridge
+    meshes:
+    - {fileID: 919132149155446097, guid: 54d60de80baa78443838de8f2bef0dd9, type: 3}
+    - {fileID: 919132149155446097, guid: 4f2096b27ce3cb340ae1cb3fbdfd3c42, type: 3}
+    - {fileID: 919132149155446097, guid: 06c8ad364cfe80e40848288cc1ace085, type: 3}
+    - {fileID: 919132149155446097, guid: c3b089280c8a9b44c9e8f44eda9ca382, type: 3}
+    - {fileID: 919132149155446097, guid: 8b91e5395758cb544ba682140f95698c, type: 3}
+    - {fileID: 919132149155446097, guid: 7fda1ee01c001d9459b609c584757fc5, type: 3}
+  - name: FlatBridge
+    meshes:
+    - {fileID: 919132149155446097, guid: 83b4a4e458d16c346bb45946cd9a4acb, type: 3}
+    - {fileID: 919132149155446097, guid: b974323b03119fd41a93c54bfc06b283, type: 3}
+    - {fileID: 919132149155446097, guid: 0c5e5fb8c0221124bb1837a30b6db130, type: 3}
+    - {fileID: 919132149155446097, guid: f1835b2c7a0e0444da37b2982a8955bc, type: 3}
+    - {fileID: 919132149155446097, guid: 9647c73b8e0acc4458de1fe0de5c7643, type: 3}
+    - {fileID: 919132149155446097, guid: 1b2ef52afa9157f4694c8d910c7cd7e6, type: 3}
+  - name: LogBridge
+    meshes:
+    - {fileID: 919132149155446097, guid: 67be6584624018044b184bbfff9917fd, type: 3}
+    - {fileID: 919132149155446097, guid: 2191bf1114cb38c42b77f827759993c5, type: 3}
+    - {fileID: 919132149155446097, guid: 259c71925a322bf4283af3424918187d, type: 3}
+    - {fileID: 919132149155446097, guid: b1e430aa2506ae04f9c3accb77743649, type: 3}
+    - {fileID: 919132149155446097, guid: b70624d7e4c3cb44e8aec61e448cba19, type: 3}
+    - {fileID: 919132149155446097, guid: 19842a196336ea649a287b29d0f95bc6, type: 3}
+  - name: StoneBridge
+    meshes:
+    - {fileID: 919132149155446097, guid: 5d3db4c6353b93a4eba6f5735df093ad, type: 3}
+    - {fileID: 919132149155446097, guid: 84f41898963af374288a2846a38e9960, type: 3}
+    - {fileID: 919132149155446097, guid: fceb19cac11bc084c8a46c958ece1393, type: 3}
+    - {fileID: 919132149155446097, guid: 2bd6899c4977ad94380368939a884cad, type: 3}
+    - {fileID: 919132149155446097, guid: 20586386c91129445b3c96e8e7ec9b96, type: 3}
+    - {fileID: 919132149155446097, guid: 7fe9f3c606795be4683e131cef03cc7a, type: 3}
+  - name: SuspensionBridge
+    meshes:
+    - {fileID: 919132149155446097, guid: 49e31dc9e6be3c04d91e6ee1f8949c4a, type: 3}
+    - {fileID: 919132149155446097, guid: 97f879a8b18c0a540885d680cab3600f, type: 3}
+    - {fileID: 919132149155446097, guid: 3b8e3605b1e12a24a9a2cf6ffcceb056, type: 3}
+    - {fileID: 919132149155446097, guid: 5a0a0c2c339c5a74598a2c4d2dbf2d9d, type: 3}
+    - {fileID: 919132149155446097, guid: cd1918129fa5e36408e1e317ea5e8bf2, type: 3}
+    - {fileID: 919132149155446097, guid: 35bbb1340b935af4b9d8d797df9f9079, type: 3}
+--- !u!114 &5270963556337915741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ad07a78750c7644b710e19e1a23d4a, type: 3}
+  m_Name: Trees
+  m_EditorClassIdentifier: 
+  isSelected: 0
+  rect:
+    serializedVersion: 2
+    x: 9.756165
+    y: 197.56096
+    width: 128
+    height: 128
+  guiRect:
+    serializedVersion: 2
+    x: 0
+    y: 192
+    width: 128
+    height: 128
+  debugMode: 0
+  dragRectHeight:
+    serializedVersion: 2
+    x: 381.03006
+    y: 422.0269
+    width: 64
+    height: 16
+  dragRectWidth:
+    serializedVersion: 2
+    x: 461.03006
+    y: 342.0269
+    width: 16
+    height: 64
+  dragRectPos:
+    serializedVersion: 2
+    x: 397.03006
+    y: 358.0269
+    width: 32
+    height: 32
+  textureGroups:
+  - name: Albedo
+    texture: {fileID: 2800000, guid: 5123085bf66183847aacd23947717e4f, type: 3}
+  modelGroups:
+  - name: Trees
+    meshes:
+    - {fileID: 919132149155446097, guid: 7d0d04da9b346fa43ba9bd3c3ce6d9c8, type: 3}
+    - {fileID: 919132149155446097, guid: 164fc96847786c0488218856a3ac8b1c, type: 3}
+    - {fileID: 919132149155446097, guid: 19c03ca9ce3528246ae19e733227970a, type: 3}
+    - {fileID: 919132149155446097, guid: 951a88e7035db8e448c605ac67bb775f, type: 3}
+  - name: Fruits
+    meshes:
+    - {fileID: 919132149155446097, guid: c242df60bb380d44f8713e584d16fc13, type: 3}
+    - {fileID: 919132149155446097, guid: 8a3320762873ee44b84a9f2fa2ff36a2, type: 3}
+    - {fileID: 919132149155446097, guid: 07aaed2356bf7d646b18252132d69632, type: 3}
+    - {fileID: 919132149155446097, guid: ed091b1cca9322d4d8482d1f12039c31, type: 3}
+    - {fileID: 919132149155446097, guid: 03c2b9b4a1fd17f43abcdc1800753a1d, type: 3}
+    - {fileID: 919132149155446097, guid: 8ea632287cec25c4898fd86d9071d915, type: 3}

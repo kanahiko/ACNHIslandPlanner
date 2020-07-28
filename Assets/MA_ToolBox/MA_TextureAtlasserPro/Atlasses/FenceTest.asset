@@ -1,0 +1,188 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7677554957660255072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ad07a78750c7644b710e19e1a23d4a, type: 3}
+  m_Name: FenceQuad1
+  m_EditorClassIdentifier: 
+  isSelected: 0
+  rect:
+    serializedVersion: 2
+    x: -2.197815
+    y: 380.21976
+    width: 254.3736
+    height: 244.48354
+  guiRect:
+    serializedVersion: 2
+    x: 0
+    y: 384
+    width: 256
+    height: 256
+  debugMode: 0
+  dragRectHeight:
+    serializedVersion: 2
+    x: 323.8333
+    y: 603
+    width: 64
+    height: 16
+  dragRectWidth:
+    serializedVersion: 2
+    x: 467.8333
+    y: 459
+    width: 16
+    height: 64
+  dragRectPos:
+    serializedVersion: 2
+    x: 339.8333
+    y: 475
+    width: 32
+    height: 32
+  textureGroups:
+  - name: Albedo
+    texture: {fileID: 2800000, guid: 19c6eb1a9b8336345af9e9a60217f1aa, type: 3}
+  modelGroups:
+  - name: Fence1
+    meshes:
+    - {fileID: 919132149155446097, guid: 3109c1457b20d15469e563b5fae2328b, type: 3}
+    - {fileID: 919132149155446097, guid: 1feac418c29c6e24c9e84fde5a9dae12, type: 3}
+  - name: Fence2
+    meshes:
+    - {fileID: 919132149155446097, guid: f47468f652ff76646aa5936e6cd70c5c, type: 3}
+    - {fileID: 919132149155446097, guid: dc8c4a76869e9c840a90c1e8c2706d51, type: 3}
+  - name: Fence3
+    meshes:
+    - {fileID: 919132149155446097, guid: 6607475a6eb98134f8df1f7d18a1235c, type: 3}
+    - {fileID: 919132149155446097, guid: 60c690dee5ad54c41847c6b242669ef7, type: 3}
+  - name: Fence4
+    meshes:
+    - {fileID: 919132149155446097, guid: d34e01c970d3dc24faa562c0949ce46b, type: 3}
+    - {fileID: 919132149155446097, guid: d3664b12a23cafd429331c9520c79308, type: 3}
+  - name: Fence5
+    meshes:
+    - {fileID: 919132149155446097, guid: e68496069fa2d13429adff13654f03c3, type: 3}
+    - {fileID: 919132149155446097, guid: bd74648213007b847992bf8ee1d17e9e, type: 3}
+  - name: Fence6
+    meshes:
+    - {fileID: 919132149155446097, guid: c0ab942d1942f9c49bfac5181478a77a, type: 3}
+    - {fileID: 919132149155446097, guid: 3d6da2b0ddf92964a8bb237157c57791, type: 3}
+  - name: Fence7
+    meshes:
+    - {fileID: 919132149155446097, guid: 444dfd7eddcb44643b8c1981aa7312ab, type: 3}
+    - {fileID: 919132149155446097, guid: 834cd3dff1ce3f24e98ab64d6a8c05b1, type: 3}
+  - name: Fence8
+    meshes:
+    - {fileID: 919132149155446097, guid: 568dac4ceb8947a4c9106017b7949166, type: 3}
+    - {fileID: 919132149155446097, guid: 0e2003616feb7d147ac4d0422f583cd9, type: 3}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 892d1a7aeb4cc284dbf62e69e125db52, type: 3}
+  m_Name: FenceTest
+  m_EditorClassIdentifier: 
+  textureQuads:
+  - {fileID: -7677554957660255072}
+  - {fileID: 3195828894154533495}
+  selectedTextureQuad: {fileID: 0}
+  showTextures: 1
+  exportSettings: {fileID: 11400000, guid: 89979bff0666d9845b67abbd14dee292, type: 2}
+  textureAtlasSize: {x: 512, y: 512}
+  textureGroupRegistration:
+  - name: Albedo
+  mapPrefab: {fileID: 11400000, guid: f8bd1e56c1644164ab424cec82488798, type: 2}
+--- !u!114 &3195828894154533495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ad07a78750c7644b710e19e1a23d4a, type: 3}
+  m_Name: FenceQuad2
+  m_EditorClassIdentifier: 
+  isSelected: 0
+  rect:
+    serializedVersion: 2
+    x: 259.8022
+    y: 256.21976
+    width: 254.3736
+    height: 244.48354
+  guiRect:
+    serializedVersion: 2
+    x: 256
+    y: 256
+    width: 256
+    height: 256
+  debugMode: 0
+  dragRectHeight:
+    serializedVersion: 2
+    x: 510.8333
+    y: 637
+    width: 64
+    height: 16
+  dragRectWidth:
+    serializedVersion: 2
+    x: 654.8333
+    y: 493
+    width: 16
+    height: 64
+  dragRectPos:
+    serializedVersion: 2
+    x: 526.8333
+    y: 509
+    width: 32
+    height: 32
+  textureGroups:
+  - name: Albedo
+    texture: {fileID: 2800000, guid: 19c6eb1a9b8336345af9e9a60217f1aa, type: 3}
+  modelGroups:
+  - name: Fence9
+    meshes:
+    - {fileID: 919132149155446097, guid: c06c7d58ba6614e4b892e0d102245b79, type: 3}
+    - {fileID: 919132149155446097, guid: 58d41dbccacff7043ba147fc7b57cb1f, type: 3}
+  - name: Fence10
+    meshes:
+    - {fileID: 919132149155446097, guid: 68a789062a8f79e49b896fbda522c640, type: 3}
+    - {fileID: 919132149155446097, guid: 489457f8605906e418c1e637beafec91, type: 3}
+  - name: Fence11
+    meshes:
+    - {fileID: 919132149155446097, guid: f1ab8cb3d37e8f04fbcca00a17a9cf59, type: 3}
+    - {fileID: 919132149155446097, guid: 82848b98fa1cd5d46a061f52fe95d46b, type: 3}
+  - name: Fence12
+    meshes:
+    - {fileID: 919132149155446097, guid: 93d691e9e74d7d2469a68c381a55815f, type: 3}
+    - {fileID: 919132149155446097, guid: b34e1ea31dd73164db3459b565b12845, type: 3}
+  - name: Fence13
+    meshes:
+    - {fileID: 919132149155446097, guid: 39aff4a0b86b1bc478a3032ff8134d3c, type: 3}
+    - {fileID: 919132149155446097, guid: 0be9af582413e3743bef031c2d837fae, type: 3}
+  - name: Fence14
+    meshes:
+    - {fileID: 919132149155446097, guid: 2f3aa3d40b79b924a85caf29617273ed, type: 3}
+    - {fileID: 919132149155446097, guid: bdf072689c5823b478d79ef9198ce45f, type: 3}
+  - name: Fence15
+    meshes:
+    - {fileID: 919132149155446097, guid: 394dd2a65a2073d4c82e32af5c78df47, type: 3}
+    - {fileID: 919132149155446097, guid: 1f71de040ea50d94a9123730c9056566, type: 3}
+  - name: Fence16
+    meshes:
+    - {fileID: 919132149155446097, guid: c795dc0d5d3e7d14f9b068ac54576cab, type: 3}
+    - {fileID: 3080983349113525687, guid: e60577e288ce8e5488d8ddfdc7b62f49, type: 3}
+  - name: Fence17
+    meshes:
+    - {fileID: 919132149155446097, guid: fe69467d636769b4198d598f83016cab, type: 3}
+    - {fileID: 919132149155446097, guid: 28033f1e260880342a00d5658483dfce, type: 3}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8504221924700064956}
   - component: {fileID: 5125284296175986728}
   m_Layer: 0
-  m_Name: PathCurvedRightTile
+  m_Name: PathCurvedDownTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
