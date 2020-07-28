@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 49e31dc9e6be3c04d91e6ee1f8949c4a
+labels:
+- Bridge
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable: []
@@ -31,7 +33,7 @@ ModelImporter:
     extraExposedTransformPaths: []
     extraUserProperties: []
     clipAnimations: []
-    isReadable: 0
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1

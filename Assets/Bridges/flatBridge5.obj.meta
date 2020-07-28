@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 0c5e5fb8c0221124bb1837a30b6db130
+labels:
+- Bridge
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable: []

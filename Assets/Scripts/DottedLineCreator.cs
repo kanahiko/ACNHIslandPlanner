@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -20,9 +21,22 @@ public class DottedLineCreator : MonoBehaviour
 
     public string fileName = "test";
 
+    public GameObject test;
+
     // Start is called before the first frame update
     void Start()
     {
+        if (test)
+        {
+            Debug.Log(test.name);
+            meshFilter.mesh = test.GetComponentInChildren<MeshFilter>().sharedMesh;
+            string ttt = MA_TextureAtlasserPro.ObjExporter.MeshToString(test.GetComponentInChildren<MeshFilter>().sharedMesh, test.name);
+            using (StreamWriter sw = new StreamWriter(@"C:\Users\a.moskaleva\Downloads\workacnh\ACNHIslandPlanner\Assets\Bridges\Test.obj"))
+            {
+                sw.Write(ttt);
+            }
+            return;
+        }
         if (meshFilter == null)
         {
             meshFilter = gameObject.AddComponent<MeshFilter>();
@@ -47,7 +61,7 @@ public class DottedLineCreator : MonoBehaviour
             save = false; 
             //string path = FileUtil.GetProjectRelativePath();
             #if UNITY_EDITOR
-            AssetDatabase.CreateAsset(mesh, $"Assets/Borders/border_{(int)size.x}_{(int)size.y}_{(int)size.z}_.asset");
+            AssetDatabase.CreateAsset(mesh, $"Assets /Borders/border_{(int)size.x}_{(int)size.y}_{(int)size.z}_.asset");
             AssetDatabase.SaveAssets();
             #endif
         }

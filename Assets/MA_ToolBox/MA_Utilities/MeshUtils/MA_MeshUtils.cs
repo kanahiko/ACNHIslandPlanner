@@ -17,6 +17,8 @@ namespace MA_Mesh
 {
 	public static class MA_MeshUtils
 	{
+		static Dictionary<string, int> meshNamesIndex;
+
 		public static string MA_SaveMeshAsset(Mesh mesh, string savePath)
 		{
 			if (string.IsNullOrEmpty(mesh.name))

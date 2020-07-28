@@ -23,10 +23,10 @@ MonoBehaviour:
   textureExportSettings:
     textureFormat: 1
     textureType: 0
-    textureScaleMode: 0
+    textureScaleMode: 1
   exportMaterials: 1
   materialExportSettings:
-    shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+    shader: {fileID: -6465566751694194690, guid: a76dbd292937261409ada9652ca1ffeb, type: 3}
     shaderPropertyNames:
     - _MainTex
     - _MetallicGlossMap

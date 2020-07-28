@@ -117,8 +117,13 @@ namespace MA_TextureAtlasserPro
                                     {
                                         using (new GUILayout.HorizontalScope())
                                         {
-                                            curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes[j] = (Mesh)EditorGUILayout.ObjectField(curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes[j], typeof(Mesh), false);
-                                            if (GUILayout.Button("-", EditorStyles.miniButton, GUILayout.ExpandWidth(true)))
+											curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes[j] = (GameObject)EditorGUILayout.ObjectField(curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes[j], typeof(GameObject), false);
+
+											//curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes[j].mesh = (Mesh)EditorGUILayout.ObjectField(curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes[j].mesh, typeof(Mesh), false);
+
+											//curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes[j].meshName = EditorGUILayout.TextField("name",curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes[j].meshName);
+
+											if (GUILayout.Button("-", EditorStyles.miniButton, GUILayout.ExpandWidth(true)))
                                             {
                                                 curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes.RemoveAt(j);
                                                 break;

@@ -138,8 +138,8 @@ namespace MA_TextureAtlasserPro
 						//Clamp rect with min/max values to stay inside the workrect
 						rect.width = Mathf.Clamp(rect.width, 64, editorWorkRect.width);
 						rect.height = Mathf.Clamp(rect.height, 64, editorWorkRect.height);
-						rect.x = Mathf.Clamp(rect.x, 0, editorWorkRect.width - rect.width);
-						rect.y = Mathf.Clamp(rect.y, 0, editorWorkRect.height - rect.height);
+						//rect.x = Mathf.Clamp(rect.x, 0, editorWorkRect.width - rect.width);
+						//rect.y = Mathf.Clamp(rect.y, 0, editorWorkRect.height - rect.height);
 
 						if(isDragging)
 							e.Use();

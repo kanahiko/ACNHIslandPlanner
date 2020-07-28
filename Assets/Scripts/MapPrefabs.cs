@@ -136,6 +136,111 @@ public class MapPrefabs : ScriptableObject
             }
         }
     }
+#if UNITY_EDITOR
+    public void ReplacePrefab(GameObject newPrefab)
+    {
+        for (int i = 0; i < specialCurvedPath.Count; i++)
+        {
+            if (specialCurvedPath[i].name == newPrefab.name)
+            {
+                specialCurvedPath[i] = newPrefab;
+                return;
+            }
+        }
+        for (int i = 0; i < cliffSidePrefabs.Count; i++)
+        {
+            if (cliffSidePrefabs[i].name == newPrefab.name)
+            {
+                cliffSidePrefabs[i] = newPrefab;
+                return;
+            }
+        }
+        string key = "";
+        TilePrefabType keyType = TilePrefabType.Null;
+        foreach (var prefab in prefabDictionary)
+        {
+            if (prefab.Value && prefab.Value.name == newPrefab.name)
+            {
+                keyType = prefab.Key;
+            }
+        }
+        if (keyType != TilePrefabType.Null)
+        {
+            prefabDictionary[keyType] = newPrefab;
+            return;
+        }
+        DecorationType decKey = DecorationType.Null;
+        foreach (var prefab in decorationsPrefabDictionary)
+        {
+            if (prefab.Value.name == newPrefab.name)
+            {
+                decKey = prefab.Key;
+            }
+        }
+        if (decKey != DecorationType.Null)
+        {
+            decorationsPrefabDictionary[decKey] = newPrefab;
+            return;
+        }
+        for (int i = 0; i < fencePrefabDictionary.Count; i++)
+        {
+            for (int j = 0; j < fencePrefabDictionary[i].variationPrefabs.Count; j++)
+            {
+                if (fencePrefabDictionary[i].variationPrefabs[j].name == newPrefab.name)
+                {
+                    fencePrefabDictionary[i].variationPrefabs[j] = newPrefab;
+                    return;
+                }
+            }
+        }
+        for (int i = 0; i < floraPrefabDictionary.Count; i++)
+        {
+            if (floraPrefabDictionary[i].name == newPrefab.name)
+            {
+                floraPrefabDictionary[i] = newPrefab;
+                return;
+            }
+        }
+        for (int i = 0; i < treePrefabDictionary.Count; i++)
+        {
+            if (treePrefabDictionary[i].name == newPrefab.name)
+            {
+                treePrefabDictionary[i] = newPrefab;
+                return;
+            }
+        }
+        for (int i = 0; i < flowerPrefabDictionary.Count; i++)
+        {
+            for (int j = 0; j < flowerPrefabDictionary[i].flowers.Count; j++)
+            {
+                if (flowerPrefabDictionary[i].flowers[j] && flowerPrefabDictionary[i].flowers[j].name == newPrefab.name)
+                {
+                    flowerPrefabDictionary[i].flowers[j] = newPrefab;
+                    return;
+                }
+            }
+        }
+        for (int i = 0; i < inclinePrefabDictionary.Count; i++)
+        {
+            if (inclinePrefabDictionary[i].name == newPrefab.name)
+            {
+                inclinePrefabDictionary[i] = newPrefab;
+                return;
+            }
+        }
+        for (int i = 0; i < bridgePrefabDictionary.Count; i++)
+        {
+            for (int j = 0; j < bridgePrefabDictionary[i].bridgePrefabs.Count; j++)
+            {
+                if (bridgePrefabDictionary[i].bridgePrefabs[j].name == newPrefab.name)
+                {
+                    bridgePrefabDictionary[i].bridgePrefabs[j] = newPrefab;
+                    return;
+                }
+            }
+        }
+    }
+#endif
 }
 
 [Serializable]

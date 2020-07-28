@@ -63,27 +63,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Data\Editor\MA_TextureAtlasserProSettingsEditor.cs" />
+    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Windows\MA_TextureAtlasserProCreateWindow.cs" />
     <Compile Include="Assets\Scripts\Editor\RightClickButtonEditor.cs" />
+    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Views\MA_TextureAtlasserProWorkView.cs" />
+    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Windows\MA_TextureAtlasserProExportWindow.cs" />
     <Compile Include="Assets\Rotary Heart\SerializableDictionaryLite\Editor\SupportWindow.cs" />
     <Compile Include="Assets\Rotary Heart\SerializableDictionaryLite\Editor\PreferencesWindow.cs" />
+    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Views\MA_TextureAtlasserProDebugView.cs" />
+    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Windows\MA_TextureAtlasserProCreateExportWindow.cs" />
+    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Views\MA_TextureAtlasserProMenuView.cs" />
     <Compile Include="Assets\Scripts\Editor\FancyToggleEditor.cs" />
     <Compile Include="Assets\Rotary Heart\SerializableDictionaryLite\Editor\Constants.cs" />
     <Compile Include="Assets\Rotary Heart\SerializableDictionaryLite\Editor\DictionaryPropertyDrawer.cs" />
     <Compile Include="Assets\Rotary Heart\SerializableDictionaryLite\Editor\Definer.cs" />
-    <Compile Include="Assets\Scripts\Editor\URPPostProcessStripper.cs" />
-    <Compile Include="Assets\Scripts\Editor\DestroyUnwantedObjects.cs" />
-    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Data\Editor\MA_TextureAtlasserProSettingsEditor.cs" />
-    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Windows\MA_TextureAtlasserProCreateWindow.cs" />
-    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Views\MA_TextureAtlasserProWorkView.cs" />
-    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Windows\MA_TextureAtlasserProExportWindow.cs" />
-    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Views\MA_TextureAtlasserProDebugView.cs" />
-    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Windows\MA_TextureAtlasserProCreateExportWindow.cs" />
-    <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Views\MA_TextureAtlasserProMenuView.cs" />
     <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Windows\MA_TextureAtlasserProWindow.cs" />
     <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Views\MA_TextureAtlasserProInspectorView.cs" />
     <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Utils\MA_TextureAtlasserProUtils.cs" />
     <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Views\MA_TextureAtlasserProViewBase.cs" />
     <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Editor\Utils\MA_TextureAtlasserProGuiLoader.cs" />
+    <Compile Include="Assets\Scripts\Editor\URPPostProcessStripper.cs" />
+    <Compile Include="Assets\Scripts\Editor\DestroyUnwantedObjects.cs" />
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>C:/Users/a.moskaleva/Downloads/workacnh/ACNHIslandPlanner/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
     </Reference>

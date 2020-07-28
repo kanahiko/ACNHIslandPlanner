@@ -429,28 +429,39 @@ namespace MA_TextureAtlasserPro
                         Debug.LogWarning("No valid model name assigned!");
                     }
 
-                    //Create new prefab asset.
-                    string newPrefabPath = MA_PrefabUtils.CreatePrefab(mg.name, savePathPrefab);
-                    GameObject newPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(newPrefabPath);
 
-                    foreach (Mesh m in mg.meshes)
+                    foreach (var m in mg.meshes)
                     {
-                        if(m != null)
+
+                        var mesh = m.GetComponentInChildren<MeshFilter>().sharedMesh;
+                        var meshName = m.name;
+                        string fancyMeshName = $"{char.ToUpper(meshName[0])}{meshName.Substring(1)}";
+                        int index = fancyMeshName.IndexOf('_');
+                        if (index != -1)
+                        {
+                            fancyMeshName = $"{fancyMeshName.Substring(0, index+1)}{char.ToUpper(meshName[index + 1])}{fancyMeshName.Substring(index+2)}";
+                        }
+                       
+                        //Create new prefab asset.
+                        string newPrefabPath = MA_PrefabUtils.CreatePrefab(fancyMeshName, savePathPrefab);
+                        GameObject newPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(newPrefabPath);
+
+                        if (m != null)
                         {
                             //Validate name.
-                            if (string.IsNullOrEmpty(m.name) || string.IsNullOrWhiteSpace(m.name))
+                            if (string.IsNullOrEmpty(meshName) || string.IsNullOrWhiteSpace(meshName))
                             {
-                                m.name = MA_StringUtils.RandomAlphabetString(6);
+                                meshName = MA_StringUtils.RandomAlphabetString(6);
                                 Debug.LogWarning("No valid mesh name assigned!");
                             }
 
                             //Create new mesh.
                             //Duplicate it from the current one.
-                            Mesh newMesh = MA_MeshUtils.MA_DuplicateMesh(m);
+                            Mesh newMesh = MA_MeshUtils.MA_DuplicateMesh(mesh);
                             //Remap UV's.
                             newMesh = MA_MeshUtils.MA_UVReMap(newMesh, atlas.textureAtlasSize, quad.guiRect, modelExportSettings.uvChannel, modelExportSettings.uvFlipY, modelExportSettings.uvWrap);
                             //Set name.
-                            newMesh.name = string.Format("{0}_{1}", mg.name, m.name);
+                            newMesh.name = meshName;
                             //Save mesh.
                             string savedMeshPath = MA_MeshUtils.MA_SaveMeshAsset(newMesh, savePathMeshes);
 
@@ -460,21 +471,26 @@ namespace MA_TextureAtlasserPro
                             Material savedMaterial = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
 
                             //Create gameObject.
-                            GameObject newGameObject = new GameObject(m.name);
+                            //GameObject newGameObject = new GameObject(meshName);
                             //Add mesh filter.
-                            MeshFilter mf = newGameObject.AddComponent<MeshFilter>();
+                            MeshFilter mf = newPrefab.AddComponent<MeshFilter>();
                             mf.mesh = savedMesh;
                             //Add mesh renderer.
-                            MeshRenderer mr = newGameObject.AddComponent<MeshRenderer>();
+                            MeshRenderer mr = newPrefab.AddComponent<MeshRenderer>();
                             mr.material = savedMaterial;
 
+                            if (atlas.mapPrefab)
+                            {
+                                atlas.mapPrefab.ReplacePrefab(newPrefab);
+                            }
+
                             //Add to parent gameObject (prefab).
-                            MA_PrefabUtils.AddChild(newPrefab, newGameObject);
-                            Object.DestroyImmediate(newGameObject);
+                            //MA_PrefabUtils.AddChild(newPrefab, newGameObject);
+                            //Object.DestroyImmediate(newGameObject);
                         }
                     }
 
-                    assetPaths.Add(newPrefabPath);
+                    //assetPaths.Add(newPrefabPath);
                 }
             }
 

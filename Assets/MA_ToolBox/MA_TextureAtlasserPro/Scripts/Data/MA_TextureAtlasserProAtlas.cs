@@ -21,7 +21,7 @@ namespace MA_TextureAtlasserPro
 		//Data
 		public Vector2 textureAtlasSize;
 		public List<MA_TextureGroupRegistration> textureGroupRegistration;
-
+		public MapPrefabs mapPrefab;
 		public void CreateAtlas(string name, Vector2 size)
 		{
 			this.name = name;
