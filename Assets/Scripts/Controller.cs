@@ -529,6 +529,7 @@ public class Controller : MonoBehaviour
 
     public void FencePermitButtonClick()
     {
+        rotation = 0;
         ToolChange(ToolType.FenceBuilding);
     }
     public void BushPermitButtonClick()
@@ -547,10 +548,12 @@ public class Controller : MonoBehaviour
     
     public void InclinePermitButtonClick()
     {
+        rotation = 0;
         ToolChange(ToolType.InclineMarkUp);
     }
     public void BridgePermitButtonClick()
     {
+        rotation = 0;
         ToolChange(ToolType.BridgeMarkUp);
     }
     public void FlowerPermitButtonClick()

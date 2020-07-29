@@ -144,7 +144,7 @@ public class TerrainBuilder : MonoBehaviour
                 
                 if (CliffBuilder.CheckCliff(column,row,previousTileType,ref toolMode,ref cliffConstructionElevationLevel, out newType))
                 {
-                    MapHolder.tiles[column, row].IgnoreElevation();
+                    //MapHolder.tiles[column, row].IgnoreElevation();
                     ignoreRaycastTiles.Add(MapHolder.tiles[column, row]);
                 }
                 else
@@ -455,7 +455,7 @@ public class TerrainBuilder : MonoBehaviour
         cliffConstructionElevationLevel = -1;
         foreach (var tile in ignoreRaycastTiles)
         {
-            tile.IgnoreElevation(false);
+            tile.IgnoreElevation();
         }
         
         ignoreRaycastTiles.Clear();

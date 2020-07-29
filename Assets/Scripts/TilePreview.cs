@@ -114,6 +114,7 @@ public class TilePreview : MonoBehaviour
                 }
                 break;
         }
+        //Quaternion rotation = Quaternion.identity;
         if (currentPreview != null)
         {
             currentPreview.position = Util.cullingPosition;

@@ -75,6 +75,16 @@ public class MapTile
             colliderObject.transform.SetParent(elevation, true);
         }
     }
+    public void SetElevationForEmpty(Transform elevation)
+    {
+        if (backgroundTile == null)
+        {
+            colliderObject.transform.SetParent(elevation, true);
+            return;
+        }
+        backgroundTile.transform.position = Vector3.zero;
+        colliderObject.transform.SetParent(elevation, true);
+    }
 
     public Vector2Int GetDirection()
     {

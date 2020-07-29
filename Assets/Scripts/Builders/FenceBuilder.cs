@@ -60,7 +60,8 @@ public class FenceBuilder : MonoBehaviour
         {
             if (MapHolder.decorationsTiles[column, row].variation != variation)
             {
-                AddToFenceLimbo(MapHolder.decorationsTiles[column, row]);
+                AddToFencePartsLimbo(MapHolder.decorationsTiles[column, row]);
+                //AddToFenceLimbo(MapHolder.decorationsTiles[column, row]);
             }
             /*if (MapHolder.decorationsTiles[column,row].type == DecorationType.Fence)
             {
