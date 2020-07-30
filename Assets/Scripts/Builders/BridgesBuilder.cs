@@ -91,6 +91,10 @@ public class BridgesBuilder : MonoBehaviour
             MarkTiles(tile, changedTiles, null);
             bridgesPlaced += 1;
         }
+        else
+        {
+            UIController.ShowPopUp.Invoke();
+        }
     }
 
     public static DecorationTiles RebuildBridge(PreDecorationTile preTile)
@@ -529,24 +533,30 @@ public class BridgesBuilder : MonoBehaviour
     {
         HashSet<Vector2Int> changedTiles;
         HashSet<Vector2Int> pathTiles;
-        if (inclinesPlaced < MapHolder.mapPrefab.maxCount[DecorationType.Incline] &&
-            CheckCanPlaceIncline(column, row, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline], rotation, out changedTiles, out pathTiles))
+        if (inclinesPlaced < MapHolder.mapPrefab.maxCount[DecorationType.Incline])
         {
-            DecorationTiles tile = GetFromInclineLimbo(variation);
-            
-            tile.decorationBackground.parent = MapHolder.decorationsParent;
-            tile.decorationBackground.localPosition = new Vector3(column + Util.inclineRotationsOffset[rotation].x, 
-                Util.GetHeight(column, row), 
-                -row + Util.inclineRotationsOffset[rotation].y);
-            tile.decorationBackground.localRotation = Quaternion.Euler(0,90*rotation,0);
-            tile.type = DecorationType.Incline;
-            tile.rotation = rotation;
+            if (CheckCanPlaceIncline(column, row, MapHolder.mapPrefab.decorationsSizeDictionary[DecorationType.Incline], rotation, out changedTiles, out pathTiles))
+            {
+                DecorationTiles tile = GetFromInclineLimbo(variation);
 
-            tile.startingColumn = column;
-            tile.startingRow = row;  
-            
-            MarkTiles(tile, changedTiles, pathTiles);
-            inclinesPlaced += 1;
+                tile.decorationBackground.parent = MapHolder.decorationsParent;
+                tile.decorationBackground.localPosition = new Vector3(column + Util.inclineRotationsOffset[rotation].x,
+                    Util.GetHeight(column, row),
+                    -row + Util.inclineRotationsOffset[rotation].y);
+                tile.decorationBackground.localRotation = Quaternion.Euler(0, 90 * rotation, 0);
+                tile.type = DecorationType.Incline;
+                tile.rotation = rotation;
+
+                tile.startingColumn = column;
+                tile.startingRow = row;
+
+                MarkTiles(tile, changedTiles, pathTiles);
+                inclinesPlaced += 1;
+            }
+        }
+        else
+        {
+            UIController.ShowPopUp.Invoke();
         }
     }
     public static DecorationTiles RebuildIncline(PreDecorationTile preTile)
@@ -572,7 +582,7 @@ public class BridgesBuilder : MonoBehaviour
 
     public static void RemoveInclines(int column, int row)
     {
-        Debug.Log(column+" "+ row);
+        //Debug.Log(column+" "+ row);
         if (MapHolder.decorationsTiles[column, row]  == null ||
             (MapHolder.decorationsTiles[column, row].type != DecorationType.Incline))
         {

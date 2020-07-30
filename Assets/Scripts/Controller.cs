@@ -37,9 +37,9 @@ public class Controller : MonoBehaviour
     public ToolType currentTool = ToolType.Null;
 
     public TilePreview cursor;
-    
+#if UNITY_EDITOR
     public Text coordinateText;
-
+#endif
     //public float timeBetweenClicks = 0.1f;
 
     //checks how much zoomed in or out
@@ -353,8 +353,9 @@ public class Controller : MonoBehaviour
                 currentBlockX = (int)(hit.collider.transform.position.x - MapHolder.offset.x);
                 currentBlockY = Mathf.Abs((int)(hit.collider.transform.position.z - MapHolder.offset.z));
                 ChangeCursorPosition.Invoke(hit.collider.transform.position, currentBlockX,currentBlockY);
-
+                #if UNITY_EDITOR
                 coordinateText.text = $"{currentBlockX} {currentBlockY}";
+                #endif
             }
             else
             {

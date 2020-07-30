@@ -78,6 +78,7 @@ public class BuildingsBuilder
 
         if (building == null)
         {
+            UIController.ShowPopUp.Invoke();
             return;
         }
 

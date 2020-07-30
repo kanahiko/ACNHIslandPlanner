@@ -70,7 +70,7 @@ public class DottedLineCreator : MonoBehaviour
     void CreateDottedLine()
     {
         int count = Mathf.CeilToInt(size.x / segmentSize);
-        Debug.Log(count);
+        //Debug.Log(count);
         bool dotLine = true;
         Vector3 offset = new Vector3(0,0.0015f,0);
         List<Vector3> vertices = new List<Vector3>();

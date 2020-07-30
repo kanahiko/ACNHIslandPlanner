@@ -19,14 +19,18 @@ public class UIController : MonoBehaviour
 
     public MinimapDecorationsDictionary minimapPinsDictionary;
     public Image cameraPosition;
-    
-    
+
+    public PopUp alertPopUp;
+
     public Canvas minimapParent;
     public Canvas controlsParent;
     public Canvas tipsParent;
 
+    public static Action ShowPopUp; 
+
     private void Start()
     {
+        ShowPopUp = ShowAlert;
         MiniMap.cameraPosition = cameraPosition;
         MiniMap.UpdateMiniMap = SetNewMiniMapTexture;
         MiniMap.CreateMiniMap();
@@ -145,6 +149,11 @@ public class UIController : MonoBehaviour
     public void HideMinimap()
     {
         minimapParent.enabled = !minimapParent.enabled;
+    }
+
+    public void ShowAlert()
+    {
+        alertPopUp.Enable();
     }
 }
 

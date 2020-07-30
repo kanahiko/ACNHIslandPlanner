@@ -17,19 +17,32 @@ public static class DestroyUnwantedScripts
         // etc
     };
 
+    private static readonly string[] objectsToDeleteOnBuild =
+    {
+        "Debug"
+    };
+
     [PostProcessScene]
     public static void DeleteObjects()
     {
         if (BuildPipeline.isBuildingPlayer)
         {
-            foreach (var type in typesToDeleteOnBuild)
+            /*foreach (var type in typesToDeleteOnBuild)
             {
                 Debug.Log($"Destroying all instances of {type.Name} on build!");
                 foreach (var obj in  FindObjectsOfTypeAll(type, true))
                 {
                     Object.DestroyImmediate(obj);
                 }
-            }
+            }*/
+            /*foreach (var tag in objectsToDeleteOnBuild)
+            {
+                Debug.Log($"Destroying all instances of {tag} on build!");
+                foreach (var obj in FindObject(tag, true))
+                {
+                    Object.DestroyImmediate(obj);
+                }
+            }*/
         }
     }
     /// Use this method to get all loaded objects of some type, including inactive objects.
@@ -51,6 +64,13 @@ public static class DestroyUnwantedScripts
             }
         }
         Debug.Log($"Found {results.Count}");
+        return results;
+    }
+
+    public static GameObject[] FindObject(string tag, bool _findInactive = false)
+    {
+        var results = GameObject.FindGameObjectsWithTag(tag);
+        Debug.Log($"Found {results.Length}");
         return results;
     }
 }
