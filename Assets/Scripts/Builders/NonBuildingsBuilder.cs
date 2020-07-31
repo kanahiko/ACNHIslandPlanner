@@ -47,7 +47,7 @@ public class NonBuildingsBuilder
     {
         
         if (MapHolder.tiles[column,row].type != TileType.Land && MapHolder.tiles[column,row].type != TileType.Sand ||
-            MapHolder.tiles[column,row].type == TileType.Sand && (type != DecorationType.Flora && variation != 9 || Util.IsOnLandSandBorder(column, row)) ||
+            MapHolder.tiles[column,row].type == TileType.Sand && (type != DecorationType.Tree || variation != 9 || Util.IsOnLandSandBorder(column, row)) ||
             MapHolder.decorationsTiles[column, row] != null  &&
             (MapHolder.decorationsTiles[column,row].type != DecorationType.Flora && MapHolder.decorationsTiles[column, row].type != DecorationType.Tree))
         {

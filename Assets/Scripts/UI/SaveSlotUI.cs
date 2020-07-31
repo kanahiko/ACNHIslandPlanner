@@ -23,4 +23,9 @@ public class SaveSlotUI : MonoBehaviour
     public Image deleteButtonImage;
     public Image deleteButtonIcon;
     public Button deleteButton;
+
+
+    public Image exportButtonImage;
+    public Image exportButtonIcon;
+    public Button exportButton;
 }

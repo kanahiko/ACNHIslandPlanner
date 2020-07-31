@@ -70,6 +70,7 @@
     <Compile Include="Assets\MA_ToolBox\MA_TextureAtlasserPro\Scripts\Data\MA_TextureAtlasserProExportSettings.cs" />
     <Compile Include="Assets\Scripts\Builders\PathBuilder.cs" />
     <Compile Include="Assets\Rotary Heart\SerializableDictionaryLite\Example\DataBaseExample.cs" />
+    <Compile Include="Assets\Scripts\UI\PopUp.cs" />
     <Compile Include="Assets\Scripts\Controls.cs" />
     <Compile Include="Assets\Scripts\Builders\TerrainBuilder.cs" />
     <Compile Include="Assets\Scripts\DottedLineCreator.cs" />
@@ -114,7 +115,7 @@
     <Compile Include="Assets\Scripts\Builders\CliffBuilder.cs" />
     <Compile Include="Assets\Scripts\UIOnHover.cs" />
     <Compile Include="Assets\Scripts\TilePreview.cs" />
-    <Compile Include="Assets\Scripts\UI\PopUp.cs" />
+    <Compile Include="Assets\Scripts\TestSaveWebGL.cs" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

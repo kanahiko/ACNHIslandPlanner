@@ -14,6 +14,21 @@ TextureImporter:
   - first:
       213: -7563043471286080602
     second: menuIcons_3
+  - first:
+      213: 1520919185563388018
+    second: menuIcons_0
+  - first:
+      213: 4255277793017536176
+    second: menuIcons_1
+  - first:
+      213: 5800730909713804458
+    second: menuIcons_2
+  - first:
+      213: 6325561154628095298
+    second: menuIcons_3
+  - first:
+      213: -1635613782429131058
+    second: menuIcons_4
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -109,14 +124,14 @@ TextureImporter:
         width: 128
         height: 128
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9e6c0e4fa549006f0800000000000000
-      internalID: -720412822002940183
+      spriteID: 278059be0f36b1510800000000000000
+      internalID: 1520919185563388018
       vertices: []
       indices: 
       edges: []
@@ -130,14 +145,14 @@ TextureImporter:
         width: 128
         height: 128
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0e9966a485f86f970800000000000000
-      internalID: 8788369332228233696
+      spriteID: 0be1b697b98cd0b30800000000000000
+      internalID: 4255277793017536176
       vertices: []
       indices: 
       edges: []
@@ -151,14 +166,14 @@ TextureImporter:
         width: 128
         height: 128
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 613fe558caed363c0800000000000000
-      internalID: -4367402381065915626
+      spriteID: aacae1f5706508050800000000000000
+      internalID: 5800730909713804458
       vertices: []
       indices: 
       edges: []
@@ -172,14 +187,35 @@ TextureImporter:
         width: 128
         height: 128
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6abe729980caa0790800000000000000
-      internalID: -7563043471286080602
+      spriteID: 24d0e9a1b58e8c750800000000000000
+      internalID: 6325561154628095298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: menuIcons_4
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ece14944ee12d49e0800000000000000
+      internalID: -1635613782429131058
       vertices: []
       indices: 
       edges: []

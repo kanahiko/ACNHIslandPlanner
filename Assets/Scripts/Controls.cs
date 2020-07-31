@@ -225,6 +225,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Fullscreen"",
+                    ""type"": ""Button"",
+                    ""id"": ""89f9b461-ff35-499b-898f-07335143eb49"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -744,6 +752,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""HideMiniMap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8f840f52-467a-4c5f-a40b-4224b6912d99"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Fullscreen"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -795,6 +814,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_MapControl_Tips = m_MapControl.FindAction("Tips", throwIfNotFound: true);
         m_MapControl_HideControls = m_MapControl.FindAction("HideControls", throwIfNotFound: true);
         m_MapControl_HideMiniMap = m_MapControl.FindAction("HideMiniMap", throwIfNotFound: true);
+        m_MapControl_Fullscreen = m_MapControl.FindAction("Fullscreen", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -870,6 +890,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_MapControl_Tips;
     private readonly InputAction m_MapControl_HideControls;
     private readonly InputAction m_MapControl_HideMiniMap;
+    private readonly InputAction m_MapControl_Fullscreen;
     public struct MapControlActions
     {
         private @Controls m_Wrapper;
@@ -900,6 +921,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Tips => m_Wrapper.m_MapControl_Tips;
         public InputAction @HideControls => m_Wrapper.m_MapControl_HideControls;
         public InputAction @HideMiniMap => m_Wrapper.m_MapControl_HideMiniMap;
+        public InputAction @Fullscreen => m_Wrapper.m_MapControl_Fullscreen;
         public InputActionMap Get() { return m_Wrapper.m_MapControl; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -987,6 +1009,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @HideMiniMap.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnHideMiniMap;
                 @HideMiniMap.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnHideMiniMap;
                 @HideMiniMap.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnHideMiniMap;
+                @Fullscreen.started -= m_Wrapper.m_MapControlActionsCallbackInterface.OnFullscreen;
+                @Fullscreen.performed -= m_Wrapper.m_MapControlActionsCallbackInterface.OnFullscreen;
+                @Fullscreen.canceled -= m_Wrapper.m_MapControlActionsCallbackInterface.OnFullscreen;
             }
             m_Wrapper.m_MapControlActionsCallbackInterface = instance;
             if (instance != null)
@@ -1069,6 +1094,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @HideMiniMap.started += instance.OnHideMiniMap;
                 @HideMiniMap.performed += instance.OnHideMiniMap;
                 @HideMiniMap.canceled += instance.OnHideMiniMap;
+                @Fullscreen.started += instance.OnFullscreen;
+                @Fullscreen.performed += instance.OnFullscreen;
+                @Fullscreen.canceled += instance.OnFullscreen;
             }
         }
     }
@@ -1110,5 +1138,6 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnTips(InputAction.CallbackContext context);
         void OnHideControls(InputAction.CallbackContext context);
         void OnHideMiniMap(InputAction.CallbackContext context);
+        void OnFullscreen(InputAction.CallbackContext context);
     }
 }

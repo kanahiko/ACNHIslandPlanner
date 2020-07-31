@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -86,6 +87,8 @@ public class Controller : MonoBehaviour
     
     private void Awake()
     {
+        Debug.Log(Application.persistentDataPath);
+
         ChangeCursor = cursor.ChangeTile;
         ChangeCursorPosition = cursor.FollowMousePosition;
         ChangeRotationCursor = cursor.ChangeTileRotation;
@@ -142,9 +145,9 @@ public class Controller : MonoBehaviour
         controls.MapControl.HideControls.performed += ctx => controller.HideControls();
         controls.MapControl.HideMiniMap.performed += ctx => controller.HideMinimap();
         controls.MapControl.Tips.performed += ctx => controller.HideTips();
-        
-        
-        
+#if !UNITY_WEBGL
+        controls.MapControl.Fullscreen.performed += ctx => Screen.fullScreen = !Screen.fullScreen;
+#endif        
         construct = ToolMode.None;
 
         cameraInfo = new CameraInfo();
@@ -353,9 +356,9 @@ public class Controller : MonoBehaviour
                 currentBlockX = (int)(hit.collider.transform.position.x - MapHolder.offset.x);
                 currentBlockY = Mathf.Abs((int)(hit.collider.transform.position.z - MapHolder.offset.z));
                 ChangeCursorPosition.Invoke(hit.collider.transform.position, currentBlockX,currentBlockY);
-                #if UNITY_EDITOR
+#if UNITY_EDITOR
                 coordinateText.text = $"{currentBlockX} {currentBlockY}";
-                #endif
+#endif
             }
             else
             {

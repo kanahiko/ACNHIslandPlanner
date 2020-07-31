@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,8 +26,14 @@ public class UIController : MonoBehaviour
     public Canvas minimapParent;
     public Canvas controlsParent;
     public Canvas tipsParent;
+    public TextMeshProUGUI tipsText;
 
-    public static Action ShowPopUp; 
+    public static Action ShowPopUp;
+
+    [Multiline]
+    public string webGLTipstext = "";
+    [Multiline]
+    public string winTipsText = "";
 
     private void Start()
     {
@@ -40,6 +47,11 @@ public class UIController : MonoBehaviour
         MiniMap.ratio.x = miniMap.rectTransform.rect.width / (MapHolder.width*MiniMap.pixelSize + MapHolder.mapPrefab.miniMapOffset.x * 2);
         MiniMap.ratio.y = miniMap.rectTransform.rect.height / (MapHolder.height*MiniMap.pixelSize + MapHolder.mapPrefab.miniMapOffset.y * 2);
 
+#if UNITY_WEBGL
+        tipsText.text = webGLTipstext;
+#else
+        tipsText.text = winTipsText;
+#endif
         //MiniMap.miniMapPosition = miniMap.rectTransform.localPosition;
     }
 

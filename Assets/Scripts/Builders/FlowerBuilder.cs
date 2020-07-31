@@ -34,7 +34,7 @@ public class FlowerBuilder : MonoBehaviour
     {
         
         if (MapHolder.tiles[column,row].type != TileType.Land && MapHolder.tiles[column,row].type != TileType.Sand ||
-            MapHolder.tiles[column,row].type == TileType.Sand && (type != DecorationType.Flora || Util.IsOnLandSandBorder(column, row)) ||
+            MapHolder.tiles[column,row].type == TileType.Sand && Util.IsOnLandSandBorder(column, row) ||
             MapHolder.decorationsTiles[column, row] != null  &&
             (MapHolder.decorationsTiles[column,row].type != DecorationType.Flower) ||
             !MapHolder.mapPrefab.flowerPrefabConvertedDictionary[variation].ContainsKey(color))

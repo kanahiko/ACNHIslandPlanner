@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-
+using System.Runtime.InteropServices;
 
 public static class SaveSystem
 {
@@ -22,10 +22,13 @@ public static class SaveSystem
 
     public static CameraInfo cameraInfo;
     public static Action LoadCameraInfo;
-    
     public static void FindSlots()
     {
+#if UNITY_WEBGL
+        savePath = $"idbfs/acnhinslanddesigner";
+#else
         savePath = $"{Application.persistentDataPath}/saves";
+#endif
         saveSlots = new SaveSlot[slotsNames.Length];
         if (!Directory.Exists(savePath))
         {
@@ -129,10 +132,15 @@ public static class SaveSystem
         saveSlots[index].isWritten = true;
         saveSlots[index].date = DateTime.Now.ToString("dd/MM/yyyy\nHH:mm:ss");
         MapHolder.isDirty = false;
+
+#if UNITY_WEBGL
+        Application.ExternalEval("FS.syncfs(false, function (err) {})");
+#endif
     }
 
     public static void Load(int index)
     {
+        
         if (!Directory.Exists(savePath) || !File.Exists(saveSlots[index].path))
         {
             return;
@@ -217,6 +225,12 @@ public static class SaveSystem
         MapHolder.isDirty = false;
     }
 
+    public static void Export(int index)
+    {
+        byte[] data = File.ReadAllBytes(saveSlots[index].path);
+        WebDownloadHelper.InitiateDownload(slotsNames[index], data);
+    }
+
     public static void Delete(int index)
     {
         if (Directory.Exists(savePath) && File.Exists(saveSlots[index].path))
@@ -258,7 +272,41 @@ public static class SaveSystem
         }
     }
 }
+public static class WebGLExtensions
+{
+    /// <summary>
+    /// Calls FS.syncfs in native js.
+    /// </summary>
+    [DllImport("__Internal")]
+    public static extern void SyncFs();
+}
+public class WebDownloadHelper
+{
+    // Source: http://stackoverflow.com/a/27284736/1607924
+    static string scriptTemplate = @"
+             var link = document.createElement(""a"");
+             link.download = '{0}';
+             link.href = 'data:application/octet-stream;charset=utf-8;base64,{1}';
+             document.body.appendChild(link);
+             link.click();
+             document.body.removeChild(link);
+             delete link;
+         ";
 
+    static string test = " test test test";
+
+    public static void InitiateDownload(string aName, byte[] aData)
+    {
+        string base64 = System.Convert.ToBase64String(aData);
+        string script = string.Format(scriptTemplate, aName, base64);
+        Application.ExternalEval(script);
+    }
+    public static void InitiateDownload(string aName, string aData)
+    {
+        byte[] data = System.Text.Encoding.UTF8.GetBytes(aData);
+        InitiateDownload(aName, data);
+    }
+}
 public class SaveSlot
 {
     public bool isWritten;

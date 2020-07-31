@@ -16,11 +16,16 @@ public class SaveUI : MonoBehaviour
 
     public Action<bool> Pause;
 
+    bool canExport;
     private void Awake()
     {
         SaveSystem.FindSlots();
         SaveSystem.activateSlot = ActivateSlot;
-
+#if UNITY_WEBGL
+        canExport = true;
+#else
+        canExport = false;
+#endif
         for (int i = 0; i < SaveSystem.saveSlots.Length; i++)
         {
             int index = i;
@@ -30,7 +35,23 @@ public class SaveUI : MonoBehaviour
             slots[i].newButton.onClick.AddListener((() => NewButton(index)));
             slots[i].deleteButton.onClick.AddListener((() => DeleteButton(index)));
             slots[i].loadButton.onClick.AddListener((() => LoadButton(index)));
+
+            if (canExport)
+            {
+                slots[i].exportButton.onClick.AddListener(() => ExportButton(index));
+            }
+            else
+            {
+                slots[i].exportButton.enabled = false;
+                slots[index].exportButtonIcon.enabled = false;
+                slots[index].exportButtonImage.enabled = false;
+            }
         }
+    }
+
+    private void ExportButton(int index)
+    {
+        SaveSystem.Export(index);
     }
 
     public void DoAction()
@@ -152,6 +173,12 @@ public class SaveUI : MonoBehaviour
             slots[index].deleteButtonIcon.enabled = true;
             slots[index].loadButtonImage.enabled = true;
             slots[index].loadButtonIcon.enabled = true;
+
+            if (canExport)
+            {
+                slots[index].exportButtonIcon.enabled = true;
+                slots[index].exportButtonImage.enabled = true;
+            }
         }
         else
         {
@@ -166,6 +193,11 @@ public class SaveUI : MonoBehaviour
             slots[index].deleteButtonIcon.enabled = false;
             slots[index].loadButtonImage.enabled = false;
             slots[index].loadButtonIcon.enabled = false;
+            if (canExport)
+            {
+                slots[index].exportButtonIcon.enabled = false;
+                slots[index].exportButtonImage.enabled = false;
+            }
         }
     }
 }
