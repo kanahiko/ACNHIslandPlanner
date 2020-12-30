@@ -84,7 +84,7 @@ public class Controller : MonoBehaviour
     public static Action<Dictionary<Vector2Int, List<Vector2Int>>, List<PreDecorationTile>> RebuildMap;
     public static Action RebuildEmptyMap;
     private int colorEnumCount = Enum.GetValues(typeof(FlowerColors)).Length;
-    
+
     private void Awake()
     {
         Debug.Log(Application.persistentDataPath);
@@ -127,24 +127,73 @@ public class Controller : MonoBehaviour
 
         controls.MapControl.PlaceItem.performed += ctx =>
         {
+            if (!CanClick())
+            {
+                return;
+            }
             StartConstruction();
             ChangeItem(ToolMode.Add);
         };
         controls.MapControl.PlaceItem.canceled += ctx => EndConstruction();
         controls.MapControl.RemoveItem.performed += ctx =>
         {
+            if (!CanClick())
+            {
+                return;
+            }
             StartConstruction();
             ChangeItem(ToolMode.Remove);
         };
         controls.MapControl.RemoveItem.canceled += ctx => EndConstruction();
-        controls.MapControl.SampleItem.performed += ctx => SampleItem();
+        controls.MapControl.SampleItem.performed += ctx => {
+            if (!CanClick())
+            {
+                return;
+            }
+            SampleItem(); 
+        };
 
-        controls.MapControl.Rotate.performed += ctx => Rotate();
-        controls.MapControl.ColorsScroll.performed += ctx => ScrollColors();
+        controls.MapControl.Rotate.performed += ctx =>
+        {
+            if (!CanClick())
+            {
+                return;
+            }
+            Rotate();
+        };
+        controls.MapControl.ColorsScroll.performed += ctx =>
+        {
+            if (!CanClick())
+            {
+                return;
+            }
+            ScrollColors();
+        };
 
-        controls.MapControl.HideControls.performed += ctx => controller.HideControls();
-        controls.MapControl.HideMiniMap.performed += ctx => controller.HideMinimap();
-        controls.MapControl.Tips.performed += ctx => controller.HideTips();
+        controls.MapControl.HideControls.performed += ctx =>
+        {
+            if (!CanClick())
+            {
+                return;
+            }
+            controller.HideControls();
+        };
+        controls.MapControl.HideMiniMap.performed += ctx =>
+        {
+            if (!CanClick())
+            {
+                return;
+            }
+            controller.HideMinimap();
+        };
+        controls.MapControl.Tips.performed += ctx =>
+        {
+            if (!CanClick())
+            {
+                return;
+            }
+            controller.HideTips();
+        };
 #if !UNITY_WEBGL
         controls.MapControl.Fullscreen.performed += ctx => Screen.fullScreen = !Screen.fullScreen;
 #endif        
@@ -194,9 +243,19 @@ public class Controller : MonoBehaviour
         ChangeCameraPosition = MiniMap.ChangeCameraPosition;
         UpdateCameraPositionOnTheMap();
     }
+
+    bool CanClick()
+    {
+        return (Application.isFocused && (mousePos.x >= 0 && mousePos.x <= Screen.width || mousePos.y >= 0 && mousePos.y <= Screen.height));
+    }
     
     void Update()
     {
+        if (!CanClick())
+        {
+            return;
+        }
+
         HandleInput(moveVector);
         HandleScrolling(scroll);
 
