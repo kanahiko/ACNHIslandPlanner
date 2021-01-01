@@ -315,6 +315,7 @@ public class SaveSlot
     public string path;
 }
 
+[Serializable]
 public class CameraInfo
 {
     public Vector3 position;

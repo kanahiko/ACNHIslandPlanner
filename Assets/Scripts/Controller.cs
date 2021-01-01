@@ -6,6 +6,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class Controller : MonoBehaviour
@@ -42,7 +44,18 @@ public class Controller : MonoBehaviour
     public Text coordinateText;
 #endif
     //public float timeBetweenClicks = 0.1f;
+    public Volume postProcessingVolume;
+    public bool isBokeh = true;
+    public UnityEngine.Rendering.Universal.DepthOfField depthOfField;
 
+    public List<Vector2> depthOfFieldLerping = new List<Vector2>()
+    {
+        new Vector2(6.5f,12), new Vector2(7,13), new Vector2(30,50)
+    };
+    public List<Vector3> depthOfFieldBokehLerping = new List<Vector3>()
+    {
+        new Vector3(5.4f,64,1), new Vector3(6.3f,79,1), new Vector3(26.38f,178,1)
+    };
     //checks how much zoomed in or out
     public CameraInfo cameraInfo;
     
@@ -87,8 +100,7 @@ public class Controller : MonoBehaviour
     
     private void Awake()
     {
-        Debug.Log(Application.persistentDataPath);
-
+        //Debug.Log(Application.persistentDataPath);
         ChangeCursor = cursor.ChangeTile;
         ChangeCursorPosition = cursor.FollowMousePosition;
         ChangeRotationCursor = cursor.ChangeTileRotation;
@@ -156,6 +168,7 @@ public class Controller : MonoBehaviour
         SaveSystem.cameraInfo = cameraInfo;
         SaveSystem.LoadCameraInfo += LoadMap;
         saveUI.Pause = Pause;
+        
     }
 
     private void ScrollColors()
@@ -183,6 +196,18 @@ public class Controller : MonoBehaviour
 
     void Start()
     {
+        
+        postProcessingVolume.profile.TryGet(out depthOfField);
+        if (isBokeh)
+        {
+            depthOfField.mode = new DepthOfFieldModeParameter(DepthOfFieldMode.Bokeh);
+        }
+        else
+        {
+            depthOfField.mode = new DepthOfFieldModeParameter(DepthOfFieldMode.Gaussian);
+        }
+       //depthOfField = VolumeManager.instance.stack.GetComponent<DepthOfField>();
+        
         playerFieldSizeMin.y = playerFieldSizeMax.y - MapHolder.height;
         playerFieldSizeMax.x = MapHolder.width;
 
@@ -332,6 +357,49 @@ public class Controller : MonoBehaviour
         var normal = playerZoomCamera.forward;
         scrollOffset = normal * cameraInfo.currentScroll;
         playerZoomCamera.localPosition = currentPosition +scrollOffset;
+
+        if (!isBokeh)
+        {
+            float minDistance = depthOfFieldLerping[1].x;
+            float maxDistance = depthOfFieldLerping[1].y;
+            if (cameraInfo.currentScroll > 0)
+            {
+                minDistance = Mathf.Lerp(minDistance, depthOfFieldLerping[0].x, cameraInfo.currentScroll / scrollMinMax.y);
+                maxDistance = Mathf.Lerp(maxDistance, depthOfFieldLerping[0].y, cameraInfo.currentScroll / scrollMinMax.y);
+            }
+            else
+            {
+                minDistance = Mathf.Lerp(minDistance, depthOfFieldLerping[2].x, cameraInfo.currentScroll / scrollMinMax.x);
+                maxDistance = Mathf.Lerp(maxDistance, depthOfFieldLerping[2].y, cameraInfo.currentScroll / scrollMinMax.x);
+            }
+
+            depthOfField.gaussianStart.value = (minDistance);
+            depthOfField.gaussianEnd.value = (maxDistance);
+        }
+        else
+        {
+            float focusDistance = depthOfFieldBokehLerping[1].x;
+            float focalLength = depthOfFieldBokehLerping[1].y;
+            float aperture = depthOfFieldBokehLerping[1].z;
+            
+            if (cameraInfo.currentScroll > 0)
+            {
+                focusDistance = Mathf.Lerp(focusDistance, depthOfFieldBokehLerping[0].x, cameraInfo.currentScroll / scrollMinMax.y);
+                focalLength = Mathf.Lerp(focalLength, depthOfFieldBokehLerping[0].y, cameraInfo.currentScroll / scrollMinMax.y);
+                aperture = Mathf.Lerp(aperture, depthOfFieldBokehLerping[0].z, cameraInfo.currentScroll / scrollMinMax.y);
+            }
+            else
+            {
+                focusDistance = Mathf.Lerp(focusDistance, depthOfFieldBokehLerping[2].x, cameraInfo.currentScroll / scrollMinMax.x);
+                focalLength = Mathf.Lerp(focalLength, depthOfFieldBokehLerping[2].y, cameraInfo.currentScroll / scrollMinMax.x);
+                aperture = Mathf.Lerp(aperture, depthOfFieldBokehLerping[2].z, cameraInfo.currentScroll / scrollMinMax.x);
+            }
+
+            depthOfField.focusDistance.value = focusDistance;
+            depthOfField.focalLength.value = focalLength;
+            depthOfField.aperture.value = aperture;
+        }
+        
     }
 
     void LoadMap()

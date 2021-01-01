@@ -11853,6 +11853,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 423478933}
   m_CullTransparentMesh: 0
+--- !u!1 &423981599
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 423981601}
+  - component: {fileID: 423981600}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &423981600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 423981599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 0a68bbd3899ca124ca18ad6530521996, type: 2}
+--- !u!4 &423981601
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 423981599}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -9.005317, y: 1.0500011, z: -0.3607769}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &426311137
 GameObject:
   m_ObjectHideFlags: 0
@@ -27075,7 +27123,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -62369,6 +62417,21 @@ MonoBehaviour:
   currentTool: 10
   cursor: {fileID: 1597071185}
   coordinateText: {fileID: 718704803}
+  postProcessingVolume: {fileID: 423981600}
+  isBokeh: 1
+  depthOfField: {fileID: 0}
+  depthOfFieldLerping:
+  - {x: 6.5, y: 12}
+  - {x: 7, y: 13}
+  - {x: 30, y: 50}
+  depthOfFieldBokehLerping:
+  - {x: 5.4, y: 64, z: 1}
+  - {x: 6.3, y: 79, z: 1}
+  - {x: 26.38, y: 165, z: 1}
+  cameraInfo:
+    position: {x: 0, y: 0, z: 0}
+    isCameraParallelToGround: 0
+    currentScroll: 0
 --- !u!4 &2096962639
 Transform:
   m_ObjectHideFlags: 0
